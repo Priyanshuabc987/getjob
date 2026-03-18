@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Happy students working together",
+      "imageUrl": "https://picsum.photos/seed/preplinc-hero/1200/600",
+      "imageHint": "students collaborating"
+    },
+    {
+      "id": "avatar-1",
+      "description": "Student avatar 1",
+      "imageUrl": "https://picsum.photos/seed/preplinc-user1/100/100",
+      "imageHint": "user profile"
+    },
+    {
+      "id": "avatar-2",
+      "description": "Student avatar 2",
+      "imageUrl": "https://picsum.photos/seed/preplinc-user2/100/100",
+      "imageHint": "user profile"
+    },
+    {
+      "id": "avatar-3",
+      "description": "Student avatar 3",
+      "imageUrl": "https://picsum.photos/seed/preplinc-user3/100/100",
+      "imageHint": "user profile"
+    },
+    {
+      "id": "startup-logo-1",
+      "description": "Startup logo 1",
+      "imageUrl": "https://picsum.photos/seed/preplinc-startup1/200/200",
+      "imageHint": "startup logo"
+    },
+    {
+      "id": "project-thumb-1",
+      "description": "Project thumbnail 1",
+      "imageUrl": "https://picsum.photos/seed/preplinc-proj1/400/300",
+      "imageHint": "code project"
+    },
+    {
+      "id": "project-thumb-2",
+      "description": "Project thumbnail 2",
+      "imageUrl": "https://picsum.photos/seed/preplinc-proj2/400/300",
+      "imageHint": "design project"
+    }
+  ]
 }
