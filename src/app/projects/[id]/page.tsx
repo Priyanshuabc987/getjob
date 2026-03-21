@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { projects, currentUser, type ProjectUpdate } from '@/lib/mock-data';
 import { 
@@ -20,7 +20,10 @@ import {
   Zap,
   CheckCircle2,
   PlusCircle,
-  CalendarDays
+  CalendarDays,
+  Lock,
+  Globe,
+  HelpCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +40,14 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
   const project = projects.find(p => p.id === id);
   const { toast } = useToast();
   const [commentText, setCommentText] = useState("");
+  const [activeTab, setActiveTab] = useState("build-log");
+
+  // Handle anchor navigation for Discussion
+  useEffect(() => {
+    if (window.location.hash === '#discussion') {
+      setActiveTab("discussion");
+    }
+  }, []);
 
   if (!project) {
     return (
@@ -59,8 +70,8 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
   const handlePostComment = () => {
     if (!commentText.trim()) return;
     toast({
-      title: "Comment Posted!",
-      description: "Your thought has been shared with the team.",
+      title: "Feedback Shared!",
+      description: "Your insights have been shared with the project team.",
     });
     setCommentText("");
   };
@@ -72,6 +83,8 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
     });
   };
 
+  const isTeammate = project.teammates?.some(m => m.name === currentUser.name) || project.owner === currentUser.name;
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-64 pt-20">
       <Navbar />
@@ -80,7 +93,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
         {/* Breadcrumb / Back */}
         <Link href="/projects" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6 group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-medium">Back to Projects</span>
+          <span className="text-sm font-medium">Back to Projects Hub</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -117,30 +130,34 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                     {project.longDescription || project.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-6 pt-6 mt-6 border-t">
+                <div className="flex flex-wrap items-center gap-6 pt-6 mt-6 border-t">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
                     <span className="font-bold text-foreground">{project.contributors}</span> Builders
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <MessageSquare className="w-4 h-4" />
-                    <span className="font-bold text-foreground">{project.discussion.length}</span> Discussions
+                    <span className="font-bold text-foreground">{project.discussion.length}</span> Feedback Items
                   </div>
                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <ShieldCheck className="w-4 h-4" />
                     Verified Project
                   </div>
+                  <div className="flex items-center gap-2 text-sm font-bold text-primary">
+                    <Globe className="w-4 h-4" />
+                    Public Hub
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Tabs defaultValue="build-log" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="bg-muted p-1 rounded-2xl w-full h-auto mb-6">
                 <TabsTrigger value="build-log" className="flex-1 rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
                   <History className="w-4 h-4" /> Build Log
                 </TabsTrigger>
-                <TabsTrigger value="discussion" className="flex-1 rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
-                  <MessageSquare className="w-4 h-4" /> Discussion
+                <TabsTrigger value="discussion" id="discussion-tab" className="flex-1 rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
+                  <MessageSquare className="w-4 h-4" /> Community Review
                 </TabsTrigger>
               </TabsList>
 
@@ -201,15 +218,18 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
               </TabsContent>
 
               <TabsContent value="discussion" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-headline font-bold">Community Board</h3>
-                  <div className="text-sm font-medium text-muted-foreground">
-                    Sort by: <span className="text-primary cursor-pointer hover:underline">Hot</span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-2xl font-headline font-bold">Public Feedback Board</h3>
+                    <p className="text-sm text-muted-foreground">Community-driven review and peer enhancement.</p>
+                  </div>
+                  <div className="text-xs font-bold text-primary flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+                    <Globe className="w-3 h-3" /> Open to Public
                   </div>
                 </div>
 
                 {/* Comment Input */}
-                <Card className="glass-card p-4">
+                <Card className="glass-card p-4 border-dashed border-primary/20 bg-primary/5">
                   <div className="flex gap-4">
                     <Avatar className="w-10 h-10 border">
                       <AvatarImage src={currentUser.avatar} />
@@ -217,14 +237,17 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                     </Avatar>
                     <div className="flex-1 space-y-3">
                       <Textarea 
-                        placeholder="What's on your mind about this project?" 
-                        className="min-h-[100px] bg-muted/50 focus:bg-white transition-all resize-none border-none rounded-2xl"
+                        placeholder="Offer a critique, suggest a feature, or ask a question..." 
+                        className="min-h-[100px] bg-white transition-all resize-none border-none rounded-2xl shadow-sm"
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                       />
-                      <div className="flex justify-end">
+                      <div className="flex justify-between items-center">
+                        <p className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+                          <HelpCircle className="w-3 h-3" /> Quality feedback helps builders improve.
+                        </p>
                         <Button onClick={handlePostComment} className="rounded-full gap-2 px-6 h-10 shadow-lg shadow-primary/20">
-                          <Send className="w-4 h-4" /> Post
+                          <Send className="w-4 h-4" /> Post Feedback
                         </Button>
                       </div>
                     </div>
@@ -252,14 +275,17 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                           <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-2 text-xs">
                               <span className="font-bold text-foreground">@{comment.author.toLowerCase().replace(' ', '_')}</span>
+                              {project.teammates?.some(m => m.name === comment.author) && (
+                                <Badge variant="outline" className="text-[9px] h-4 py-0 border-primary text-primary">TEAM</Badge>
+                              )}
                               <span className="text-muted-foreground">• {comment.postedAt}</span>
                             </div>
                             <p className="text-sm leading-relaxed">{comment.text}</p>
                             <div className="flex items-center gap-4 pt-2">
-                              <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5">
+                              <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5 transition-colors">
                                 <MessageSquare className="w-3.5 h-3.5" /> Reply
                               </button>
-                              <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5">
+                              <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5 transition-colors">
                                 <Share2 className="w-3.5 h-3.5" /> Share
                               </button>
                             </div>
@@ -281,6 +307,9 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                               <div className="flex-1 space-y-1">
                                 <div className="flex items-center gap-2 text-xs">
                                   <span className="font-bold text-foreground">@{reply.author.toLowerCase().replace(' ', '_')}</span>
+                                  {project.teammates?.some(m => m.name === reply.author) && (
+                                    <Badge variant="outline" className="text-[9px] h-4 py-0 border-primary text-primary">TEAM</Badge>
+                                  )}
                                   <span className="text-muted-foreground">• {reply.postedAt}</span>
                                 </div>
                                 <p className="text-sm">{reply.text}</p>
