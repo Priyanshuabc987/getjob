@@ -1,5 +1,14 @@
 import { PlaceHolderImages } from './placeholder-images';
 
+export type ProjectUpdate = {
+  id: string;
+  title: string;
+  description: string;
+  postedAt: string;
+  type: 'MILESTONE' | 'UPDATE' | 'BRAINSTORM';
+  image?: string;
+};
+
 export const currentUser = {
   id: 'user-123',
   name: 'Alex Johnson',
@@ -107,6 +116,29 @@ export const projects = [
       { id: 't1', title: 'Map Integration', status: 'Open' },
       { id: 't2', title: 'Push Notifications', status: 'In Progress' }
     ],
+    updates: [
+      {
+        id: 'up1',
+        title: 'Initial Concept & UX Flow',
+        description: 'Mapped out the primary user journey for neighbors lending tools. Focused on reducing friction in the "Request" phase.',
+        postedAt: 'Oct 15, 2023',
+        type: 'MILESTONE'
+      },
+      {
+        id: 'up2',
+        title: 'Firebase Schema Setup',
+        description: 'Designed the Firestore structure to handle real-time inventory and chat between neighbors.',
+        postedAt: 'Oct 20, 2023',
+        type: 'UPDATE'
+      },
+      {
+        id: 'up3',
+        title: 'Geofencing Alpha Test',
+        description: 'Successfully implemented location-based tool discovery within a 5km radius.',
+        postedAt: 'Nov 02, 2023',
+        type: 'UPDATE'
+      }
+    ] as ProjectUpdate[],
     teammates: [
       { id: 'u1', name: 'Priya S.', role: 'Founder & Lead Dev', avatar: 'https://picsum.photos/seed/priya/100/100' },
       { id: 'u2', name: 'Rahul K.', role: 'UI Designer', avatar: 'https://picsum.photos/seed/rahul/100/100' },
@@ -130,15 +162,6 @@ export const projects = [
             upvotes: 4
           }
         ]
-      },
-      {
-        id: 'c3',
-        author: 'Unknown Builder',
-        avatar: 'https://picsum.photos/seed/anon/100/100',
-        text: 'Are you guys planning to support dark mode?',
-        postedAt: '5h ago',
-        upvotes: 8,
-        replies: []
       }
     ]
   },
@@ -154,20 +177,19 @@ export const projects = [
     tasks: [
       { id: 't3', title: 'Video Caption Extraction', status: 'Open' }
     ],
+    updates: [
+      {
+        id: 'up4',
+        title: 'Whisper API Integration',
+        description: 'First successful test of real-time audio chunking and transcription. Latency is currently ~2s.',
+        postedAt: 'Oct 28, 2023',
+        type: 'MILESTONE'
+      }
+    ] as ProjectUpdate[],
     teammates: [
       { id: 'u4', name: 'Mark R.', role: 'Project Lead', avatar: 'https://picsum.photos/seed/mark/100/100' },
       { id: 'u5', name: 'Jared L.', role: 'AI Engineer', avatar: 'https://picsum.photos/seed/jared/100/100' }
     ],
-    discussion: [
-      {
-        id: 'c4',
-        author: 'Mark R.',
-        avatar: 'https://picsum.photos/seed/mark/100/100',
-        text: 'Just pushed the v0.1 manifest. Jared, check the permissions for the side panel.',
-        postedAt: '10h ago',
-        upvotes: 5,
-        replies: []
-      }
-    ]
+    discussion: []
   }
 ];

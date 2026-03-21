@@ -2,7 +2,7 @@
 
 import { use, useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
-import { projects, currentUser } from '@/lib/mock-data';
+import { projects, currentUser, type ProjectUpdate } from '@/lib/mock-data';
 import { 
   ArrowLeft, 
   Users, 
@@ -15,13 +15,19 @@ import {
   Share2,
   ExternalLink,
   Code,
-  Layout
+  Layout,
+  History,
+  Zap,
+  CheckCircle2,
+  PlusCircle,
+  CalendarDays
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -57,6 +63,13 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
       description: "Your thought has been shared with the team.",
     });
     setCommentText("");
+  };
+
+  const handleAddUpdate = () => {
+    toast({
+      title: "Update Feature",
+      description: "As the project owner, you would add a new log entry here to show your progress history.",
+    });
   };
 
   return (
@@ -97,14 +110,14 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                   </div>
                 </div>
               </div>
-              <CardContent className="p-8 space-y-6">
+              <CardContent className="p-8 pb-4">
                 <div className="space-y-4">
                   <h3 className="text-xl font-headline font-bold">Overview</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     {project.longDescription || project.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-6 pt-4 border-t">
+                <div className="flex items-center gap-6 pt-6 mt-6 border-t">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
                     <span className="font-bold text-foreground">{project.contributors}</span> Builders
@@ -113,7 +126,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                     <MessageSquare className="w-4 h-4" />
                     <span className="font-bold text-foreground">{project.discussion.length}</span> Discussions
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <ShieldCheck className="w-4 h-4" />
                     Verified Project
                   </div>
@@ -121,102 +134,166 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
               </CardContent>
             </Card>
 
-            {/* Reddit-style Discussion Board */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-headline font-bold flex items-center gap-2">
-                  <MessageSquare className="w-6 h-6 text-primary" /> Discussions
-                </h3>
-                <div className="text-sm font-medium text-muted-foreground">
-                  Sort by: <span className="text-primary cursor-pointer hover:underline">Hot</span>
-                </div>
-              </div>
+            <Tabs defaultValue="build-log" className="w-full">
+              <TabsList className="bg-muted p-1 rounded-2xl w-full h-auto mb-6">
+                <TabsTrigger value="build-log" className="flex-1 rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
+                  <History className="w-4 h-4" /> Build Log
+                </TabsTrigger>
+                <TabsTrigger value="discussion" className="flex-1 rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
+                  <MessageSquare className="w-4 h-4" /> Discussion
+                </TabsTrigger>
+              </TabsList>
 
-              {/* Comment Input */}
-              <Card className="glass-card p-4">
-                <div className="flex gap-4">
-                  <Avatar className="w-10 h-10 border">
-                    <AvatarImage src={currentUser.avatar} />
-                    <AvatarFallback>AJ</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-3">
-                    <Textarea 
-                      placeholder="What's on your mind about this project?" 
-                      className="min-h-[100px] bg-muted/50 focus:bg-white transition-all resize-none border-none rounded-2xl"
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                    />
-                    <div className="flex justify-end">
-                      <Button onClick={handlePostComment} className="rounded-full gap-2 px-6 h-10 shadow-lg shadow-primary/20">
-                        <Send className="w-4 h-4" /> Post
-                      </Button>
+              <TabsContent value="build-log" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-2xl font-headline font-bold">Proof of Effort</h3>
+                    <p className="text-sm text-muted-foreground">Chronological timeline of development and major shifts.</p>
+                  </div>
+                  {project.owner === currentUser.name && (
+                    <Button onClick={handleAddUpdate} className="rounded-full gap-2 px-6 h-10 shadow-lg shadow-primary/20">
+                      <PlusCircle className="w-4 h-4" /> Post Update
+                    </Button>
+                  )}
+                </div>
+
+                <div className="relative space-y-12 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-muted">
+                  {project.updates?.map((update: ProjectUpdate, idx: number) => (
+                    <div key={update.id} className="relative pl-12 group">
+                      <div className={cn(
+                        "absolute left-0 top-1 w-10 h-10 rounded-full border-4 border-background flex items-center justify-center z-10 transition-colors",
+                        update.type === 'MILESTONE' ? "bg-primary text-white" : "bg-muted text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary"
+                      )}>
+                        {update.type === 'MILESTONE' ? <Zap className="w-4 h-4 fill-current" /> : <CheckCircle2 className="w-4 h-4" />}
+                      </div>
+                      
+                      <Card className="glass-card hover:border-primary/30 transition-all">
+                        <CardHeader className="p-6 pb-2">
+                          <div className="flex items-center justify-between mb-2">
+                            <Badge variant={update.type === 'MILESTONE' ? 'default' : 'secondary'} className="rounded-md text-[10px]">
+                              {update.type}
+                            </Badge>
+                            <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                              <CalendarDays className="w-3 h-3" /> {update.postedAt}
+                            </span>
+                          </div>
+                          <h4 className="text-xl font-headline font-bold">{update.title}</h4>
+                        </CardHeader>
+                        <CardContent className="p-6 pt-0">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {update.description}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))}
+
+                  {(!project.updates || project.updates.length === 0) && (
+                    <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                      <History className="w-12 h-12 text-muted/30" />
+                      <div>
+                        <p className="font-bold text-muted-foreground">No build logs yet</p>
+                        <p className="text-sm text-muted-foreground/60">The team hasn't posted any public updates yet.</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="discussion" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-headline font-bold">Community Board</h3>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    Sort by: <span className="text-primary cursor-pointer hover:underline">Hot</span>
+                  </div>
+                </div>
+
+                {/* Comment Input */}
+                <Card className="glass-card p-4">
+                  <div className="flex gap-4">
+                    <Avatar className="w-10 h-10 border">
+                      <AvatarImage src={currentUser.avatar} />
+                      <AvatarFallback>AJ</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 space-y-3">
+                      <Textarea 
+                        placeholder="What's on your mind about this project?" 
+                        className="min-h-[100px] bg-muted/50 focus:bg-white transition-all resize-none border-none rounded-2xl"
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                      />
+                      <div className="flex justify-end">
+                        <Button onClick={handlePostComment} className="rounded-full gap-2 px-6 h-10 shadow-lg shadow-primary/20">
+                          <Send className="w-4 h-4" /> Post
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
 
-              {/* Comments List */}
-              <div className="space-y-4">
-                {project.discussion.map((comment) => (
-                  <div key={comment.id} className="space-y-4">
-                    <Card className="glass-card p-4 hover:border-primary/20 transition-all">
-                      <div className="flex gap-4">
-                        {/* Upvote side */}
-                        <div className="flex flex-col items-center gap-1 text-muted-foreground">
-                          <button className="hover:text-orange-500 transition-colors">
-                            <ArrowBigUp className="w-6 h-6" />
-                          </button>
-                          <span className="text-xs font-bold">{comment.upvotes}</span>
-                          <button className="hover:text-blue-500 transition-colors">
-                            <ArrowBigDown className="w-6 h-6" />
-                          </button>
-                        </div>
-
-                        {/* Comment Body */}
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-2 text-xs">
-                            <span className="font-bold text-foreground">@{comment.author.toLowerCase().replace(' ', '_')}</span>
-                            <span className="text-muted-foreground">• {comment.postedAt}</span>
-                          </div>
-                          <p className="text-sm leading-relaxed">{comment.text}</p>
-                          <div className="flex items-center gap-4 pt-2">
-                            <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5">
-                              <MessageSquare className="w-3.5 h-3.5" /> Reply
+                {/* Comments List */}
+                <div className="space-y-4">
+                  {project.discussion.map((comment) => (
+                    <div key={comment.id} className="space-y-4">
+                      <Card className="glass-card p-4 hover:border-primary/20 transition-all">
+                        <div className="flex gap-4">
+                          {/* Upvote side */}
+                          <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                            <button className="hover:text-orange-500 transition-colors">
+                              <ArrowBigUp className="w-6 h-6" />
                             </button>
-                            <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5">
-                              <Share2 className="w-3.5 h-3.5" /> Share
+                            <span className="text-xs font-bold">{comment.upvotes}</span>
+                            <button className="hover:text-blue-500 transition-colors">
+                              <ArrowBigDown className="w-6 h-6" />
                             </button>
                           </div>
-                        </div>
-                      </div>
-                    </Card>
 
-                    {/* Replies (Nested) */}
-                    {comment.replies && comment.replies.map(reply => (
-                      <div key={reply.id} className="ml-12 border-l-2 border-muted pl-6 space-y-4">
-                        <Card className="glass-card p-4 bg-muted/20 border-none shadow-none">
-                          <div className="flex gap-4">
-                             <div className="flex flex-col items-center gap-1 text-muted-foreground">
-                              <button className="hover:text-orange-500 transition-colors">
-                                <ArrowBigUp className="w-5 h-5" />
+                          {/* Comment Body */}
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2 text-xs">
+                              <span className="font-bold text-foreground">@{comment.author.toLowerCase().replace(' ', '_')}</span>
+                              <span className="text-muted-foreground">• {comment.postedAt}</span>
+                            </div>
+                            <p className="text-sm leading-relaxed">{comment.text}</p>
+                            <div className="flex items-center gap-4 pt-2">
+                              <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5">
+                                <MessageSquare className="w-3.5 h-3.5" /> Reply
                               </button>
-                              <span className="text-[10px] font-bold">{reply.upvotes}</span>
-                            </div>
-                            <div className="flex-1 space-y-1">
-                              <div className="flex items-center gap-2 text-xs">
-                                <span className="font-bold text-foreground">@{reply.author.toLowerCase().replace(' ', '_')}</span>
-                                <span className="text-muted-foreground">• {reply.postedAt}</span>
-                              </div>
-                              <p className="text-sm">{reply.text}</p>
+                              <button className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1.5">
+                                <Share2 className="w-3.5 h-3.5" /> Share
+                              </button>
                             </div>
                           </div>
-                        </Card>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
+                        </div>
+                      </Card>
+
+                      {/* Replies (Nested) */}
+                      {comment.replies && comment.replies.map(reply => (
+                        <div key={reply.id} className="ml-12 border-l-2 border-muted pl-6 space-y-4">
+                          <Card className="glass-card p-4 bg-muted/20 border-none shadow-none">
+                            <div className="flex gap-4">
+                               <div className="flex flex-col items-center gap-1 text-muted-foreground">
+                                <button className="hover:text-orange-500 transition-colors">
+                                  <ArrowBigUp className="w-5 h-5" />
+                                </button>
+                                <span className="text-[10px] font-bold">{reply.upvotes}</span>
+                              </div>
+                              <div className="flex-1 space-y-1">
+                                <div className="flex items-center gap-2 text-xs">
+                                  <span className="font-bold text-foreground">@{reply.author.toLowerCase().replace(' ', '_')}</span>
+                                  <span className="text-muted-foreground">• {reply.postedAt}</span>
+                                </div>
+                                <p className="text-sm">{reply.text}</p>
+                              </div>
+                            </div>
+                          </Card>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Sidebar Area */}
@@ -231,7 +308,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                 <div className="space-y-2">
                   <h3 className="text-2xl font-headline font-bold">Join the Team</h3>
                   <p className="text-sm text-primary-foreground/80">
-                    Priya is looking for builders with skills in Flutter and UI/UX design.
+                    The founders are looking for builders to scale this concept.
                   </p>
                 </div>
                 <Button 
