@@ -14,7 +14,8 @@ import {
   ShieldCheck, 
   Share2,
   ExternalLink,
-  Code
+  Code,
+  Layout
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
