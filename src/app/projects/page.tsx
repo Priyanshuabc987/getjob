@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
-import { projects } from '@/lib/mock-data';
-import { Plus, Users, Layout, MessageSquare, ChevronRight, Sparkles, Wand2, Heart, Share2, MoreHorizontal } from 'lucide-react';
+import { projectWorkspaces } from '@/lib/mock-data';
+import { ProjectWorkspace } from '@/lib/types';
+import { Plus, Users, Layout, MessageSquare, ChevronRight, Sparkles, Wand2, Heart, Share2, MoreHorizontal, ShieldCheck, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
@@ -49,7 +50,7 @@ export default function ProjectsPage() {
           </Button>
         </div>
 
-        {/* AI Assist Section - Simplified for Feed View */}
+        {/* AI Assist Section */}
         <Card className="glass-card mb-8 border-primary/20 bg-primary/5">
           <CardContent className="p-6 flex flex-col sm:flex-row items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -73,61 +74,67 @@ export default function ProjectsPage() {
 
         {/* Project Feed */}
         <div className="space-y-8">
-          {projects.map((proj) => (
+          {projectWorkspaces.map((proj) => (
             <Card key={proj.id} className="glass-card overflow-hidden group border-none shadow-md hover:shadow-xl transition-all duration-300">
-              {/* Card Header (Poster Info) */}
               <div className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar className="w-10 h-10 border-2 border-primary/10">
-                    <AvatarImage src={proj.ownerAvatar} />
-                    <AvatarFallback>{proj.owner[0]}</AvatarFallback>
+                    <AvatarImage src={proj.team.find(m => m.userId === proj.ownerId)?.avatarUrl} />
+                    <AvatarFallback>{proj.title[0]}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-bold leading-none">{proj.owner}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Project Lead</p>
+                    <p className="text-sm font-bold leading-none">{proj.team.find(m => m.userId === proj.ownerId)?.name}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">Founding Builder</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
-                </Button>
+                {proj.isVerified && (
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/5 px-2 py-1 rounded-full">
+                    <ShieldCheck className="w-3 h-3" /> Verified
+                  </div>
+                )}
               </div>
 
-              {/* Main Content Area */}
               <Link href={`/projects/${proj.id}`}>
                 <div className="px-4 pb-4 space-y-3">
-                   <h3 className="text-2xl font-headline font-bold group-hover:text-primary transition-colors leading-tight">
-                    {proj.title}
-                  </h3>
+                   <div className="flex justify-between items-start">
+                     <h3 className="text-2xl font-headline font-bold group-hover:text-primary transition-colors leading-tight">
+                      {proj.title}
+                    </h3>
+                    <Badge variant={proj.status === 'Active' ? 'default' : 'secondary'} className="text-[9px]">
+                      {proj.status}
+                    </Badge>
+                   </div>
+                  <p className="text-sm font-medium text-primary/80 italic">{proj.tagline}</p>
                   <p className="text-sm text-muted-foreground line-clamp-3">
                     {proj.description}
                   </p>
                 </div>
 
-                <div className="aspect-[16/9] w-full bg-muted relative border-y">
+                <div className="aspect-[16/9] w-full bg-muted relative border-y overflow-hidden">
                   <img 
-                    src={`https://picsum.photos/seed/${proj.id}/800/450`} 
+                    src={proj.coverImageUrl || `https://picsum.photos/seed/${proj.id}/800/450`} 
                     alt={proj.title} 
                     className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
               </Link>
               
               <CardContent className="p-4 pt-4">
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {proj.skills.map(skill => (
-                    <Badge key={skill} variant="secondary" className="rounded-md font-medium text-[10px] uppercase">
-                      {skill}
+                  {proj.tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="rounded-md font-medium text-[10px] uppercase">
+                      {tag}
                     </Badge>
                   ))}
                 </div>
                 
                 <div className="space-y-2">
                   <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    <span>Momentum</span>
-                    <span>72%</span>
+                    <span>Build Momentum</span>
+                    <span>{proj.stats.momentum}%</span>
                   </div>
-                  <Progress value={72} className="h-1.5" />
+                  <Progress value={proj.stats.momentum} className="h-1.5" />
                 </div>
               </CardContent>
 
@@ -139,18 +146,18 @@ export default function ProjectsPage() {
                   </button>
                   <Link href={`/projects/${proj.id}#discussion`} className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
                     <MessageSquare className="w-5 h-5" />
-                    <span className="text-xs font-bold">{proj.discussion.length}</span>
+                    <span className="text-xs font-bold">{proj.stats.discussionCount}</span>
                   </Link>
                 </div>
                 <div className="flex items-center gap-3">
                    <div className="flex -space-x-2">
-                      {[1, 2, 3].map(i => (
+                      {proj.team.slice(0, 3).map((mate, i) => (
                         <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-muted overflow-hidden">
-                          <img src={`https://picsum.photos/seed/teammate-${proj.id}-${i}/50/50`} alt="Contributor" />
+                          <img src={mate.avatarUrl} alt={mate.name} />
                         </div>
                       ))}
                    </div>
-                   <span className="text-[10px] font-bold text-muted-foreground">+{proj.contributors} building</span>
+                   <span className="text-[10px] font-bold text-muted-foreground">+{proj.stats.memberCount} building</span>
                 </div>
               </CardFooter>
             </Card>

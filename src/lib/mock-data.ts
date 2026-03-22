@@ -1,13 +1,10 @@
 import { PlaceHolderImages } from './placeholder-images';
-
-export type ProjectUpdate = {
-  id: string;
-  title: string;
-  description: string;
-  postedAt: string;
-  type: 'MILESTONE' | 'UPDATE' | 'BRAINSTORM';
-  image?: string;
-};
+import { 
+  ProjectWorkspace, 
+  ProgressUpdate, 
+  DiscussionThread, 
+  ProjectWorkspaceTeamMember 
+} from './types';
 
 export const currentUser = {
   id: 'user-123',
@@ -19,10 +16,6 @@ export const currentUser = {
   interests: ['EdTech', 'Open Source', 'AI Ethics'],
   earnings: '₹12,400',
   badges: ['Early Adopter', 'Top Contributor', 'Fast Learner'],
-  projects: [
-    { id: 'proj1', title: 'PrepLinc UI', status: 'In Progress', tasksDone: 12, totalTasks: 20 },
-    { id: 'proj2', title: 'Task Flow Engine', status: 'Completed', tasksDone: 5, totalTasks: 5 }
-  ],
   stats: {
     tasksCompleted: 42,
     collaborations: 8,
@@ -30,6 +23,124 @@ export const currentUser = {
   }
 };
 
+export const projectWorkspaces: ProjectWorkspace[] = [
+  {
+    id: 'proj-1',
+    name: 'community-garden',
+    title: 'Community Garden Hub',
+    tagline: 'Hyperlocal tool sharing for urban farmers.',
+    description: 'A platform connecting local residents to share tools, seeds, and produce. We use Flutter for the mobile app and Firebase for real-time synchronization. Our goal is to reduce waste and foster community resilience.',
+    coverImageUrl: 'https://picsum.photos/seed/garden-cover/1200/400',
+    tags: ['Sustainability', 'Mobile', 'Community'],
+    status: 'Seeking Help',
+    ownerId: 'user-priya',
+    team: [
+      { userId: 'user-priya', name: 'Priya S.', role: 'Owner', avatarUrl: 'https://picsum.photos/seed/priya/100/100', title: 'Founder & Lead Dev' },
+      { userId: 'user-rahul', name: 'Rahul K.', role: 'Contributor', avatarUrl: 'https://picsum.photos/seed/rahul/100/100', title: 'UI/UX Designer' },
+      { userId: 'user-123', name: 'Alex Johnson', role: 'Contributor', avatarUrl: currentUser.avatar, title: 'Frontend Developer' }
+    ],
+    joinRequests: [],
+    resources: [
+      { label: 'Github Repo', url: 'https://github.com/example/garden-hub' },
+      { label: 'Figma Prototype', url: 'https://figma.com/example' }
+    ],
+    isVerified: true,
+    isPublic: true,
+    createdAt: '2023-09-01T10:00:00Z',
+    lastUpdatedAt: '2023-11-15T14:30:00Z',
+    stats: {
+      memberCount: 3,
+      updateCount: 12,
+      discussionCount: 8,
+      momentum: 85
+    }
+  },
+  {
+    id: 'proj-2',
+    name: 'ai-study-buddy',
+    title: 'AI Study Assistant',
+    tagline: 'Real-time lecture summarization for students.',
+    description: 'A Chrome extension that uses Whisper for transcription and GPT-4 for live summarization of lecture videos. Helping students focus on understanding rather than just transcribing.',
+    coverImageUrl: 'https://picsum.photos/seed/ai-cover/1200/400',
+    tags: ['AI', 'Productivity', 'Chrome Extension'],
+    status: 'Active',
+    ownerId: 'user-mark',
+    team: [
+      { userId: 'user-mark', name: 'Mark R.', role: 'Owner', avatarUrl: 'https://picsum.photos/seed/mark/100/100', title: 'Full Stack Developer' }
+    ],
+    joinRequests: ['user-456'],
+    resources: [
+      { label: 'Live Demo', url: 'https://ai-study.example.com' }
+    ],
+    isVerified: false,
+    isPublic: true,
+    createdAt: '2023-10-10T12:00:00Z',
+    lastUpdatedAt: '2023-11-10T09:15:00Z',
+    stats: {
+      memberCount: 1,
+      updateCount: 4,
+      discussionCount: 0,
+      momentum: 40
+    }
+  }
+];
+
+export const progressUpdates: ProgressUpdate[] = [
+  {
+    id: 'up-1',
+    projectId: 'proj-1',
+    type: 'Milestone',
+    title: 'Beta Launch Success!',
+    content: 'We successfully onboarded our first 50 users in the Bangalore North district. Tool sharing frequency exceeded our expectations.',
+    authorId: 'user-priya',
+    authorName: 'Priya S.',
+    createdAt: '2023-11-10T15:00:00Z',
+    imageUrl: 'https://picsum.photos/seed/launch/800/400',
+    reactions: { '🚀': 12, '❤️': 8 }
+  },
+  {
+    id: 'up-2',
+    projectId: 'proj-1',
+    type: 'Update',
+    title: 'Integrated Google Maps API',
+    content: 'Neighbors can now see a real-time heatmap of available tools in their vicinity. Optimized query latency by 40%.',
+    authorId: 'user-123',
+    authorName: 'Alex Johnson',
+    createdAt: '2023-11-05T11:00:00Z',
+    reactions: { '🔥': 5 }
+  }
+];
+
+export const discussionThreads: DiscussionThread[] = [
+  {
+    id: 'th-1',
+    projectId: 'proj-1',
+    authorId: 'user-community-1',
+    authorName: 'GrowthGuru',
+    authorAvatarUrl: 'https://picsum.photos/seed/guru/100/100',
+    authorRole: 'Community',
+    isAnonymous: false,
+    title: 'How do you handle tool damage or loss?',
+    content: 'I love the concept, but I\'m curious about the insurance or accountability model. Is there a deposit system or is it based on trust?',
+    createdAt: '2023-11-12T09:00:00Z',
+    upvotes: 24,
+    replies: [
+      {
+        id: 're-1',
+        threadId: 'th-1',
+        authorId: 'user-priya',
+        authorName: 'Priya S.',
+        authorAvatarUrl: 'https://picsum.photos/seed/priya/100/100',
+        authorRole: 'Owner',
+        isAnonymous: false,
+        content: 'Currently, it\'s trust-based with a reputation score. We are looking into integrating a small micro-insurance fee for expensive equipment.',
+        createdAt: '2023-11-12T10:30:00Z'
+      }
+    ]
+  }
+];
+
+// Legacy fields for compatibility during transition
 export const feeds = [
   {
     id: 'f1',
@@ -38,8 +149,6 @@ export const feeds = [
     author: 'DesignFlow AI',
     authorAvatar: PlaceHolderImages.find(img => img.id === 'startup-logo-1')?.imageUrl,
     reward: '₹2,500',
-    time: '4 hours',
-    skills: ['Figma', 'UI Design'],
     postedAt: '2h ago',
     likes: 24,
     comments: 5
@@ -55,17 +164,6 @@ export const feeds = [
     postedAt: '4h ago',
     likes: 89,
     comments: 12
-  },
-  {
-    id: 'f3',
-    type: 'PROBLEM',
-    title: 'How to optimize large Firestore queries?',
-    description: 'Our dashboard is lagging with 10k+ entries. Anyone faced this?',
-    author: 'SwiftPay Startup',
-    reward: '₹5,000 for solution',
-    postedAt: '6h ago',
-    likes: 12,
-    comments: 20
   }
 ];
 
@@ -79,117 +177,7 @@ export const microInternships = [
     timeRequired: '15-20 hours',
     skills: ['React', 'Tailwind', 'Storybook'],
     category: 'Engineering'
-  },
-  {
-    id: 'mi2',
-    title: 'Content Strategy for Launch',
-    company: 'Healthify App',
-    description: 'Create a 30-day social media content calendar for our MVP launch.',
-    payment: '₹4,500',
-    timeRequired: '10 hours',
-    skills: ['Marketing', 'Copywriting'],
-    category: 'Content'
-  },
-  {
-    id: 'mi3',
-    title: 'User Testing & Feedback',
-    company: 'EcoTrack',
-    description: 'Conduct 5 user interviews and synthesize feedback for our new feature.',
-    payment: '₹3,000',
-    timeRequired: '8 hours',
-    skills: ['User Research', 'Communication'],
-    category: 'UX Research'
   }
 ];
 
-export const projects = [
-  {
-    id: 'proj1',
-    title: 'Community Garden App',
-    description: 'Connecting local residents to share tools and seeds. We are building a hyperlocal marketplace for gardening enthusiasts.',
-    longDescription: 'This project aims to foster community resilience by allowing neighbors to share excess produce, tools, and expertise. We are using Flutter for the mobile app and Firebase for the real-time backend. Currently, we have the basic auth and tool listing finished, but we need help with the interactive map and push notifications.',
-    owner: 'Priya S.',
-    ownerAvatar: PlaceHolderImages.find(img => img.id === 'avatar-3')?.imageUrl,
-    skills: ['Flutter', 'Firebase', 'Google Maps API'],
-    contributors: 5,
-    tasks: [
-      { id: 't1', title: 'Map Integration', status: 'Open' },
-      { id: 't2', title: 'Push Notifications', status: 'In Progress' }
-    ],
-    updates: [
-      {
-        id: 'up1',
-        title: 'Initial Concept & UX Flow',
-        description: 'Mapped out the primary user journey for neighbors lending tools. Focused on reducing friction in the "Request" phase.',
-        postedAt: 'Oct 15, 2023',
-        type: 'MILESTONE'
-      },
-      {
-        id: 'up2',
-        title: 'Firebase Schema Setup',
-        description: 'Designed the Firestore structure to handle real-time inventory and chat between neighbors.',
-        postedAt: 'Oct 20, 2023',
-        type: 'UPDATE'
-      },
-      {
-        id: 'up3',
-        title: 'Geofencing Alpha Test',
-        description: 'Successfully implemented location-based tool discovery within a 5km radius.',
-        postedAt: 'Nov 02, 2023',
-        type: 'UPDATE'
-      }
-    ] as ProjectUpdate[],
-    teammates: [
-      { id: 'u1', name: 'Priya S.', role: 'Founder & Lead Dev', avatar: 'https://picsum.photos/seed/priya/100/100' },
-      { id: 'u2', name: 'Rahul K.', role: 'UI Designer', avatar: 'https://picsum.photos/seed/rahul/100/100' },
-      { id: 'u3', name: 'Sneha M.', role: 'Backend Dev', avatar: 'https://picsum.photos/seed/sneha/100/100' }
-    ],
-    discussion: [
-      {
-        id: 'c1',
-        author: 'Rahul K.',
-        avatar: 'https://picsum.photos/seed/rahul/100/100',
-        text: 'I just uploaded the new Figma designs for the map markers. Priya, let me know what you think!',
-        postedAt: '2h ago',
-        upvotes: 12,
-        replies: [
-          {
-            id: 'c2',
-            author: 'Priya S.',
-            avatar: 'https://picsum.photos/seed/priya/100/100',
-            text: 'They look great! Much cleaner than the default ones.',
-            postedAt: '1h ago',
-            upvotes: 4
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'proj2',
-    title: 'AI Study Assistant',
-    description: 'Chrome extension to summarize lecture videos in real-time.',
-    longDescription: 'Students often struggle to keep up with fast-paced lectures. This AI Study Assistant uses OpenAI Whisper for transcription and GPT-4 for summarization. It runs as a Chrome extension and provides a side-panel with key takeaways and definitions updated in real-time as the video plays.',
-    owner: 'Mark R.',
-    ownerAvatar: PlaceHolderImages.find(img => img.id === 'avatar-1')?.imageUrl,
-    skills: ['JavaScript', 'OpenAI SDK', 'Chrome Extension API'],
-    contributors: 3,
-    tasks: [
-      { id: 't3', title: 'Video Caption Extraction', status: 'Open' }
-    ],
-    updates: [
-      {
-        id: 'up4',
-        title: 'Whisper API Integration',
-        description: 'First successful test of real-time audio chunking and transcription. Latency is currently ~2s.',
-        postedAt: 'Oct 28, 2023',
-        type: 'MILESTONE'
-      }
-    ] as ProjectUpdate[],
-    teammates: [
-      { id: 'u4', name: 'Mark R.', role: 'Project Lead', avatar: 'https://picsum.photos/seed/mark/100/100' },
-      { id: 'u5', name: 'Jared L.', role: 'AI Engineer', avatar: 'https://picsum.photos/seed/jared/100/100' }
-    ],
-    discussion: []
-  }
-];
+export const projects = projectWorkspaces; // Alias for transition
