@@ -26,7 +26,9 @@ import {
   Terminal,
   Paperclip,
   CheckSquare,
-  Clock
+  Clock,
+  Camera,
+  Link as LinkIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +36,9 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -41,8 +46,8 @@ import { useToast } from '@/hooks/use-toast';
 export default function ProjectDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { toast } = useToast();
-  const [commentText, setCommentText] = useState("");
   const [activeTab, setActiveTab] = useState("build-log");
+  const [isAddingProof, setIsAddingProof] = useState(false);
 
   const project = useMemo(() => projectWorkspaces.find(p => p.id === id), [id]);
   const updates = useMemo(() => progressUpdates.filter(u => u.projectId === id), [id]);
@@ -60,6 +65,15 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
   }
 
   const isOwner = project.ownerId === currentUser.id;
+
+  const handleAddProof = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAddingProof(false);
+    toast({
+      title: "Proof Published!",
+      description: "Your update has been added to the build log.",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-[#F4F3F8] pb-20 md:pb-0 md:pl-64 pt-20">
@@ -134,9 +148,49 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                     <p className="text-sm text-muted-foreground">Every step recorded as evidence of effort.</p>
                   </div>
                   {isOwner && (
-                    <Button className="rounded-full gap-2 px-6 action-button-glow">
-                      <PlusCircle className="w-4 h-4" /> Add Proof
-                    </Button>
+                    <Dialog open={isAddingProof} onOpenChange={setIsAddingProof}>
+                      <DialogTrigger asChild>
+                        <Button className="rounded-full gap-2 px-6 action-button-glow">
+                          <PlusCircle className="w-4 h-4" /> Add Proof
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[500px] rounded-3xl">
+                        <DialogHeader>
+                          <DialogTitle className="text-2xl font-headline">Post Proof of Effort</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleAddProof} className="space-y-4 py-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="title">Update Title</Label>
+                            <Input id="title" placeholder="e.g., Designed the Auth Flow" className="rounded-xl" required />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="content">What was done?</Label>
+                            <Textarea id="content" placeholder="Describe your progress and learnings..." className="rounded-xl min-h-[100px]" required />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                             <div className="space-y-2">
+                                <Label htmlFor="proof-type">Proof Type</Label>
+                                <select className="w-full bg-background border rounded-xl px-3 h-10 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                                   <option>Link</option>
+                                   <option>Image</option>
+                                   <option>Video</option>
+                                </select>
+                             </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="proof-url">Evidence URL</Label>
+                                <Input id="proof-url" placeholder="GitHub/Figma/Loom link" className="rounded-xl" />
+                             </div>
+                          </div>
+                          <div className="p-6 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center text-center space-y-2 hover:bg-muted transition-colors cursor-pointer">
+                             <Camera className="w-8 h-8 text-muted-foreground" />
+                             <p className="text-sm text-muted-foreground font-medium">Click to upload screenshot</p>
+                          </div>
+                          <DialogFooter>
+                            <Button type="submit" className="w-full rounded-full h-12 action-button-glow">Publish Proof</Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </div>
 
