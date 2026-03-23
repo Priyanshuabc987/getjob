@@ -1,35 +1,14 @@
 "use client";
 
-import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
-import { currentUser } from '@/lib/mock-data';
-import { Users, UserPlus, MapPin, Target, Sparkles, Zap, MessageCircle } from 'lucide-react';
+import { startups, currentUser } from '@/lib/mock-data';
+import { Users, UserPlus, MapPin, Building2, Zap, Search, Globe, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
-import { aiConnectionsDiscovery, type AIConnectionsDiscoveryOutput } from '@/ai/flows/ai-connections-discovery';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 
-export default function NetworkPage() {
-  const [suggestions, setSuggestions] = useState<AIConnectionsDiscoveryOutput | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function getSuggestions() {
-      try {
-        const data = await aiConnectionsDiscovery({
-          skills: currentUser.skills,
-          interests: currentUser.interests,
-          pastActivities: ['Completed Landing Page Design', 'Joined Community Garden Project']
-        });
-        setSuggestions(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    getSuggestions();
-  }, []);
-
+export default function StartupsPage() {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-64 pt-20">
       <Navbar />
@@ -37,95 +16,129 @@ export default function NetworkPage() {
       <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-12 text-center max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-bold mb-4">
-            <Sparkles className="w-4 h-4 fill-current" /> AI Powered Networking
+            <Rocket className="w-4 h-4" /> Startup Discovery
           </div>
-          <h1 className="text-4xl font-headline mb-4">Find Your Tribe</h1>
-          <p className="text-lg text-muted-foreground">Smart suggestions based on your building habits, skills, and interests.</p>
+          <h1 className="text-4xl font-headline mb-4">Meet the Builders</h1>
+          <p className="text-lg text-muted-foreground">Find student-led startups, explore their build journeys, and join as a collaborator.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-           <Card className="glass-card lg:col-span-2 overflow-hidden">
-             <CardHeader className="p-6 border-b">
-                <h2 className="text-xl font-headline flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" /> Suggested Peers
-                </h2>
-             </CardHeader>
-             <CardContent className="p-6">
-                {loading ? (
-                  <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                    <Zap className="w-12 h-12 text-primary animate-bounce" />
-                    <p className="text-muted-foreground font-medium">Brewing smart connections...</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {suggestions?.suggestedConnections.map((peer) => (
-                      <div key={peer.id} className="group relative bg-muted/40 rounded-3xl p-6 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-primary/10">
-                        <div className="absolute top-4 right-4">
-                          <div className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-full">
-                            {peer.matchScore}% Match
-                          </div>
-                        </div>
-                        <div className="flex flex-col items-center text-center space-y-3">
-                          <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-primary to-secondary">
-                            <img src={`https://picsum.photos/seed/${peer.id}/200/200`} alt={peer.name} className="w-full h-full object-cover rounded-full border-2 border-white" />
+        {/* Search & Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-10">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input 
+              placeholder="Search startups by name or sector..." 
+              className="pl-12 rounded-2xl h-14 bg-white border-none shadow-sm"
+            />
+          </div>
+          <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white border-none shadow-sm gap-2">
+            <Globe className="w-4 h-4" /> All Sectors
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+           <div className="lg:col-span-2 space-y-6">
+              <h2 className="text-2xl font-headline font-bold mb-4">Active Ventures</h2>
+              <div className="grid grid-cols-1 gap-6">
+                {startups.map((startup) => (
+                  <Card key={startup.id} className="glass-card group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 bg-white">
+                    <CardHeader className="p-8 pb-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-5">
+                          <div className="w-20 h-20 rounded-3xl bg-muted overflow-hidden border-4 border-white shadow-lg group-hover:scale-110 transition-transform">
+                            <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover" />
                           </div>
                           <div>
-                            <h3 className="font-bold text-lg">{peer.name}</h3>
-                            <p className="text-xs text-muted-foreground">Looking for {peer.lookingFor}</p>
-                          </div>
-                          <div className="flex flex-wrap justify-center gap-1.5 pt-2">
-                            {peer.commonSkills.slice(0, 3).map(skill => (
-                              <span key={skill} className="text-[9px] font-bold bg-primary/5 text-primary px-2 py-0.5 rounded-md border border-primary/10">{skill}</span>
-                            ))}
-                          </div>
-                          <div className="w-full pt-4 flex gap-2">
-                            <Button className="flex-1 rounded-full h-10 gap-2">
-                              Connect
-                            </Button>
-                            <Button variant="outline" className="w-10 h-10 p-0 rounded-full flex items-center justify-center">
-                              <MessageCircle className="w-4 h-4" />
-                            </Button>
+                            <h3 className="text-2xl font-headline font-bold group-hover:text-primary transition-colors">{startup.name}</h3>
+                            <p className="text-primary font-bold text-sm">{startup.tagline}</p>
+                            <div className="flex gap-2 mt-2">
+                              <Badge variant="secondary" className="bg-primary/5 text-primary border-none rounded-lg text-[10px] font-bold">
+                                {startup.stage.toUpperCase()}
+                              </Badge>
+                              {startup.sector.map(s => (
+                                <Badge key={s} variant="outline" className="border-muted text-[10px] rounded-lg">
+                                  {s}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         </div>
+                        <Button variant="ghost" size="icon" className="rounded-full">
+                          <UserPlus className="w-5 h-5 text-muted-foreground" />
+                        </Button>
                       </div>
-                    ))}
-                  </div>
-                )}
-             </CardContent>
-           </Card>
+                    </CardHeader>
+                    <CardContent className="p-8 pt-0">
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                        {startup.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-6 items-center">
+                        <div className="flex items-center gap-2">
+                           <Users className="w-4 h-4 text-muted-foreground" />
+                           <span className="text-xs font-bold text-muted-foreground">{startup.teamSize} Builders</span>
+                        </div>
+                        {startup.openRoles.length > 0 && (
+                          <div className="flex items-center gap-2">
+                             <Zap className="w-4 h-4 text-orange-500 fill-orange-500/10" />
+                             <span className="text-xs font-bold text-orange-600">{startup.openRoles.length} Roles Open</span>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="p-8 pt-0 border-t flex justify-between items-center bg-muted/5 mt-4">
+                      <div className="flex -space-x-3">
+                         {[1,2,3].map(i => (
+                           <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-accent overflow-hidden shadow-sm">
+                             <img src={`https://picsum.photos/seed/sm${i}/100/100`} alt="Teammate" />
+                           </div>
+                         ))}
+                      </div>
+                      <Button className="rounded-full px-8 h-12 action-button-glow font-bold">
+                        View Hub
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+           </div>
 
            <aside className="space-y-8">
-             <Card className="glass-card bg-secondary text-white">
-               <CardContent className="p-6 space-y-4">
-                 <h3 className="font-headline text-xl">Start a Squad</h3>
-                 <p className="text-sm text-white/80">Small groups of 5-20 people building similar ideas. Better feedback, faster growth.</p>
-                 <Button className="w-full bg-white text-secondary hover:bg-white/90 rounded-full">Explore Squads</Button>
+             <Card className="glass-card bg-primary text-white border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
+               <CardContent className="p-8 space-y-6">
+                 <h3 className="font-headline text-2xl font-bold">Start a Squad</h3>
+                 <p className="text-sm text-white/80 leading-relaxed">
+                   Building something new? Post your idea and find co-founders who resonate with your vision.
+                 </p>
+                 <Button className="w-full bg-white text-primary hover:bg-white/90 rounded-2xl h-14 font-bold shadow-xl">
+                   Find Co-Founders
+                 </Button>
                </CardContent>
              </Card>
 
-             <Card className="glass-card border-dashed border-2 bg-transparent">
-               <CardHeader className="p-6">
-                 <h3 className="font-headline text-lg flex items-center gap-2">
-                   <Target className="w-5 h-5 text-primary" /> Active Hubs
+             <Card className="glass-card border-none shadow-lg bg-white rounded-[2.5rem]">
+               <CardHeader className="p-8 border-b">
+                 <h3 className="font-headline text-lg font-bold flex items-center gap-2">
+                   <Building2 className="w-5 h-5 text-primary" /> Active Hubs
                  </h3>
                </CardHeader>
-               <CardContent className="p-6 pt-0 space-y-4">
+               <CardContent className="p-8 space-y-6">
                  {[
                    { name: 'Bangalore Builders', members: 1240, location: 'Remote/Hybrid' },
                    { name: 'AI Safety Research', members: 450, location: 'Online' },
                    { name: 'NextJS Ninjas', members: 890, location: 'Global' }
                  ].map((hub) => (
-                   <div key={hub.name} className="flex items-center justify-between p-3 rounded-2xl hover:bg-muted transition-colors cursor-pointer border border-transparent hover:border-primary/10">
-                     <div className="flex items-center gap-3">
-                       <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-                         <MapPin className="w-5 h-5 text-primary" />
+                   <div key={hub.name} className="flex items-center justify-between group cursor-pointer">
+                     <div className="flex items-center gap-4">
+                       <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                         <MapPin className="w-6 h-6" />
                        </div>
                        <div>
                          <p className="text-sm font-bold">{hub.name}</p>
-                         <p className="text-[10px] text-muted-foreground">{hub.members} active builders</p>
+                         <p className="text-[10px] text-muted-foreground font-bold">{hub.members} active builders</p>
                        </div>
                      </div>
-                     <UserPlus className="w-4 h-4 text-primary" />
+                     <Button variant="ghost" size="sm" className="rounded-full text-primary h-8 px-4 font-bold">Join</Button>
                    </div>
                  ))}
                </CardContent>

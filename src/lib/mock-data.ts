@@ -1,4 +1,4 @@
-import { ProjectWorkspace, ProgressUpdate, Opportunity, Challenge, DiscussionThread } from './types';
+import { ProjectWorkspace, ProgressUpdate, Opportunity, Challenge, DiscussionThread, StartupProfile, Event } from './types';
 
 export const currentUser = {
   id: 'user-123',
@@ -53,36 +53,6 @@ export const projectWorkspaces: ProjectWorkspace[] = [
       { id: 't2', title: 'Implement Credibility Logic', status: 'In Progress', assigneeId: 'user-123' }
     ],
     credibilityScore: 98
-  },
-  {
-    id: 'proj-2',
-    name: 'health-track-ai',
-    title: 'HealthTrack AI',
-    tagline: 'Predictive health analytics for rural communities.',
-    description: 'Using lightweight ML models to predict health trends in areas with low internet connectivity.',
-    coverImageUrl: 'https://picsum.photos/seed/healthai/1200/600',
-    tags: ['Python', 'ML', 'React Native'],
-    status: 'Active',
-    ownerId: 'user-123',
-    team: [
-      { userId: 'user-123', name: 'Alex J.', role: 'Owner', avatarUrl: 'https://picsum.photos/seed/alex/100/100' }
-    ],
-    joinRequests: ['user-3', 'user-4'],
-    resources: [
-      { label: 'Github Repo', url: 'https://github.com/alex/health-track' }
-    ],
-    isVerified: false,
-    isPublic: true,
-    createdAt: '2024-02-01T09:00:00Z',
-    lastUpdatedAt: '2024-02-18T11:00:00Z',
-    stats: {
-      memberCount: 1,
-      updateCount: 8,
-      proofCount: 3,
-      momentum: 65
-    },
-    tasks: [],
-    credibilityScore: 72
   }
 ];
 
@@ -147,7 +117,60 @@ export const discussionThreads: DiscussionThread[] = [
   }
 ];
 
-// Compatibility exports
+export const startups: StartupProfile[] = [
+  {
+    id: 's1',
+    name: 'ZettaCloud',
+    logo: 'https://picsum.photos/seed/zetta/100/100',
+    tagline: 'Hyper-scale compute for modern teams.',
+    description: 'We are building the next generation of cloud infrastructure for AI startups.',
+    stage: 'Early Traction',
+    sector: ['AI', 'Cloud', 'SaaS'],
+    teamSize: 12,
+    founderId: 'user-rahul',
+    openRoles: ['Frontend Engineer', 'DevOps Intern'],
+    projects: ['proj-1']
+  },
+  {
+    id: 's2',
+    name: 'EcoFlow',
+    logo: 'https://picsum.photos/seed/eco/100/100',
+    tagline: 'Sustainability tracking simplified.',
+    description: 'Helping manufacturing units track and offset their carbon footprint in real-time.',
+    stage: 'MVP',
+    sector: ['CleanTech', 'IoT'],
+    teamSize: 4,
+    founderId: 'user-123',
+    openRoles: ['Hardware Lead', 'UI Designer'],
+    projects: []
+  }
+];
+
+export const events: Event[] = [
+  {
+    id: 'ev-1',
+    title: 'HackNation v2.0',
+    description: 'The biggest student-founder hackathon. Build a working MVP in 48 hours.',
+    date: 'Oct 24-26, 2024',
+    type: 'Hackathon',
+    reward: '₹5,00,000 Prize Pool',
+    location: 'Online',
+    deadline: 'Oct 20',
+    bannerUrl: 'https://picsum.photos/seed/hack/1200/400'
+  },
+  {
+    id: 'ev-2',
+    title: 'React Performance Workshop',
+    description: 'Master profiling and optimizing complex React applications.',
+    date: 'Nov 05, 2024',
+    type: 'Workshop',
+    reward: 'Performance Expert Badge',
+    location: 'Physical (Bangalore)',
+    deadline: 'Nov 01',
+    bannerUrl: 'https://picsum.photos/seed/workshop/1200/400'
+  }
+];
+
 export const feeds = [
   {
     id: 'f1',

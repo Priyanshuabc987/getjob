@@ -2,7 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Briefcase, PlusSquare, Users, User, Search, MessageSquare, Zap, Lightbulb, TrendingUp } from 'lucide-react';
+import { 
+  Home, 
+  Briefcase, 
+  PlusSquare, 
+  Users, 
+  User, 
+  Search, 
+  MessageSquare, 
+  Zap, 
+  Lightbulb, 
+  TrendingUp,
+  Calendar
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -11,6 +23,7 @@ const navItems = [
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Briefcase, label: 'Opportunities', href: '/opportunities' },
   { icon: Users, label: 'Startups', href: '/network' },
+  { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
   { icon: User, label: 'Profile', href: '/profile' },
 ];
@@ -55,7 +68,7 @@ export function Navbar() {
       {/* Bottom Nav - Mobile */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t pb-safe">
         <div className="flex justify-around items-center h-16 px-2">
-          {navItems.slice(0, 5).map((item) => {
+          {navItems.slice(0, 6).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link 
@@ -66,8 +79,8 @@ export function Navbar() {
                   isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <item.icon className={cn("w-6 h-6", isActive && "fill-primary/10")} />
-                <span className="text-[10px] font-bold uppercase tracking-tighter">{item.label}</span>
+                <item.icon className={cn("w-5 h-5", isActive && "fill-primary/10")} />
+                <span className="text-[9px] font-bold uppercase tracking-tighter">{item.label}</span>
               </Link>
             );
           })}
