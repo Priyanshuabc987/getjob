@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 const navItems = [
   { icon: Home, label: 'Feed', href: '/' },
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
-  { icon: Briefcase, label: 'Opportunities', href: '/opportunities' },
+  { icon: Briefcase, label: 'Jobs', href: '/jobs' },
   { icon: Users, label: 'Startups', href: '/network' },
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },

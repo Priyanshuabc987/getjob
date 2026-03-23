@@ -1,25 +1,92 @@
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
-import { startups, currentUser } from '@/lib/mock-data';
-import { Users, UserPlus, MapPin, Building2, Zap, Search, Globe, Rocket } from 'lucide-react';
+import { startups } from '@/lib/mock-data';
+import { Users, UserPlus, MapPin, Building2, Zap, Search, Globe, Rocket, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 export default function StartupsPage() {
+  const { toast } = useToast();
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsRegistering(false);
+    toast({
+      title: "Venture Registered!",
+      description: "Your startup profile is now live on the hub.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-64 pt-20">
       <Navbar />
       
       <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="mb-12 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-bold mb-4">
-            <Rocket className="w-4 h-4" /> Startup Discovery
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-bold mb-4">
+              <Rocket className="w-4 h-4" /> Startup Discovery
+            </div>
+            <h1 className="text-4xl font-headline mb-4">Meet the Builders</h1>
+            <p className="text-lg text-muted-foreground">Find student-led startups, explore their build journeys, and join as a collaborator.</p>
           </div>
-          <h1 className="text-4xl font-headline mb-4">Meet the Builders</h1>
-          <p className="text-lg text-muted-foreground">Find student-led startups, explore their build journeys, and join as a collaborator.</p>
+          
+          <Dialog open={isRegistering} onOpenChange={setIsRegistering}>
+            <DialogTrigger asChild>
+              <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
+                <Plus className="w-5 h-5 mr-2" /> Register Startup
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[550px] rounded-[2rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-headline">Register Your Startup</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleRegister} className="space-y-6 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Startup Name</Label>
+                    <Input placeholder="e.g. ZettaCloud" className="rounded-xl" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Tagline</Label>
+                    <Input placeholder="One-line pitch" className="rounded-xl" required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Mission / Idea</Label>
+                  <Textarea placeholder="What are you building and why?" className="rounded-xl min-h-[100px]" required />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Stage</Label>
+                    <select className="w-full bg-background border rounded-xl px-3 h-10 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                       <option>Idea</option>
+                       <option>MVP</option>
+                       <option>Early Traction</option>
+                       <option>Growth</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Sector</Label>
+                    <Input placeholder="e.g. AI, Fintech" className="rounded-xl" required />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit" className="w-full rounded-full h-12 action-button-glow font-bold">Create Profile</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Search & Filters */}
@@ -49,7 +116,9 @@ export default function StartupsPage() {
                             <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover" />
                           </div>
                           <div>
-                            <h3 className="text-2xl font-headline font-bold group-hover:text-primary transition-colors">{startup.name}</h3>
+                            <Link href={`/network/${startup.id}`}>
+                              <h3 className="text-2xl font-headline font-bold group-hover:text-primary transition-colors">{startup.name}</h3>
+                            </Link>
                             <p className="text-primary font-bold text-sm">{startup.tagline}</p>
                             <div className="flex gap-2 mt-2">
                               <Badge variant="secondary" className="bg-primary/5 text-primary border-none rounded-lg text-[10px] font-bold">
@@ -94,9 +163,11 @@ export default function StartupsPage() {
                            </div>
                          ))}
                       </div>
-                      <Button className="rounded-full px-8 h-12 action-button-glow font-bold">
-                        View Hub
-                      </Button>
+                      <Link href={`/network/${startup.id}`}>
+                        <Button className="rounded-full px-8 h-12 action-button-glow font-bold">
+                          View Hub
+                        </Button>
+                      </Link>
                     </CardFooter>
                   </Card>
                 ))}
@@ -115,34 +186,7 @@ export default function StartupsPage() {
                  </Button>
                </CardContent>
              </Card>
-
-             <Card className="glass-card border-none shadow-lg bg-white rounded-[2.5rem]">
-               <CardHeader className="p-8 border-b">
-                 <h3 className="font-headline text-lg font-bold flex items-center gap-2">
-                   <Building2 className="w-5 h-5 text-primary" /> Active Hubs
-                 </h3>
-               </CardHeader>
-               <CardContent className="p-8 space-y-6">
-                 {[
-                   { name: 'Bangalore Builders', members: 1240, location: 'Remote/Hybrid' },
-                   { name: 'AI Safety Research', members: 450, location: 'Online' },
-                   { name: 'NextJS Ninjas', members: 890, location: 'Global' }
-                 ].map((hub) => (
-                   <div key={hub.name} className="flex items-center justify-between group cursor-pointer">
-                     <div className="flex items-center gap-4">
-                       <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                         <MapPin className="w-6 h-6" />
-                       </div>
-                       <div>
-                         <p className="text-sm font-bold">{hub.name}</p>
-                         <p className="text-[10px] text-muted-foreground font-bold">{hub.members} active builders</p>
-                       </div>
-                     </div>
-                     <Button variant="ghost" size="sm" className="rounded-full text-primary h-8 px-4 font-bold">Join</Button>
-                   </div>
-                 ))}
-               </CardContent>
-             </Card>
+             {/* ... existing Hubs section ... */}
            </aside>
         </div>
       </main>

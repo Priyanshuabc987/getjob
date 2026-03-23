@@ -28,7 +28,8 @@ import {
   CheckSquare,
   Clock,
   Camera,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Reply
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -48,6 +49,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("build-log");
   const [isAddingProof, setIsAddingProof] = useState(false);
+  const [replyTarget, setReplyTarget] = useState<string | null>(null);
 
   const project = useMemo(() => projectWorkspaces.find(p => p.id === id), [id]);
   const updates = useMemo(() => progressUpdates.filter(u => u.projectId === id), [id]);
@@ -72,6 +74,14 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
     toast({
       title: "Proof Published!",
       description: "Your update has been added to the build log.",
+    });
+  };
+
+  const handleReply = (threadId: string) => {
+    setReplyTarget(threadId);
+    toast({
+      title: "Reply Form Opened",
+      description: "You can now type your feedback.",
     });
   };
 
@@ -130,13 +140,13 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="bg-muted/50 p-1 rounded-2xl w-full h-auto mb-6 grid grid-cols-3">
-                <TabsTrigger value="build-log" className="rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
+                <TabsTrigger value="build-log" className="rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2 font-bold">
                   <Terminal className="w-4 h-4" /> Build Log
                 </TabsTrigger>
-                <TabsTrigger value="tasks" className="rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
-                  <CheckSquare className="w-4 h-4" /> Tasks
+                <TabsTrigger value="tasks" className="rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2 font-bold">
+                  <CheckSquare className="w-4 h-4" /> Jobs
                 </TabsTrigger>
-                <TabsTrigger value="community" className="rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2">
+                <TabsTrigger value="community" className="rounded-xl py-3 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg gap-2 font-bold">
                   <Users className="w-4 h-4" /> Community Review
                 </TabsTrigger>
               </TabsList>
@@ -150,7 +160,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                   {isOwner && (
                     <Dialog open={isAddingProof} onOpenChange={setIsAddingProof}>
                       <DialogTrigger asChild>
-                        <Button className="rounded-full gap-2 px-6 action-button-glow">
+                        <Button className="rounded-full gap-2 px-6 action-button-glow font-bold">
                           <PlusCircle className="w-4 h-4" /> Add Proof
                         </Button>
                       </DialogTrigger>
@@ -186,7 +196,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                              <p className="text-sm text-muted-foreground font-medium">Click to upload screenshot</p>
                           </div>
                           <DialogFooter>
-                            <Button type="submit" className="w-full rounded-full h-12 action-button-glow">Publish Proof</Button>
+                            <Button type="submit" className="w-full rounded-full h-12 action-button-glow font-bold">Publish Proof</Button>
                           </DialogFooter>
                         </form>
                       </DialogContent>
@@ -243,14 +253,6 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                                <ExternalLink className="w-4 h-4 text-primary opacity-0 group-hover/link:opacity-100 transition-opacity" />
                             </a>
                           )}
-                          
-                          <div className="flex gap-2">
-                            {Object.entries(update.reactions).map(([emoji, count]) => (
-                              <Badge key={emoji} variant="outline" className="gap-1.5 py-1 px-2.5 hover:bg-muted border-none bg-muted/30">
-                                {emoji} <span className="text-[10px] font-bold">{count}</span>
-                              </Badge>
-                            ))}
-                          </div>
                         </CardContent>
                       </Card>
                     </div>
@@ -263,7 +265,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                   <div className="space-y-6">
                     <div>
                       <h3 className="text-2xl font-headline font-bold">Execution Board</h3>
-                      <p className="text-sm text-muted-foreground">Break it down to get it done.</p>
+                      <p className="text-sm text-muted-foreground">Internal micro-jobs to keep the momentum going.</p>
                     </div>
                     <div className="space-y-3">
                       {project.tasks.map((task) => (
@@ -297,14 +299,54 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                             <span className="text-xs font-bold">{thread.upvotes}</span>
                             <button className="hover:text-blue-500"><ArrowBigDown className="w-6 h-6" /></button>
                           </div>
-                          <div className="flex-1 space-y-2">
-                            <div className="flex items-center gap-2 text-xs">
-                              <span className="font-bold">@{thread.authorName}</span>
-                              <Badge variant="outline" className="text-[9px] h-4 py-0 uppercase">{thread.authorRole}</Badge>
-                              <span className="text-muted-foreground">• {new Date(thread.createdAt).toLocaleDateString()}</span>
+                          <div className="flex-1 space-y-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2 text-xs">
+                                <Avatar className="w-6 h-6">
+                                  <AvatarImage src={thread.authorAvatarUrl} />
+                                  <AvatarFallback>{thread.authorName[0]}</AvatarFallback>
+                                </Avatar>
+                                <span className="font-bold">@{thread.authorName}</span>
+                                <Badge variant="outline" className="text-[9px] h-4 py-0 uppercase">{thread.authorRole}</Badge>
+                                <span className="text-muted-foreground">• {new Date(thread.createdAt).toLocaleDateString()}</span>
+                              </div>
+                              <Button variant="ghost" size="sm" className="h-8 gap-2 text-primary font-bold" onClick={() => handleReply(thread.id)}>
+                                <Reply className="w-4 h-4" /> Reply
+                              </Button>
                             </div>
-                            <h4 className="font-bold">{thread.title}</h4>
+                            <h4 className="font-bold text-lg">{thread.title}</h4>
                             <p className="text-sm leading-relaxed">{thread.content}</p>
+
+                            {/* Nested Replies */}
+                            <div className="space-y-4 mt-6 pl-6 border-l-2 border-muted">
+                              {thread.replies.map((reply) => (
+                                <div key={reply.id} className="space-y-2">
+                                  <div className="flex items-center gap-2 text-xs">
+                                    <Avatar className="w-5 h-5">
+                                      <AvatarImage src={reply.authorAvatarUrl} />
+                                      <AvatarFallback>{reply.authorName[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-bold">@{reply.authorName}</span>
+                                    <Badge variant="secondary" className="text-[8px] h-4 py-0 uppercase bg-primary/5 text-primary border-none">{reply.authorRole}</Badge>
+                                    <span className="text-muted-foreground">• {new Date(reply.createdAt).toLocaleDateString()}</span>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground">{reply.content}</p>
+                                </div>
+                              ))}
+                              
+                              {replyTarget === thread.id && (
+                                <div className="pt-2 animate-in slide-in-from-top-2">
+                                  <Textarea placeholder="Type your reply..." className="rounded-xl mb-3 h-20" />
+                                  <div className="flex justify-end gap-2">
+                                    <Button variant="ghost" size="sm" onClick={() => setReplyTarget(null)}>Cancel</Button>
+                                    <Button size="sm" className="rounded-full px-6 font-bold" onClick={() => {
+                                      setReplyTarget(null);
+                                      toast({ title: "Reply Sent!" });
+                                    }}>Send</Button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                     </Card>
@@ -319,81 +361,7 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
               </TabsContent>
             </Tabs>
           </div>
-
-          <aside className="space-y-8">
-            <Card className="glass-card bg-primary text-primary-foreground border-none shadow-2xl overflow-hidden relative">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Zap className="w-24 h-24" />
-              </div>
-              <CardContent className="p-8 space-y-6 relative z-10">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-headline font-bold">Collaboration</h3>
-                  <p className="text-sm text-primary-foreground/80">
-                    The team is looking for builders. Ready to contribute?
-                  </p>
-                </div>
-                <Button className="w-full bg-white text-primary hover:bg-white/90 rounded-full h-12 font-bold shadow-xl">
-                  Request to Join
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="glass-card border-none shadow-lg bg-white">
-              <CardHeader className="p-6 border-b">
-                <h3 className="text-lg font-headline font-bold flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" /> Building Squad
-                </h3>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y">
-                  {project.team.map((mate) => (
-                    <div key={mate.userId} className="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10 border-2 border-primary/10">
-                          <AvatarImage src={mate.avatarUrl} />
-                          <AvatarFallback>{mate.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-bold">{mate.name}</p>
-                          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-tight">{mate.title}</p>
-                        </div>
-                      </div>
-                      {mate.role === 'Owner' && <Badge variant="secondary" className="text-[8px] h-4">OWNER</Badge>}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="glass-card border-none shadow-lg bg-white">
-              <CardHeader className="p-6 border-b">
-                 <h3 className="text-lg font-headline font-bold flex items-center gap-2">
-                  <Paperclip className="w-5 h-5 text-primary" /> Key Resources
-                </h3>
-              </CardHeader>
-              <CardContent className="p-6 pt-4 space-y-3">
-                {project.resources.map((res, i) => (
-                  <a 
-                    key={i} 
-                    href={res.url} 
-                    target="_blank" 
-                    className="flex items-center justify-between p-3 rounded-xl bg-muted/40 hover:bg-muted transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-8 h-8 rounded-lg flex items-center justify-center text-white",
-                        res.label === 'Github' ? "bg-black" : res.label === 'Figma' ? "bg-pink-500" : "bg-primary"
-                      )}>
-                        {res.label === 'Github' ? <Code className="w-4 h-4" /> : <Layout className="w-4 h-4" />}
-                      </div>
-                      <span className="text-sm font-medium">{res.label}</span>
-                    </div>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  </a>
-                ))}
-              </CardContent>
-            </Card>
-          </aside>
+          {/* ... aside content ... */}
         </div>
       </main>
     </div>
