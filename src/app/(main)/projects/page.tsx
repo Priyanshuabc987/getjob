@@ -1,10 +1,11 @@
+
 import { ProjectsPageContent } from '@/features/projects/components/ProjectsPageContent';
 
 export const metadata = {
-  title: 'Project Hub | PrepLinc',
-  description: 'Build in public, collaborate with peers, and grow your credibility.',
+  title: 'Explore Projects | PrepLinc',
+  description: 'Discover the next generation of builders and their verified proof-of-work.',
 };
 
-export default function ProjectsPage() {
+export default function ProjectsExplorePage() {
   return <ProjectsPageContent />;
 }
