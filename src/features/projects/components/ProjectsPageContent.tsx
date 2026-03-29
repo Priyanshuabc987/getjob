@@ -42,24 +42,19 @@ export function ProjectsPageContent() {
   };
 
   return (
-    <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="flex items-center justify-between mb-8">
+    <main className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
         <div>
           <h1 className="text-3xl font-headline font-bold">Project Hub</h1>
           <p className="text-muted-foreground text-sm">Discover the future of building.</p>
         </div>
         <div className="flex gap-2">
-           <Button variant="ghost" asChild className="rounded-xl font-bold border border-muted bg-white shadow-sm">
-             <Link href="/projects/my" className="flex items-center gap-2">
-               <LayoutGrid className="w-4 h-4" /> My Work
-             </Link>
-           </Button>
-           <Button variant="ghost" asChild className="rounded-xl font-bold border border-muted bg-white shadow-sm">
+           <Button variant="outline" asChild className="rounded-xl font-bold bg-white shadow-sm h-11">
              <Link href="/projects/discussion" className="flex items-center gap-2">
-               <MessageSquare className="w-4 h-4" /> Community
+               <MessageSquare className="w-4 h-4" /> Discussion
              </Link>
            </Button>
-           <Button size="icon" className="rounded-full action-button-glow h-10 w-10 shadow-primary/20 shadow-lg">
+           <Button size="icon" className="rounded-full action-button-glow h-11 w-11 shadow-primary/20 shadow-lg">
              <Plus className="w-6 h-6" />
            </Button>
         </div>
@@ -72,8 +67,8 @@ export function ProjectsPageContent() {
               <Sparkles className="w-7 h-7 text-primary animate-pulse" />
             </div>
             <div className="flex-1 text-center sm:text-left space-y-1">
-              <h3 className="font-headline font-bold text-lg">Have a project vision?</h3>
-              <p className="text-sm text-muted-foreground">Let AI brainstorm your roadmap and tasks.</p>
+              <h3 className="font-headline font-bold text-lg">Have a vision?</h3>
+              <p className="text-sm text-muted-foreground">Let AI brainstorm your roadmap.</p>
             </div>
             <Button 
               variant="outline"
@@ -86,7 +81,7 @@ export function ProjectsPageContent() {
           </CardContent>
         </Card>
 
-        <div className="space-y-8">
+        <div className="space-y-10">
           {mockProjects.map((proj) => (
             <Card key={proj.id} className="glass-card overflow-hidden group border-none shadow-md hover:shadow-2xl transition-all duration-500">
               <div className="p-4 flex items-center justify-between">

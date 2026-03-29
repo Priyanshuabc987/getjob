@@ -12,18 +12,25 @@ import {
   Zap, 
   Lightbulb, 
   Calendar,
-  LogIn
+  LogIn,
+  LayoutGrid,
+  SeparatorHorizontal
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
-const navItems = [
+const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Briefcase, label: 'Jobs', href: '/jobs' },
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
+];
+
+const workspaceNavItems = [
+  { icon: LayoutGrid, label: 'My Projects', href: '/projects/my' },
   { icon: User, label: 'Profile', href: '/profile' },
 ];
 
@@ -58,9 +65,33 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
       {showSidebar && (
         <nav className="fixed left-0 top-16 bottom-0 w-64 hidden md:flex flex-col border-r bg-white p-4 space-y-6 overflow-y-auto">
           <div className="px-4">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Workspace</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Ecosystem</p>
             <div className="space-y-1">
-              {navItems.map((item) => {
+              {mainNavItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link 
+                    key={item.href} 
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all",
+                      isActive 
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                        : "text-muted-foreground hover:bg-[#F4F3F8] hover:text-primary"
+                    )}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="text-sm font-bold">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            <Separator className="my-6" />
+
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Your Workspace</p>
+            <div className="space-y-1">
+              {workspaceNavItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link 
