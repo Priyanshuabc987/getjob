@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -8,8 +9,6 @@ import {
   PlusSquare, 
   Users, 
   User, 
-  Search, 
-  MessageSquare, 
   Zap, 
   Lightbulb, 
   Calendar,
@@ -19,7 +18,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const navItems = [
-  { icon: Home, label: 'Feed', href: '/' },
+  { icon: Home, label: 'Feed', href: '/feed' },
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Briefcase, label: 'Jobs', href: '/jobs' },
   { icon: Users, label: 'Startups', href: '/startups' },
@@ -28,7 +27,7 @@ const navItems = [
   { icon: User, label: 'Profile', href: '/profile' },
 ];
 
-export function Navbar() {
+export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
   const pathname = usePathname();
 
   return (
@@ -56,31 +55,33 @@ export function Navbar() {
       </nav>
 
       {/* Sidebar - Desktop */}
-      <nav className="fixed left-0 top-16 bottom-0 w-64 hidden md:flex flex-col border-r bg-white p-4 space-y-6 overflow-y-auto">
-        <div className="px-4">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Workspace</p>
-          <div className="space-y-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link 
-                  key={item.href} 
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all",
-                    isActive 
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
-                      : "text-muted-foreground hover:bg-[#F4F3F8] hover:text-primary"
-                  )}
-                >
-                  <item.icon className="w-5 h-5" />
-                  <span className="text-sm font-bold">{item.label}</span>
-                </Link>
-              );
-            })}
+      {showSidebar && (
+        <nav className="fixed left-0 top-16 bottom-0 w-64 hidden md:flex flex-col border-r bg-white p-4 space-y-6 overflow-y-auto">
+          <div className="px-4">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Workspace</p>
+            <div className="space-y-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link 
+                    key={item.href} 
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all",
+                      isActive 
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                        : "text-muted-foreground hover:bg-[#F4F3F8] hover:text-primary"
+                    )}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="text-sm font-bold">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+      )}
     </>
   );
 }
