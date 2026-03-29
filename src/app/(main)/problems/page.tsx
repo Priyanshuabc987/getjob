@@ -48,7 +48,7 @@ export default function ProblemsPage() {
                      <Button className="rounded-full px-8 h-12 action-button-glow font-bold">
                        Start Solution <ArrowRight className="w-4 h-4 ml-2" />
                      </Button>
-                     <Button variant="ghost" className="rounded-full font-bold text-muted-foreground">
+                     <Button variant="ghost" className="rounded-full font-bold text-muted-foreground hover:text-primary">
                        View Guidelines
                      </Button>
                    </div>
