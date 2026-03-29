@@ -116,7 +116,7 @@ export default function StartupsPage() {
                             <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover" />
                           </div>
                           <div>
-                            <Link href={`/network/${startup.id}`}>
+                            <Link href={`/startups/${startup.id}`}>
                               <h3 className="text-2xl font-headline font-bold group-hover:text-primary transition-colors">{startup.name}</h3>
                             </Link>
                             <p className="text-primary font-bold text-sm">{startup.tagline}</p>
@@ -163,7 +163,7 @@ export default function StartupsPage() {
                            </div>
                          ))}
                       </div>
-                      <Link href={`/network/${startup.id}`}>
+                      <Link href={`/startups/${startup.id}`}>
                         <Button className="rounded-full px-8 h-12 action-button-glow font-bold">
                           View Hub
                         </Button>

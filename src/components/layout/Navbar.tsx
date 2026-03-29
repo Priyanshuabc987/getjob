@@ -22,7 +22,7 @@ const navItems = [
   { icon: Home, label: 'Feed', href: '/' },
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Briefcase, label: 'Jobs', href: '/jobs' },
-  { icon: Users, label: 'Startups', href: '/network' },
+  { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
   { icon: User, label: 'Profile', href: '/profile' },

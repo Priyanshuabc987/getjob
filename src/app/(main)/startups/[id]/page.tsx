@@ -36,7 +36,7 @@ export default function StartupDetailsPage({ params }: { params: Promise<{ id: s
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
           <h1 className="text-2xl font-bold font-headline">Startup not found</h1>
-          <Button asChild><Link href="/network">Back to Hub</Link></Button>
+          <Button asChild><Link href="/startups">Back to Hub</Link></Button>
         </div>
       </div>
     );
@@ -47,9 +47,9 @@ export default function StartupDetailsPage({ params }: { params: Promise<{ id: s
       <Navbar />
       
       <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-        <Link href="/network" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8 group">
+        <Link href="/startups" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8 group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-medium">Back to Network</span>
+          <span className="text-sm font-medium">Back to startups</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
