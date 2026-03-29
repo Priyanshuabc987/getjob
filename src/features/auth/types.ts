@@ -1,7 +1,7 @@
+
 import { UserRole } from '@/types/auth';
 
 export interface Education {
-  id: string;
   institution: string;
   degree: string;
   startYear: string;
@@ -9,7 +9,6 @@ export interface Education {
 }
 
 export interface Experience {
-  id: string;
   company: string;
   position: string;
   description: string;
@@ -17,13 +16,21 @@ export interface Experience {
   endDate?: string;
 }
 
-export interface LoginCredentials {
+export interface UserProfileData {
+  uid: string;
   email: string;
+  displayName: string;
+  photoURL?: string;
   role: UserRole;
+  bio?: string;
+  education: Education[];
+  experience: Experience[];
+  credibilityScore: number;
+  onboardingCompleted: boolean;
+  createdAt: string;
 }
 
-export interface RegisterCredentials extends LoginCredentials {
-  fullName: string;
-  education?: Education[];
-  experience?: Experience[];
+export interface OnboardingStepProps {
+  onNext: (data: any) => void;
+  onSkip: () => void;
 }

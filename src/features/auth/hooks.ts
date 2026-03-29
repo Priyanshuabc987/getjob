@@ -1,32 +1,51 @@
+
 /**
  * @fileOverview Auth Hooks
- * Connects UI components to the Auth Service.
+ * React hooks to manage Firebase Auth state and onboarding logic.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { authService } from './services';
-import { LoginCredentials, RegisterCredentials } from './types';
-import { AuthUser } from '@/types/auth';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const router = useRouter();
 
-  const handleLogin = async (credentials: LoginCredentials) => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
-      const authUser = await authService.login(credentials);
-      setUser(authUser);
+      const { user: fbUser, isNewUser } = await authService.signInWithGoogle();
+      
+      if (isNewUser) {
+        await authService.createUserProfile(fbUser);
+        router.push('/onboarding');
+      } else {
+        router.push('/jobs');
+      }
+      
       toast({
-        title: "Welcome back!",
-        description: `Logged in as ${authUser.displayName}`,
+        title: "Welcome to PrepLinc!",
+        description: `Successfully signed in as ${fbUser.displayName}`,
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error(error);
       toast({
-        title: "Login failed",
-        description: "Please check your credentials.",
+        title: "Authentication Failed",
+        description: error.message || "Something went wrong during sign-in.",
         variant: "destructive",
       });
     } finally {
@@ -34,35 +53,19 @@ export function useAuth() {
     }
   };
 
-  const handleRegister = async (credentials: RegisterCredentials) => {
-    setIsLoading(true);
+  const logout = async () => {
     try {
-      const authUser = await authService.register(credentials);
-      setUser(authUser);
-      toast({
-        title: "Account created!",
-        description: "Welcome to PrepLinc.",
-      });
+      await authService.logout();
+      router.push('/login');
     } catch (error) {
-      toast({
-        title: "Registration failed",
-        description: "Could not create account.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+      console.error(error);
     }
-  };
-
-  const logout = () => {
-    setUser(null);
   };
 
   return {
     user,
     isLoading,
-    login: handleLogin,
-    register: handleRegister,
+    loginWithGoogle,
     logout,
   };
 }

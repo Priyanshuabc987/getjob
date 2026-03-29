@@ -1,36 +1,57 @@
+
 /**
- * @fileOverview Auth Service
- * Handles all direct interactions with the authentication provider (Mock for now).
+ * @fileOverview Auth & Firestore Service
+ * Handles real Firebase Authentication and User Profile persistence.
  */
 
-import { AuthUser, UserRole } from '@/types/auth';
-import { LoginCredentials, RegisterCredentials } from './types';
+import { auth, db, googleProvider } from '@/lib/firebase';
+import { signInWithPopup, signOut, User as FirebaseUser } from 'firebase/auth';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { UserProfileData } from './types';
 
 export const authService = {
-  async login(credentials: LoginCredentials): Promise<AuthUser> {
-    console.log('Logging in with:', credentials);
-    // Mocking a delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+  async signInWithGoogle(): Promise<{ user: FirebaseUser; isNewUser: boolean }> {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    
+    // Check if user document exists in Firestore
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
     
     return {
-      uid: 'mock-uid-123',
-      email: credentials.email,
-      displayName: 'Alex Builder',
-      role: credentials.role,
-      createdAt: new Date().toISOString(),
+      user,
+      isNewUser: !userDoc.exists()
     };
   },
 
-  async register(credentials: RegisterCredentials): Promise<AuthUser> {
-    console.log('Registering user:', credentials);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    return {
-      uid: 'mock-uid-456',
-      email: credentials.email,
-      displayName: credentials.fullName,
-      role: credentials.role,
-      createdAt: new Date().toISOString(),
+  async createUserProfile(user: FirebaseUser): Promise<void> {
+    const userDocRef = doc(db, 'users', user.uid);
+    const initialProfile: UserProfileData = {
+      uid: user.uid,
+      email: user.email || '',
+      displayName: user.displayName || 'Builder',
+      photoURL: user.photoURL || '',
+      role: 'student', // Default role
+      bio: '',
+      education: [],
+      experience: [],
+      credibilityScore: 50, // Starting score
+      onboardingCompleted: false,
+      createdAt: new Date().toISOString()
     };
+    
+    await setDoc(userDocRef, initialProfile, { merge: true });
+  },
+
+  async updateOnboardingData(uid: string, data: Partial<UserProfileData>): Promise<void> {
+    const userDocRef = doc(db, 'users', uid);
+    await updateDoc(userDocRef, {
+      ...data,
+      onboardingCompleted: true
+    });
+  },
+
+  async logout(): Promise<void> {
+    await signOut(auth);
   }
 };
