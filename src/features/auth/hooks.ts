@@ -1,13 +1,15 @@
 
 /**
  * @fileOverview Auth Hooks
- * React hooks to manage Firebase Auth state and onboarding logic.
+ * React hooks to manage Firebase Auth state and navigation logic.
  */
 
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { authService } from './services';
+import { createInitialUser, recordLogin } from '@/features/users/services/write';
+import { getCachedUserProfile } from '@/features/users/services/read';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -28,13 +30,26 @@ export function useAuth() {
   const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
-      const { user: fbUser, isNewUser } = await authService.signInWithGoogle();
+      const fbUser = await authService.signInWithGoogle();
       
-      if (isNewUser) {
-        await authService.createUserProfile(fbUser);
+      // Check for existing profile on the server (via read service)
+      const profile = await getCachedUserProfile(fbUser.uid);
+      
+      if (!profile) {
+        await createInitialUser(
+          fbUser.uid, 
+          fbUser.email || '', 
+          fbUser.displayName || 'Builder', 
+          fbUser.photoURL || ''
+        );
         router.push('/onboarding');
       } else {
-        router.push('/jobs');
+        await recordLogin(fbUser.uid);
+        if (!profile.onboardingCompleted) {
+          router.push('/onboarding');
+        } else {
+          router.push('/feed');
+        }
       }
       
       toast({

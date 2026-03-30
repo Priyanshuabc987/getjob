@@ -18,17 +18,19 @@ import {
   Smartphone, 
   Target,
   ChevronRight,
-  UserCircle
+  UserCircle,
+  Briefcase
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { UserRole, ExperienceLevel } from '../types';
 
 const roles = [
   { id: 'builder', label: 'Builder', desc: 'I build & ship products', icon: Rocket },
   { id: 'learner', label: 'Learner', desc: 'I am here to learn skills', icon: Sparkles },
   { id: 'job_seeker', label: 'Job Seeker', desc: 'Looking for internships', icon: Target },
   { id: 'founder', label: 'Founder', desc: 'Starting a new squad', icon: UserCircle },
-];
+] as const;
 
 const domains = [
   { id: 'web', label: 'Web Dev', icon: Globe },
@@ -38,7 +40,15 @@ const domains = [
   { id: 'core', label: 'Core (Mech/ECE)', icon: Code },
 ];
 
-const levels = ['Beginner', 'Intermediate', 'Advanced'];
+const goals = [
+  { id: 'internship', label: 'Crack Internship' },
+  { id: 'portfolio', label: 'Build Portfolio' },
+  { id: 'skills', label: 'Learn New Skills' },
+  { id: 'money', label: 'Earn Money' },
+  { id: 'startup', label: 'Startup Building' },
+];
+
+const levels: ExperienceLevel[] = ['Beginner', 'Intermediate', 'Advanced'];
 
 export function OnboardingFlow() {
   const [step, setStep] = useState(1);
@@ -48,22 +58,20 @@ export function OnboardingFlow() {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    role: '',
+    role: 'builder' as UserRole,
     domains: [] as string[],
-    experienceLevel: 'Beginner',
+    experienceLevel: 'Beginner' as ExperienceLevel,
     collegeName: '',
     location: { city: '', country: 'India' },
     goals: [] as string[]
   });
 
-  const handleNext = () => setStep(step + 1);
-
-  const toggleDomain = (id: string) => {
+  const toggleItem = (field: 'domains' | 'goals', id: string) => {
     setFormData(prev => ({
       ...prev,
-      domains: prev.domains.includes(id) 
-        ? prev.domains.filter(d => d !== id) 
-        : [...prev.domains, id]
+      [field]: prev[field].includes(id) 
+        ? prev[field].filter(d => d !== id) 
+        : [...prev[field], id]
     }));
   };
 
@@ -73,7 +81,7 @@ export function OnboardingFlow() {
     try {
       await completeOnboarding(user.uid, formData);
       toast({ title: "Profile Ready!", description: "Welcome to the builder community." });
-      router.push('/jobs');
+      router.push('/feed');
     } catch (error) {
       toast({ title: "Error saving profile", variant: "destructive" });
     } finally {
@@ -89,14 +97,14 @@ export function OnboardingFlow() {
         </div>
         <h1 className="text-4xl font-headline font-bold">Let's build your showcase</h1>
         <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-          Help us show you the most relevant builds, jobs, and squads.
+          This helps recruiters know about your potential so you can get internships easily.
         </p>
       </div>
 
       <div className="relative px-4">
         {step === 1 && (
           <Card className="glass-card border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
-            <div className="h-2 bg-primary/10 w-full"><div className="h-full bg-primary w-1/3 transition-all duration-500" /></div>
+            <div className="h-2 bg-primary/10 w-full"><div className="h-full bg-primary w-1/4 transition-all duration-500" /></div>
             <CardContent className="p-8 md:p-12 space-y-8">
               <h3 className="text-2xl font-bold text-center">Pick what describes you best</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -119,7 +127,7 @@ export function OnboardingFlow() {
                   </button>
                 ))}
               </div>
-              <Button onClick={handleNext} disabled={!formData.role} className="w-full h-14 rounded-full font-bold action-button-glow">
+              <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full font-bold action-button-glow">
                 Next Step <ChevronRight className="ml-2 w-4 h-4"/>
               </Button>
             </CardContent>
@@ -128,14 +136,14 @@ export function OnboardingFlow() {
 
         {step === 2 && (
           <Card className="glass-card border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
-            <div className="h-2 bg-primary/10 w-full"><div className="h-full bg-primary w-2/3 transition-all duration-500" /></div>
+            <div className="h-2 bg-primary/10 w-full"><div className="h-full bg-primary w-2/4 transition-all duration-500" /></div>
             <CardContent className="p-8 md:p-12 space-y-8">
               <h3 className="text-2xl font-bold text-center">Your Domains & Level</h3>
               <div className="flex flex-wrap justify-center gap-3">
                 {domains.map((domain) => (
                   <button
                     key={domain.id}
-                    onClick={() => toggleDomain(domain.id)}
+                    onClick={() => toggleItem('domains', domain.id)}
                     className={cn(
                       "flex items-center gap-2 px-6 py-3 rounded-full border-2 font-bold transition-all text-sm",
                       formData.domains.includes(domain.id)
@@ -150,16 +158,16 @@ export function OnboardingFlow() {
               </div>
 
               <div className="space-y-4 pt-4">
-                <Label className="text-center block">Experience Level</Label>
+                <Label className="text-center block font-bold">Experience Level</Label>
                 <div className="flex justify-center gap-4">
                   {levels.map((level) => (
                     <button
                       key={level}
-                      onClick={() => setFormData({ ...formData, experienceLevel: level as any })}
+                      onClick={() => setFormData({ ...formData, experienceLevel: level })}
                       className={cn(
                         "px-6 py-2 rounded-full border text-xs font-bold transition-all",
                         formData.experienceLevel === level 
-                          ? "bg-secondary text-white border-secondary" 
+                          ? "bg-secondary text-white border-secondary shadow-md" 
                           : "bg-muted/50 text-muted-foreground border-transparent"
                       )}
                     >
@@ -169,7 +177,7 @@ export function OnboardingFlow() {
                 </div>
               </div>
 
-              <Button onClick={handleNext} disabled={formData.domains.length === 0} className="w-full h-14 rounded-full font-bold action-button-glow">
+              <Button onClick={() => setStep(3)} disabled={formData.domains.length === 0} className="w-full h-14 rounded-full font-bold action-button-glow">
                 Almost there <ChevronRight className="ml-2 w-4 h-4"/>
               </Button>
             </CardContent>
@@ -178,9 +186,37 @@ export function OnboardingFlow() {
 
         {step === 3 && (
           <Card className="glass-card border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
+            <div className="h-2 bg-primary/10 w-full"><div className="h-full bg-primary w-3/4 transition-all duration-500" /></div>
+            <CardContent className="p-8 md:p-12 space-y-8">
+              <h3 className="text-2xl font-bold text-center">What is your current goal?</h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {goals.map((goal) => (
+                  <button
+                    key={goal.id}
+                    onClick={() => toggleItem('goals', goal.id)}
+                    className={cn(
+                      "px-6 py-3 rounded-full border-2 font-bold transition-all text-sm",
+                      formData.goals.includes(goal.id)
+                        ? "bg-primary text-white border-primary shadow-lg"
+                        : "bg-white text-muted-foreground border-muted hover:border-primary/40"
+                    )}
+                  >
+                    {goal.label}
+                  </button>
+                ))}
+              </div>
+              <Button onClick={() => setStep(4)} disabled={formData.goals.length === 0} className="w-full h-14 rounded-full font-bold action-button-glow">
+                Final Step <ChevronRight className="ml-2 w-4 h-4"/>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {step === 4 && (
+          <Card className="glass-card border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
             <div className="h-2 bg-primary/10 w-full"><div className="h-full bg-primary w-full transition-all duration-500" /></div>
             <CardContent className="p-8 md:p-12 space-y-6">
-              <h3 className="text-2xl font-bold text-center">Basic Info</h3>
+              <h3 className="text-2xl font-bold text-center">Identity Details</h3>
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label>College/University</Label>
@@ -201,7 +237,7 @@ export function OnboardingFlow() {
                 <Button onClick={handleFinish} disabled={loading || !formData.collegeName} className="h-14 rounded-full font-bold action-button-glow w-full">
                   {loading ? 'Finalizing...' : 'Start Building'} <Rocket className="ml-2 w-4 h-4"/>
                 </Button>
-                <Button onClick={handleFinish} variant="ghost" className="text-muted-foreground font-bold">Skip and Finish</Button>
+                <Button onClick={handleFinish} variant="ghost" className="text-muted-foreground font-bold">Skip for now</Button>
               </div>
             </CardContent>
           </Card>

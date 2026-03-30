@@ -1,9 +1,11 @@
+
 "use client";
 
 import { useAuth } from '../hooks';
-import { Zap, Loader2 } from 'lucide-react';
+import { Zap, Loader2, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export function LoginPageComponent() {
   const { loginWithGoogle, isLoading } = useAuth();
@@ -38,6 +40,16 @@ export function LoginPageComponent() {
                 Continue with Google
               </>
             )}
+          </Button>
+          
+          <Button 
+            asChild
+            variant="ghost"
+            className="w-full h-14 rounded-full font-bold text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-2"
+          >
+            <Link href="/feed">
+              <Globe className="w-4 h-4" /> Continue as Guest
+            </Link>
           </Button>
           
           <p className="text-[10px] text-center text-muted-foreground px-8 leading-relaxed">

@@ -1,37 +1,56 @@
 
+'use server';
+
 import { db } from '@/lib/firebase';
-import { doc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { UserProfileData, UserPrivateData } from '@/features/auth/types';
 import { revalidateTag } from 'next/cache';
 
 /**
- * Initialize a new user in both public and private collections
+ * Initialize a new user in both public and private collections.
+ * Used during first-time login.
  */
 export async function createInitialUser(
   uid: string, 
-  publicData: Partial<UserProfileData>, 
-  privateData: Partial<UserPrivateData>
+  email: string,
+  displayName: string,
+  photoURL: string
 ): Promise<void> {
   const publicRef = doc(db, 'users', uid);
   const privateRef = doc(db, 'users_private', uid);
 
+  const timestamp = new Date().toISOString();
+
   await Promise.all([
     setDoc(publicRef, {
-      ...publicData,
-      createdAt: new Date().toISOString(),
+      uid,
+      displayName,
+      photoURL,
+      role: 'builder', // Default
+      domains: [],
+      experienceLevel: 'Beginner',
+      goals: [],
+      collegeName: '',
+      location: { city: '', country: 'India' },
+      credibilityScore: 50,
       onboardingCompleted: false,
-      credibilityScore: 50
+      lastLogin: timestamp,
+      createdAt: timestamp,
     }, { merge: true }),
     setDoc(privateRef, {
-      ...privateData,
+      uid,
+      email,
       accountStatus: 'active',
-      lastLogin: new Date().toISOString()
+      lastLogin: timestamp
     }, { merge: true })
   ]);
+  
+  revalidateTag(`user:${uid}:profile`);
+  revalidateTag(`user:${uid}:private`);
 }
 
 /**
- * Complete onboarding and update public profile
+ * Update the public user profile after onboarding.
  */
 export async function completeOnboarding(
   uid: string, 
@@ -40,9 +59,26 @@ export async function completeOnboarding(
   const docRef = doc(db, 'users', uid);
   await updateDoc(docRef, {
     ...data,
-    onboardingCompleted: true
+    onboardingCompleted: true,
+    lastLogin: new Date().toISOString()
   });
   
-  // Revalidate cache
   revalidateTag(`user:${uid}:profile`);
+}
+
+/**
+ * Record a new login timestamp.
+ */
+export async function recordLogin(uid: string): Promise<void> {
+  const publicRef = doc(db, 'users', uid);
+  const privateRef = doc(db, 'users_private', uid);
+  const timestamp = new Date().toISOString();
+
+  await Promise.all([
+    updateDoc(publicRef, { lastLogin: timestamp }),
+    updateDoc(privateRef, { lastLogin: timestamp })
+  ]);
+
+  revalidateTag(`user:${uid}:profile`);
+  revalidateTag(`user:${uid}:private`);
 }

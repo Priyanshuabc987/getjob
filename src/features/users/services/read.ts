@@ -8,7 +8,7 @@ import { unstable_cache as nextCache } from 'next/cache';
 const CACHE_DURATION = 3600; // 1 hour
 
 /**
- * Internal un-cached fetch for public profile
+ * Internal un-cached fetch for public profile.
  */
 async function _uncachedGetUserProfile(uid: string): Promise<UserProfileData | null> {
   const docRef = doc(db, 'users', uid);
@@ -18,7 +18,7 @@ async function _uncachedGetUserProfile(uid: string): Promise<UserProfileData | n
 }
 
 /**
- * Internal un-cached fetch for private data
+ * Internal un-cached fetch for private data.
  */
 async function _uncachedGetUserPrivateData(uid: string): Promise<UserPrivateData | null> {
   const docRef = doc(db, 'users_private', uid);
@@ -28,7 +28,7 @@ async function _uncachedGetUserPrivateData(uid: string): Promise<UserPrivateData
 }
 
 /**
- * Cached Public Profile
+ * Cached Public Profile using dual-layer caching (React Cache + Next Unstable Cache).
  */
 export const getCachedUserProfile = reactCache(
   (uid: string): Promise<UserProfileData | null> => {
@@ -44,7 +44,7 @@ export const getCachedUserProfile = reactCache(
 );
 
 /**
- * Cached Private Data
+ * Cached Private Data using dual-layer caching.
  */
 export const getCachedUserPrivateData = reactCache(
   (uid: string): Promise<UserPrivateData | null> => {

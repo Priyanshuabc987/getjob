@@ -1,22 +1,11 @@
 
 export type UserRole = 'builder' | 'learner' | 'job_seeker' | 'founder';
-export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced';
-
-export interface UserGoal {
-  id: string;
-  label: string;
-}
-
-export interface UserDomain {
-  id: string;
-  label: string;
-}
+export type ExperienceLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export interface UserProfileData {
   uid: string;
   displayName: string;
   photoURL?: string;
-  username: string;
   role: UserRole;
   domains: string[];
   experienceLevel: ExperienceLevel;
@@ -28,6 +17,7 @@ export interface UserProfileData {
   };
   credibilityScore: number;
   onboardingCompleted: boolean;
+  lastLogin: string;
   createdAt: string;
 }
 
