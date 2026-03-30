@@ -6,10 +6,10 @@ import { Zap, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function LoginPageComponent() {
-  const { loginWithGoogle, isLoading, user } = useAuth();
+  const { loginWithGoogle, isLoading } = useAuth();
 
   return (
-    <div className="w-full max-w-md bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20 relative overflow-hidden">
+    <div className="w-full bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20 relative overflow-hidden">
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl" />
       
