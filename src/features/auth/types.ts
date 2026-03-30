@@ -1,36 +1,40 @@
 
-import { UserRole } from '@/types/auth';
+export type UserRole = 'builder' | 'learner' | 'job_seeker' | 'founder';
+export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced';
 
-export interface Education {
-  institution: string;
-  degree: string;
-  startYear: string;
-  endYear?: string;
+export interface UserGoal {
+  id: string;
+  label: string;
 }
 
-export interface Experience {
-  company: string;
-  position: string;
-  description: string;
-  startDate: string;
-  endDate?: string;
+export interface UserDomain {
+  id: string;
+  label: string;
 }
 
 export interface UserProfileData {
   uid: string;
-  email: string;
   displayName: string;
   photoURL?: string;
+  username: string;
   role: UserRole;
-  bio?: string;
-  education: Education[];
-  experience: Experience[];
+  domains: string[];
+  experienceLevel: ExperienceLevel;
+  goals: string[];
+  collegeName: string;
+  location: {
+    city: string;
+    country: string;
+  };
   credibilityScore: number;
   onboardingCompleted: boolean;
   createdAt: string;
 }
 
-export interface OnboardingStepProps {
-  onNext: (data: any) => void;
-  onSkip: () => void;
+export interface UserPrivateData {
+  uid: string;
+  email: string;
+  phoneNumber?: string;
+  lastLogin: string;
+  accountStatus: 'active' | 'suspended';
 }
