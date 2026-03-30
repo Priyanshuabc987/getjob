@@ -1,3 +1,4 @@
+'use server';
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -29,6 +30,7 @@ async function _uncachedGetUserPrivateData(uid: string): Promise<UserPrivateData
 
 /**
  * Cached Public Profile using dual-layer caching (React Cache + Next Unstable Cache).
+ * This function should ONLY be called from Server Components or Server Actions.
  */
 export const getCachedUserProfile = reactCache(
   (uid: string): Promise<UserProfileData | null> => {
