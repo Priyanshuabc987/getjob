@@ -30,10 +30,10 @@ async function _uncachedGetUserPrivateData(uid: string): Promise<UserPrivateData
 
 /**
  * Cached Public Profile using dual-layer caching (React Cache + Next Unstable Cache).
- * This function should ONLY be called from Server Components or Server Actions.
+ * This function is an async Server Action that provides high-performance profile access.
  */
 export const getCachedUserProfile = reactCache(
-  (uid: string): Promise<UserProfileData | null> => {
+  async (uid: string): Promise<UserProfileData | null> => {
     return nextCache(
       () => _uncachedGetUserProfile(uid),
       ['user-profile', uid],
@@ -49,7 +49,7 @@ export const getCachedUserProfile = reactCache(
  * Cached Private Data using dual-layer caching.
  */
 export const getCachedUserPrivateData = reactCache(
-  (uid: string): Promise<UserPrivateData | null> => {
+  async (uid: string): Promise<UserPrivateData | null> => {
     return nextCache(
       () => _uncachedGetUserPrivateData(uid),
       ['user-private', uid],

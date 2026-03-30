@@ -34,7 +34,7 @@ This project follows a **Feature-Based Architecture** with strict data isolation
 ### 🚀 Caching Pattern Example
 ```ts
 // src/features/users/services/read.ts
-export const getCachedUserProfile = reactCache((uid: string) => {
+export const getCachedUserProfile = reactCache(async (uid: string) => {
   return nextCache(
     () => fetchFromDB(uid),
     ['user-profile', uid],
