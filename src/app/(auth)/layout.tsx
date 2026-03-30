@@ -1,4 +1,3 @@
-
 import { Navbar } from '@/components/layout/Navbar';
 
 export default function AuthLayout({
@@ -9,11 +8,11 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen bg-[#F4F3F8] flex flex-col">
       <Navbar showSidebar={false} />
-      <div className="flex-1 flex items-center justify-center p-4 py-20">
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-md mx-auto">
           {children}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

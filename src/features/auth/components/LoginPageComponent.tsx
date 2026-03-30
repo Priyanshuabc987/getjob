@@ -1,15 +1,15 @@
-
 "use client";
 
 import { useAuth } from '../hooks';
 import { Zap, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export function LoginPageComponent() {
   const { loginWithGoogle, isLoading } = useAuth();
 
   return (
-    <div className="w-full bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20 relative overflow-hidden">
+    <Card className="w-full bg-white p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-white/20 relative overflow-hidden animate-in fade-in zoom-in duration-500">
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl" />
       
@@ -28,7 +28,7 @@ export function LoginPageComponent() {
           <Button 
             onClick={loginWithGoogle} 
             disabled={isLoading}
-            className="w-full h-14 rounded-full font-bold shadow-lg action-button-glow flex items-center justify-center gap-3 bg-white text-foreground border hover:bg-muted/50"
+            className="w-full h-14 rounded-full font-bold shadow-lg action-button-glow flex items-center justify-center gap-3 bg-white text-foreground border hover:bg-muted/50 transition-all active:scale-95"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -45,6 +45,6 @@ export function LoginPageComponent() {
           </p>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
