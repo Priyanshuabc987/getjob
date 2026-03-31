@@ -32,11 +32,11 @@
   }
 
   .dark {
-    --background: 261 70% 5%;
+    --background: 261 50% 5%;
     --foreground: 0 0% 98%;
-    --card: 261 70% 8%;
+    --card: 261 40% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 261 70% 8%;
+    --popover: 261 40% 8%;
     --popover-foreground: 0 0% 98%;
     --primary: 261 70% 60%;
     --primary-foreground: 0 0% 100%;
@@ -48,8 +48,8 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 261 30% 15%;
-    --input: 261 30% 15%;
+    --border: 261 30% 20%;
+    --input: 261 30% 20%;
     --ring: 261 70% 60%;
   }
 }
@@ -60,6 +60,7 @@
   }
   body {
     @apply bg-background text-foreground font-body;
+    scrollbar-gutter: stable;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline font-bold tracking-tight;
@@ -67,7 +68,7 @@
 }
 
 .glass-card {
-  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  @apply bg-white/70 dark:bg-card/70 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-xl;
 }
 
 .action-button-glow {

@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from 'react';
-import { Edit2, MapPin, Clock, Loader2, ShieldCheck, User } from 'lucide-react';
+import { Edit2, MapPin, Clock, Loader2, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { UserProfileData } from '../types';
 import { updateProfile } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
@@ -30,7 +29,6 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
     city: profile.location?.city || '',
     country: profile.location?.country || '',
     photoURL: profile.photoURL || '',
-    bio: profile.bio || '',
   });
 
   const handleUpdateProfile = async () => {
@@ -40,7 +38,6 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         displayName: formData.displayName,
         collegeName: formData.collegeName,
         photoURL: formData.photoURL,
-        bio: formData.bio,
         location: { city: formData.city, country: formData.country }
       });
       setIsEditing(false);
@@ -77,7 +74,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         <div className="px-6 md:px-12 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-20 md:-mt-24">
             {/* Avatar - Half overlapping */}
-            <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2.5rem] p-1.5 bg-white shadow-2xl shrink-0">
+            <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2.5rem] p-1.5 bg-white dark:bg-card shadow-2xl shrink-0">
               <img 
                 src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
                 alt={profile.displayName} 
@@ -99,10 +96,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                    )}
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-muted-foreground font-bold text-[11px] md:text-xs mt-2">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm border border-muted/50">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-card rounded-full shadow-sm border border-muted/50">
                     <MapPin className="w-3.5 h-3.5 text-primary" /> {profile.location?.city || 'Earth'}, {profile.location?.country || 'Core'}
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm border border-muted/50">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-card rounded-full shadow-sm border border-muted/50">
                     <Clock className="w-3.5 h-3.5 text-primary" /> Building for {buildingDuration}
                   </div>
                 </div>
@@ -119,7 +116,6 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                     <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
                     <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
                       <div className="space-y-2"><Label>Display Name</Label><Input value={formData.displayName} onChange={e => setFormData({...formData, displayName: e.target.value})} className="rounded-xl" /></div>
-                      <div className="space-y-2"><Label>Short Bio</Label><Textarea value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="rounded-xl" placeholder="Tell the community about yourself..." /></div>
                       <div className="space-y-2"><Label>College</Label><Input value={formData.collegeName} onChange={e => setFormData({...formData, collegeName: e.target.value})} className="rounded-xl" /></div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2"><Label>City</Label><Input value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="rounded-xl" /></div>

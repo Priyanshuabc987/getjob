@@ -95,8 +95,8 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
   };
 
   return (
-    <Card className="rounded-[2.5rem] border-none shadow-xl bg-white p-8">
-      <h3 className="font-headline text-lg font-bold flex items-center gap-3 mb-8">
+    <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-card p-8">
+      <h3 className="font-headline text-lg font-bold flex items-center gap-3 mb-8 text-foreground">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
           <Briefcase className="w-4 h-4 text-primary" />
         </div>
@@ -131,8 +131,12 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                               {expForm.startDate ? expForm.startDate : "Pick date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" onSelect={(d) => setExpForm({...expForm, startDate: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar 
+                              mode="single" 
+                              onSelect={(d) => setExpForm({...expForm, startDate: d ? format(d, 'MM/yyyy') : ''})} 
+                              initialFocus 
+                            />
                           </PopoverContent>
                         </Popover>
                       </div>
@@ -145,8 +149,12 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                               {expForm.endDate ? expForm.endDate : "Pick date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" onSelect={(d) => setExpForm({...expForm, endDate: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar 
+                              mode="single" 
+                              onSelect={(d) => setExpForm({...expForm, endDate: d ? format(d, 'MM/yyyy') : ''})} 
+                              initialFocus 
+                            />
                           </PopoverContent>
                         </Popover>
                       </div>
@@ -169,20 +177,20 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
                 <Briefcase className="w-5 h-5 text-primary" />
               </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <p className="font-bold text-sm leading-tight">{exp.role}</p>
-                  {isOwnProfile && <button onClick={() => handleRemoveExp(exp)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-bold text-sm leading-tight truncate">{exp.role}</p>
+                  {isOwnProfile && <button onClick={() => handleRemoveExp(exp)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
                 </div>
                 <p className="text-[10px] text-muted-foreground font-bold">
                   {exp.company} • {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
                 </p>
-                {exp.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2">{exp.description}</p>}
+                {exp.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{exp.description}</p>}
               </div>
             </div>
           )) : (
             <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
-              <p className="text-[10px] text-muted-foreground italic font-medium">Add experience to show builders your journey.</p>
+              <p className="text-[10px] text-muted-foreground italic font-medium">Your work history tells a story of effort. Add your experiences to stand out to recruiters.</p>
             </div>
           )}
         </div>
@@ -215,8 +223,12 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                               {eduForm.startYear ? eduForm.startYear : "Pick date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" onSelect={(d) => setEduForm({...eduForm, startYear: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar 
+                              mode="single" 
+                              onSelect={(d) => setEduForm({...eduForm, startYear: d ? format(d, 'MM/yyyy') : ''})} 
+                              initialFocus 
+                            />
                           </PopoverContent>
                         </Popover>
                       </div>
@@ -229,8 +241,12 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                               {eduForm.endDate ? eduForm.endDate : "Pick date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar mode="single" onSelect={(d) => setEduForm({...eduForm, endDate: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar 
+                              mode="single" 
+                              onSelect={(d) => setEduForm({...eduForm, endDate: d ? format(d, 'MM/yyyy') : ''})} 
+                              initialFocus 
+                            />
                           </PopoverContent>
                         </Popover>
                       </div>
@@ -253,21 +269,21 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0">
                 <GraduationCap className="w-5 h-5 text-secondary" />
               </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <p className="font-bold text-sm leading-tight">{edu.degree}</p>
-                  {isOwnProfile && <button onClick={() => handleRemoveEdu(edu)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-bold text-sm leading-tight truncate">{edu.degree}</p>
+                  {isOwnProfile && <button onClick={() => handleRemoveEdu(edu)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
                 </div>
                 <p className="text-[10px] text-muted-foreground font-bold">
                   {edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}
                 </p>
                 {edu.fieldOfStudy && <p className="text-[10px] text-muted-foreground mt-0.5">{edu.fieldOfStudy}</p>}
-                {edu.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2">{edu.description}</p>}
+                {edu.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{edu.description}</p>}
               </div>
             </div>
           )) : (
             <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
-              <p className="text-[10px] text-muted-foreground italic font-medium">Your academic roots help connect you with alumni.</p>
+              <p className="text-[10px] text-muted-foreground italic font-medium">Academic roots help connect you with your community and alumni network. Add your school or university.</p>
             </div>
           )}
         </div>
