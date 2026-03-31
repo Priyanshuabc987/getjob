@@ -1,11 +1,14 @@
 import { Navbar } from '@/components/layout/Navbar';
-import { currentUser as mockUser, projectWorkspaces } from '@/lib/mock-data';
+import { projectWorkspaces } from '@/lib/mock-data';
 import { getCachedUserProfile } from '@/features/users/services/read';
 import { ProfileView } from '@/features/users/components/ProfileView';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/firebase'; // Note: In Server Components we'd normally use a session cookie, but for this prototype we'll mock the check or use searchParams
 
-// NOTE: In a production app with real auth, we would get the UID from a session cookie
-// For this prototype, we'll default to the mock user if no ID is provided, 
-// but the architecture is ready for server-side fetching.
+export const metadata = {
+  title: 'Builder Profile | PrepLinc',
+  description: 'Verified proof-of-work and building history.',
+};
 
 export default async function ProfilePage({ 
   searchParams 
@@ -13,22 +16,36 @@ export default async function ProfilePage({
   searchParams: Promise<{ id?: string }> 
 }) {
   const { id } = await searchParams;
-  const userId = id || mockUser.id;
   
-  // Attempt to fetch real data from Firestore (Server-side)
+  // In a real production app, we get the UID from the session cookie.
+  // For this environment, we expect an ID or we'll need to redirect to login.
+  if (!id) {
+    // For demo purposes, we'll try to find any profile if no ID is passed, 
+    // but in reality this should be redirect('/login');
+    // For now, let's assume 'user-123' exists as our mock active user if nothing else
+  }
+
+  const userId = id || 'user-123';
+  
+  // Fetch real data from Firestore (Server-side)
   const profileData = await getCachedUserProfile(userId);
   
+  if (!profileData) {
+    // If user is logged in but has no profile, send to onboarding
+    redirect('/onboarding');
+  }
+
   // Filter projects owned by this user
   const myProjects = projectWorkspaces.filter(p => p.ownerId === userId);
 
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-64 pt-20">
+    <div className="min-h-screen bg-[#F8F9FC] md:pl-64 pt-16">
       <Navbar />
-      <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="w-full">
         <ProfileView 
-          profile={profileData || mockUser} 
+          profile={profileData} 
           projects={myProjects}
-          isOwnProfile={!id || id === mockUser.id}
+          isOwnProfile={!id || id === 'user-123'}
         />
       </main>
     </div>
