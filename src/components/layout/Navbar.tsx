@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -40,8 +39,8 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-white/80 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-white/80 backdrop-blur-lg h-16">
+        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
               <Zap className="text-white w-5 h-5 fill-current" />
@@ -57,9 +56,11 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                 </Button>
               </Link>
             ) : (
-              <Link href="/profile" className="flex items-center gap-3">
-                <span className="text-xs font-bold text-muted-foreground hidden md:block">Hi, {user.displayName?.split(' ')[0]}</span>
-                <div className="w-9 h-9 rounded-full bg-accent border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform">
+              <Link href="/profile" className="flex items-center gap-3 group">
+                <span className="text-xs font-bold text-muted-foreground hidden md:block group-hover:text-primary transition-colors">
+                  {user.displayName?.split(' ')[0]}
+                </span>
+                <div className="w-9 h-9 rounded-full bg-accent border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform duration-300">
                   <img src={user.photoURL || "https://picsum.photos/seed/user/100/100"} alt="Profile" className="w-full h-full object-cover" />
                 </div>
               </Link>
@@ -81,7 +82,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                     key={item.href} 
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all",
+                      "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300",
                       isActive 
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
                         : "text-muted-foreground hover:bg-[#F4F3F8] hover:text-primary"
@@ -105,7 +106,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                     key={item.href} 
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all",
+                      "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300",
                       isActive 
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
                         : "text-muted-foreground hover:bg-[#F4F3F8] hover:text-primary"
@@ -123,7 +124,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
 
       {/* Bottom Nav - Mobile */}
       {showSidebar && (
-        <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex md:hidden items-center justify-around z-50 px-2 pb-safe">
+        <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-lg border-t flex md:hidden items-center justify-around z-50 px-2 pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
           {[
             { icon: Home, label: 'Feed', href: '/feed' },
             { icon: Briefcase, label: 'Jobs', href: '/jobs' },
@@ -136,11 +137,11 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                 key={item.href} 
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all duration-300",
+                  isActive ? "text-primary scale-110" : "text-muted-foreground"
                 )}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className={cn("w-5 h-5", isActive && "fill-primary/10")} />
                 <span className="text-[10px] font-bold">{item.label}</span>
               </Link>
             );

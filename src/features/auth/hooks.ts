@@ -1,4 +1,3 @@
-
 /**
  * @fileOverview Auth Hooks
  * React hooks to manage Firebase Auth state and navigation logic.
@@ -12,6 +11,7 @@ import { createInitialUser, recordLogin } from '@/features/users/services/write'
 import { getCachedUserProfile } from '@/features/users/services/read';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { createSession, removeSession } from './actions';
 
 export function useAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -32,7 +32,9 @@ export function useAuth() {
     try {
       const fbUser = await authService.signInWithGoogle();
       
-      // Check for existing profile on the server (via read service)
+      // Set server-side session cookie
+      await createSession(fbUser.uid);
+      
       const profile = await getCachedUserProfile(fbUser.uid);
       
       if (!profile) {
@@ -71,6 +73,7 @@ export function useAuth() {
   const logout = async () => {
     try {
       await authService.logout();
+      await removeSession();
       router.push('/login');
     } catch (error) {
       console.error(error);
