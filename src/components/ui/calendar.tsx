@@ -57,6 +57,7 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        caption_dropdowns: "flex gap-1",
         ...classNames,
       }}
       components={{
@@ -67,6 +68,9 @@ function Calendar({
           <ChevronRight className={cn("h-4 w-4", className)} {...props} />
         ),
       }}
+      captionLayout="dropdown"
+      fromYear={1950}
+      toYear={new Date().getFullYear() + 10}
       {...props}
     />
   )

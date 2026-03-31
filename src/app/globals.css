@@ -60,6 +60,7 @@
   }
   html, body {
     @apply bg-background text-foreground font-body;
+    /* Prevents layout shift when modals/dialogs hide scrollbar */
     scrollbar-gutter: stable;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -73,4 +74,17 @@
 
 .action-button-glow {
   @apply shadow-[0_0_15px_rgba(102,38,217,0.3)] hover:shadow-[0_0_20px_rgba(102,38,217,0.5)] transition-all;
+}
+
+/* Fix for ShadCN DatePicker dropdown buttons contrast in Dark Mode */
+.rdp-vhidden {
+  @apply hidden;
+}
+
+.rdp-dropdown_container {
+  @apply flex items-center gap-1;
+}
+
+.rdp-dropdown {
+  @apply bg-background border rounded px-1 text-xs py-0.5;
 }
