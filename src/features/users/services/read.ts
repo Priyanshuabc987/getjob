@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -29,8 +30,7 @@ async function _uncachedGetUserPrivateData(uid: string): Promise<UserPrivateData
 }
 
 /**
- * Cached Public Profile using dual-layer caching (React Cache + Next Unstable Cache).
- * This function is an async Server Action that provides high-performance profile access.
+ * Cached Public Profile using dual-layer caching.
  */
 export const getCachedUserProfile = reactCache(
   async (uid: string): Promise<UserProfileData | null> => {

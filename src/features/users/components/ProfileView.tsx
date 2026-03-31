@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -21,9 +22,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { UserProfileData } from '@/features/auth/types';
 
 interface ProfileViewProps {
-  profile: any;
+  profile: UserProfileData;
   projects: any[];
   isOwnProfile: boolean;
 }
@@ -32,63 +34,98 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
   const [isEditing, setIsEditing] = useState(false);
 
   return (
-    <>
-      <div className="relative mb-12">
-        <div className="h-64 w-full rounded-[2.5rem] bg-gradient-to-br from-primary via-primary/80 to-secondary overflow-hidden shadow-2xl relative">
-           <div className="absolute top-6 right-6 bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-3xl flex flex-col items-center">
-              <span className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em] mb-1">Credibility</span>
-              <span className="text-4xl font-headline font-bold text-white">{profile.credibilityScore || 50}</span>
-           </div>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Professional Banner & Profile Image */}
+      <div className="relative mb-24 md:mb-16">
+        <div className="h-48 md:h-64 w-full rounded-[1.5rem] md:rounded-[2.5rem] bg-muted overflow-hidden shadow-xl relative">
+          <img 
+            src={profile.bannerUrl || `https://picsum.photos/seed/${profile.uid}/1200/400`} 
+            alt="Banner" 
+            className="w-full h-full object-cover" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-xl border border-white/30 p-3 md:p-4 rounded-2xl flex flex-col items-center">
+            <span className="text-[8px] md:text-[10px] font-bold text-white uppercase tracking-widest mb-1">Credibility</span>
+            <span className="text-2xl md:text-4xl font-headline font-bold text-white">{profile.credibilityScore}</span>
+          </div>
         </div>
         
-        <div className="px-6 md:px-12 -mt-20 relative flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="flex flex-col md:flex-row md:items-end gap-8">
-            <div className="w-40 h-40 rounded-[2.5rem] p-1.5 bg-white shadow-2xl">
-              <img src={profile.avatar || profile.photoURL || "https://picsum.photos/seed/user/200/200"} alt={profile.name || profile.displayName} className="w-full h-full object-cover rounded-[2rem]" />
-            </div>
-            <div className="mb-4">
-              <h1 className="text-4xl font-headline font-bold text-foreground">{profile.name || profile.displayName}</h1>
-              <p className="text-primary font-bold text-lg">@{profile.username || 'builder'}</p>
-              <div className="flex flex-wrap gap-4 mt-3 text-sm text-muted-foreground font-medium">
-                <span className="flex items-center gap-1.5"><Globe className="w-4 h-4" /> {profile.location?.city || 'India'}</span>
-                <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> Building for 1+ years</span>
-              </div>
-            </div>
+        <div className="absolute -bottom-16 left-6 md:left-12 flex flex-col md:flex-row md:items-end gap-6 md:gap-8 w-full pr-12">
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2rem] md:rounded-[2.5rem] p-1.5 bg-white shadow-2xl shrink-0">
+            <img 
+              src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/200/200`} 
+              alt={profile.displayName} 
+              className="w-full h-full object-cover rounded-[1.5rem] md:rounded-[2rem]" 
+            />
           </div>
           
-          {isOwnProfile && (
-            <Dialog open={isEditing} onOpenChange={setIsEditing}>
-              <DialogTrigger asChild>
-                <Button className="rounded-full gap-2 px-8 h-12 action-button-glow font-bold">
-                  <Edit2 className="w-4 h-4" /> Edit Profile
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px] rounded-[2rem]">
-                <DialogHeader><DialogTitle className="text-2xl font-headline">Update Your Showcase</DialogTitle></DialogHeader>
-                <div className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto pr-2">
-                  <div className="space-y-2"><Label>Full Name</Label><Input defaultValue={profile.name || profile.displayName} className="rounded-xl" /></div>
-                  <div className="space-y-2"><Label>Bio</Label><Textarea defaultValue={profile.bio} className="rounded-xl" /></div>
-                  <div className="space-y-2"><Label>Core Skills (comma separated)</Label><Input defaultValue={profile.skills?.join(', ')} className="rounded-xl" /></div>
-                </div>
-                <DialogFooter><Button className="w-full rounded-full h-12 action-button-glow font-bold">Save Changes</Button></DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
+          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2">
+            <div>
+              <h1 className="text-2xl md:text-4xl font-headline font-bold text-foreground">{profile.displayName}</h1>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <Badge className="bg-primary/10 text-primary border-none text-[10px] font-bold">
+                  {profile.role?.toUpperCase()}
+                </Badge>
+                <span className="text-xs md:text-sm text-muted-foreground font-medium flex items-center gap-1.5">
+                  <Globe className="w-4 h-4" /> {profile.location?.city || 'India'}
+                </span>
+              </div>
+            </div>
+            
+            {isOwnProfile && (
+              <Dialog open={isEditing} onOpenChange={setIsEditing}>
+                <DialogTrigger asChild>
+                  <Button className="rounded-full gap-2 px-6 h-10 md:h-12 action-button-glow font-bold text-sm">
+                    <Edit2 className="w-4 h-4" /> Edit Profile
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px] rounded-[2rem]">
+                  <DialogHeader><DialogTitle className="text-2xl font-headline">Update Your Showcase</DialogTitle></DialogHeader>
+                  <div className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto pr-2">
+                    <div className="space-y-2">
+                      <Label>Full Name</Label>
+                      <Input defaultValue={profile.displayName} className="rounded-xl" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>City</Label>
+                      <Input defaultValue={profile.location.city} className="rounded-xl" />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button className="w-full rounded-full h-12 action-button-glow font-bold">Save Changes</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="space-y-8">
-          <Card className="glass-card border-none shadow-xl rounded-[2rem] bg-white p-8">
-             <h3 className="font-headline text-lg font-bold mb-6 flex items-center gap-2"><Briefcase className="w-5 h-5 text-primary" /> Professional History</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+        <aside className="space-y-8">
+          <Card className="glass-card border-none shadow-xl rounded-[2rem] bg-white p-6 md:p-8">
+             <h3 className="font-headline text-lg font-bold mb-6 flex items-center gap-2"><Briefcase className="w-5 h-5 text-primary" /> Profile Details</h3>
              <div className="space-y-6">
-                <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-2">Education</p>
-                  <div className="space-y-4">
-                    <div className="flex gap-3">
-                       <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0"><GraduationCap className="w-5 h-5 text-secondary" /></div>
-                       <div><p className="text-sm font-bold leading-none">{profile.collegeName || 'Not Added'}</p><p className="text-xs text-muted-foreground">Class of 2025</p></div>
-                    </div>
+                <div className="space-y-4">
+                   <div className="flex gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-5 h-5 text-secondary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold leading-tight">{profile.collegeName || 'Education Not Added'}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-1">University</p>
+                      </div>
+                   </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Core Domains</p>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.domains?.map(domain => (
+                      <Badge key={domain} variant="secondary" className="bg-muted text-muted-foreground border-none text-[10px] font-bold">
+                        {domain.toUpperCase()}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
              </div>
@@ -96,52 +133,68 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
 
           <Card className="glass-card border-none bg-primary text-white shadow-2xl rounded-[2rem] p-8 text-center space-y-6">
                <div>
-                  <p className="text-[11px] font-bold text-white/60 uppercase tracking-[0.3em] mb-2">Total Proof Earnings</p>
-                  <div className="text-5xl font-headline font-bold">{profile.earnings || '₹0'}</div>
+                  <p className="text-[11px] font-bold text-white/60 uppercase tracking-[0.3em] mb-2">Credibility Momentum</p>
+                  <div className="text-5xl font-headline font-bold">{profile.credibilityScore}</div>
                </div>
-               <div className="grid grid-cols-2 gap-4 border-t border-white/20 pt-6">
-                  <div><p className="text-2xl font-bold">{profile.stats?.tasksCompleted || 0}</p><p className="text-[10px] text-white/60 font-bold">Tasks</p></div>
-                  <div><p className="text-2xl font-bold">{profile.stats?.collaborations || 0}</p><p className="text-[10px] text-white/60 font-bold">Squads</p></div>
+               <div className="flex justify-center items-center gap-6 border-t border-white/20 pt-6">
+                  <div><p className="text-2xl font-bold">12</p><p className="text-[10px] text-white/60 font-bold uppercase">Tasks</p></div>
+                  <Separator orientation="vertical" className="h-8 bg-white/20" />
+                  <div><p className="text-2xl font-bold">3</p><p className="text-[10px] text-white/60 font-bold uppercase">Squads</p></div>
                </div>
           </Card>
-        </div>
+        </aside>
 
-        <div className="lg:col-span-2 space-y-8">
+        <section className="lg:col-span-2 space-y-8">
           <Tabs defaultValue="portfolio" className="w-full">
-            <TabsList className="bg-white p-1.5 rounded-[2rem] w-full h-auto mb-10 shadow-sm border border-muted">
-              <TabsTrigger value="portfolio" className="flex-1 rounded-[1.5rem] py-4 gap-2 font-bold"><Eye className="w-4 h-4" /> Proof Portfolio</TabsTrigger>
-              <TabsTrigger value="tasks" className="flex-1 rounded-[1.5rem] py-4 gap-2 font-bold"><Zap className="w-4 h-4" /> Micro-Jobs</TabsTrigger>
-              <TabsTrigger value="achievements" className="flex-1 rounded-[1.5rem] py-4 gap-2 font-bold"><Trophy className="w-4 h-4" /> Badges</TabsTrigger>
+            <TabsList className="bg-white p-1.5 rounded-[2rem] w-full h-auto mb-6 shadow-sm border border-muted">
+              <TabsTrigger value="portfolio" className="flex-1 rounded-[1.5rem] py-3 md:py-4 gap-2 font-bold text-xs md:text-sm"><Eye className="w-4 h-4" /> Proof Portfolio</TabsTrigger>
+              <TabsTrigger value="achievements" className="flex-1 rounded-[1.5rem] py-3 md:py-4 gap-2 font-bold text-xs md:text-sm"><Trophy className="w-4 h-4" /> Badges</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="portfolio" className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {projects.map((project) => (
-                <Card key={project.id} className="glass-card group overflow-hidden border-none shadow-xl rounded-[2.5rem] bg-white">
-                  <div className="h-48 bg-muted relative">
+            <TabsContent value="portfolio" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {projects.length > 0 ? projects.map((project) => (
+                <Card key={project.id} className="glass-card group overflow-hidden border-none shadow-xl rounded-[2rem] bg-white">
+                  <div className="h-40 md:h-48 bg-muted relative">
                     <img src={project.coverImageUrl} className="w-full h-full object-cover" alt={project.title} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-6 left-8"><h3 className="text-3xl font-headline font-bold text-white">{project.title}</h3></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                    <div className="absolute bottom-6 left-8">
+                      <h3 className="text-2xl md:text-3xl font-headline font-bold text-white">{project.title}</h3>
+                    </div>
                   </div>
-                  <div className="p-8">
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.tags.map(tag => <Badge key={tag} className="bg-primary/5 text-primary border-none text-[10px] font-bold">#{tag.toUpperCase()}</Badge>)}
+                  <div className="p-6 md:p-8">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.tags.map(tag => (
+                        <Badge key={tag} className="bg-primary/5 text-primary border-none text-[10px] font-bold">
+                          #{tag.toUpperCase()}
+                        </Badge>
+                      ))}
                     </div>
                     <div className="flex items-center justify-between">
-                       <div className="flex -space-x-3">{project.team.map((mate, i) => <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-muted overflow-hidden"><img src={mate.avatarUrl} className="w-full h-full object-cover" alt="" /></div>)}</div>
-                       <Link href={`/projects/${project.id}`}><Button variant="ghost" className="text-primary font-bold">View Roadmap <ChevronRight className="w-4 h-4" /></Button></Link>
+                       <div className="flex -space-x-3">
+                         {project.team.slice(0, 3).map((mate, i) => (
+                           <div key={i} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-4 border-white bg-muted overflow-hidden">
+                             <img src={mate.avatarUrl} className="w-full h-full object-cover" alt="" />
+                           </div>
+                         ))}
+                       </div>
+                       <Link href={`/projects/${project.id}`}>
+                        <Button variant="ghost" className="text-primary font-bold text-sm">
+                          View Roadmap <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                       </Link>
                     </div>
                   </div>
                 </Card>
-              ))}
-              {projects.length === 0 && (
-                <div className="text-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed border-muted">
-                  <p className="text-muted-foreground">No projects in portfolio yet.</p>
+              )) : (
+                <div className="text-center py-16 bg-muted/20 rounded-3xl border-2 border-dashed border-muted">
+                  <Zap className="w-10 h-10 text-muted-foreground mx-auto mb-4 opacity-50" />
+                  <p className="text-muted-foreground font-medium">No verified projects yet.</p>
                 </div>
               )}
             </TabsContent>
           </Tabs>
-        </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 }

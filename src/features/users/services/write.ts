@@ -3,12 +3,11 @@
 
 import { db } from '@/lib/firebase';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
-import { UserProfileData, UserPrivateData } from '@/features/auth/types';
+import { UserProfileData } from '@/features/auth/types';
 import { revalidateTag } from 'next/cache';
 
 /**
  * Initialize a new user in both public and private collections.
- * Used during first-time login.
  */
 export async function createInitialUser(
   uid: string, 
@@ -20,13 +19,15 @@ export async function createInitialUser(
   const privateRef = doc(db, 'users_private', uid);
 
   const timestamp = new Date().toISOString();
+  const defaultBanner = `https://picsum.photos/seed/${uid}/1200/400`;
 
   await Promise.all([
     setDoc(publicRef, {
       uid,
       displayName,
       photoURL,
-      role: 'builder', // Default
+      bannerUrl: defaultBanner,
+      role: 'builder',
       domains: [],
       experienceLevel: 'Beginner',
       goals: [],

@@ -30,6 +30,9 @@ This project follows a **Feature-Based Architecture** with strict data isolation
    - Sensitive user information MUST live in `users_private` collection.
    - Public profiles live in `users`.
 5. **Types First**: Define structures in `types.ts` before implementing logic.
+6. **Responsiveness**:
+   - UI must be optimized for both **Desktop** and **Mobile**.
+   - Mobile navigation uses the Bottom Nav bar; Desktop uses the Sidebar.
 
 ### 🚀 Caching Pattern Example
 ```ts
@@ -42,3 +45,6 @@ export const getCachedUserProfile = reactCache(async (uid: string) => {
   )();
 });
 ```
+
+### 👤 User Data Access
+Use `getCachedUserProfile(uid)` to fetch user profile data on the server. This ensures consistent, high-performance data across the platform.

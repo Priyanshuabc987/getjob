@@ -6,6 +6,7 @@ export interface UserProfileData {
   uid: string;
   displayName: string;
   photoURL?: string;
+  bannerUrl?: string;
   role: UserRole;
   domains: string[];
   experienceLevel: ExperienceLevel;

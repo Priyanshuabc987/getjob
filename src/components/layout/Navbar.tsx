@@ -13,12 +13,12 @@ import {
   Lightbulb, 
   Calendar,
   LogIn,
-  LayoutGrid,
-  SeparatorHorizontal
+  LayoutGrid
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/features/auth/hooks';
 
 const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
@@ -30,12 +30,13 @@ const mainNavItems = [
 ];
 
 const workspaceNavItems = [
-  { icon: LayoutGrid, label: 'My Projects', href: '/projects/my' },
+  { icon: LayoutGrid, label: 'My Workspace', href: '/projects/my' },
   { icon: User, label: 'Profile', href: '/profile' },
 ];
 
 export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   return (
     <>
@@ -49,21 +50,27 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
           </Link>
 
           <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost" className="rounded-full gap-2 font-bold text-sm">
-                <LogIn className="w-4 h-4" /> Sign In
-              </Button>
-            </Link>
-            <Link href="/profile" className="w-9 h-9 rounded-full bg-accent border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform hidden sm:block">
-               <img src="https://picsum.photos/seed/alex/100/100" alt="Profile" className="w-full h-full object-cover" />
-            </Link>
+            {!user ? (
+              <Link href="/login">
+                <Button variant="ghost" className="rounded-full gap-2 font-bold text-sm">
+                  <LogIn className="w-4 h-4" /> Sign In
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/profile" className="flex items-center gap-3">
+                <span className="text-xs font-bold text-muted-foreground hidden md:block">Hi, {user.displayName?.split(' ')[0]}</span>
+                <div className="w-9 h-9 rounded-full bg-accent border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform">
+                  <img src={user.photoURL || "https://picsum.photos/seed/user/100/100"} alt="Profile" className="w-full h-full object-cover" />
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </nav>
 
       {/* Sidebar - Desktop */}
       {showSidebar && (
-        <nav className="fixed left-0 top-16 bottom-0 w-64 hidden md:flex flex-col border-r bg-white p-4 space-y-6 overflow-y-auto">
+        <aside className="fixed left-0 top-16 bottom-0 w-64 hidden md:flex flex-col border-r bg-white p-4 space-y-6 overflow-y-auto z-40">
           <div className="px-4">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Ecosystem</p>
             <div className="space-y-1">
@@ -111,6 +118,33 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
               })}
             </div>
           </div>
+        </aside>
+      )}
+
+      {/* Bottom Nav - Mobile */}
+      {showSidebar && (
+        <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white border-t flex md:hidden items-center justify-around z-50 px-2 pb-safe">
+          {[
+            { icon: Home, label: 'Feed', href: '/feed' },
+            { icon: Briefcase, label: 'Jobs', href: '/jobs' },
+            { icon: PlusSquare, label: 'Projects', href: '/projects' },
+            { icon: User, label: 'Profile', href: '/profile' },
+          ].map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link 
+                key={item.href} 
+                href={item.href}
+                className={cn(
+                  "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-[10px] font-bold">{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
       )}
     </>
