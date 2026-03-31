@@ -36,7 +36,7 @@
     --foreground: 0 0% 98%;
     --card: 261 40% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 261 40% 8%;
+    --popover: 261 40% 10%;
     --popover-foreground: 0 0% 98%;
     --primary: 261 70% 60%;
     --primary-foreground: 0 0% 100%;
@@ -58,7 +58,7 @@
   * {
     @apply border-border;
   }
-  body {
+  html, body {
     @apply bg-background text-foreground font-body;
     scrollbar-gutter: stable;
   }

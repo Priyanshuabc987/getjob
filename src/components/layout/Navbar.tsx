@@ -24,11 +24,11 @@ import { useState, useEffect } from 'react';
 
 const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
-  { icon: PlusSquare, label: 'Projects', href: '/projects' },
-  { icon: Briefcase, label: 'Jobs', href: '/jobs' },
+  { icon: PlusSquare, label: 'Explore Projects', href: '/projects' },
+  { icon: Briefcase, label: 'Micro-Jobs', href: '/jobs' },
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
-  { icon: Lightbulb, label: 'Problems', href: '/problems' },
+  { icon: Lightbulb, label: 'Challenges', href: '/problems' },
 ];
 
 export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
@@ -52,8 +52,8 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
   };
 
   const workspaceNavItems = [
-    { icon: LayoutGrid, label: 'My Workspace', href: '/projects/my' },
-    { icon: User, label: 'Profile', href: user ? `/profile/${user.uid}` : '/profile' },
+    { icon: LayoutGrid, label: 'My Workspace', href: '/workspace' },
+    { icon: User, label: 'My Profile', href: user ? `/profile/${user.uid}` : '/profile' },
   ];
 
   return (
@@ -88,7 +88,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                 <span className="text-xs font-bold text-muted-foreground hidden md:block group-hover:text-primary transition-colors">
                   {user.displayName?.split(' ')[0]}
                 </span>
-                <div className="w-9 h-9 rounded-full bg-accent border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform duration-300">
+                <div className="w-9 h-9 rounded-full bg-accent dark:bg-muted border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform duration-300">
                   <img src={user.photoURL || "https://picsum.photos/seed/user/100/100"} alt="Profile" className="w-full h-full object-cover" />
                 </div>
               </Link>
