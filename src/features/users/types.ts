@@ -11,7 +11,8 @@ export interface EducationEntry {
   degree: string;
   fieldOfStudy: string;
   startYear: string;
-  endYear?: string;
+  endDate?: string;
+  isCurrent?: boolean;
   description?: string;
 }
 

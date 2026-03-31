@@ -28,14 +28,14 @@ const mainNavItems = [
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
 ];
 
-const workspaceNavItems = [
-  { icon: LayoutGrid, label: 'My Workspace', href: '/projects/my' },
-  { icon: User, label: 'Profile', href: '/profile' },
-];
-
 export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
   const pathname = usePathname();
   const { user } = useAuth();
+
+  const workspaceNavItems = [
+    { icon: LayoutGrid, label: 'My Workspace', href: '/projects/my' },
+    { icon: User, label: 'Profile', href: user ? `/profile/${user.uid}` : '/profile' },
+  ];
 
   return (
     <>
@@ -56,7 +56,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                 </Button>
               </Link>
             ) : (
-              <Link href="/profile" className="flex items-center gap-3 group">
+              <Link href={`/profile/${user.uid}`} className="flex items-center gap-3 group">
                 <span className="text-xs font-bold text-muted-foreground hidden md:block group-hover:text-primary transition-colors">
                   {user.displayName?.split(' ')[0]}
                 </span>
@@ -129,7 +129,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
             { icon: Home, label: 'Feed', href: '/feed' },
             { icon: Briefcase, label: 'Jobs', href: '/jobs' },
             { icon: PlusSquare, label: 'Projects', href: '/projects' },
-            { icon: User, label: 'Profile', href: '/profile' },
+            { icon: User, label: 'Profile', href: user ? `/profile/${user.uid}` : '/profile' },
           ].map((item) => {
             const isActive = pathname === item.href;
             return (

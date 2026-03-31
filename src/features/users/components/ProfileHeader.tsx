@@ -11,6 +11,7 @@ import { UserProfileData } from '../types';
 import { updateProfile } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
 import { formatBuildingDuration } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface ProfileHeaderProps {
   profile: UserProfileData;
@@ -51,72 +52,82 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const buildingDuration = formatBuildingDuration(profile.createdAt);
 
   return (
-    <div className="relative">
-      {/* Banner */}
-      <div className="h-48 md:h-64 w-full rounded-b-[2.5rem] bg-gradient-to-br from-[#3B82F6] via-[#2563EB] to-[#1E40AF] overflow-hidden relative shadow-lg">
-        {profile.bannerUrl && (
-          <img src={profile.bannerUrl} alt="Banner" className="w-full h-full object-cover mix-blend-overlay opacity-40" />
-        )}
-        <div className="absolute top-6 left-6 md:top-8 md:left-12 bg-white/10 backdrop-blur-xl border border-white/20 px-4 py-2 md:px-6 md:py-3 rounded-[1.5rem] flex flex-col items-center shadow-xl">
-          <span className="text-[9px] md:text-[10px] font-bold text-white/80 uppercase tracking-widest mb-0.5">Credibility</span>
-          <span className="text-2xl md:text-3xl font-headline font-bold text-white">{profile.credibilityScore}</span>
-        </div>
-      </div>
-
-      {/* Profile Info Row */}
-      <div className="max-w-6xl mx-auto px-6 md:px-12 -mt-16 md:-mt-20 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end gap-6">
-          <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] p-1.5 bg-white shadow-2xl shrink-0">
-            <img 
-              src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
-              alt={profile.displayName} 
-              className="w-full h-full object-cover rounded-[2rem]" 
-            />
+    <div className="relative pt-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Banner with padding */}
+        <div className={cn(
+          "h-48 md:h-64 w-full rounded-[2.5rem] relative overflow-hidden shadow-lg",
+          !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
+        )}>
+          {profile.bannerUrl && (
+            <img src={profile.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
+          )}
+          
+          {/* Credibility Badge */}
+          <div className="absolute top-6 left-6 md:top-8 md:left-12 bg-white/10 backdrop-blur-xl border border-white/20 px-4 py-2 md:px-6 md:py-3 rounded-[1.5rem] flex flex-col items-center shadow-xl">
+            <span className="text-[9px] md:text-[10px] font-bold text-white/80 uppercase tracking-widest mb-0.5">Credibility</span>
+            <span className="text-2xl md:text-3xl font-headline font-bold text-white">{profile.credibilityScore}</span>
           </div>
+        </div>
 
-          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
-            <div className="space-y-1 md:space-y-2">
-              <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2">
-                {profile.displayName}
-                {profile.credibilityScore > 80 && <ShieldCheck className="w-6 h-6 text-primary" />}
-              </h1>
-              <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                 <p className="text-primary font-bold text-sm">@{profile.role || 'builder'}</p>
-                 <span className="text-muted-foreground font-bold text-xs">• {profile.collegeName}</span>
-              </div>
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground font-bold text-[11px] mt-2">
-                <span className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-primary" /> {profile.location?.city || 'Earth'}, {profile.location?.country || 'Core'}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-primary" /> Building for {buildingDuration}
-                </span>
-              </div>
+        {/* Profile Info Row with overlapping avatar */}
+        <div className="px-6 md:px-12 -mt-16 md:-mt-20 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end gap-6">
+            <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] p-1.5 bg-white shadow-2xl shrink-0">
+              <img 
+                src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
+                alt={profile.displayName} 
+                className="w-full h-full object-cover rounded-[2rem]" 
+              />
             </div>
 
-            {isOwnProfile && (
-              <Dialog open={isEditing} onOpenChange={setIsEditing}>
-                <DialogTrigger asChild>
-                  <Button className="rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow">
-                    <Edit2 className="w-4 h-4" /> Edit Profile
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="rounded-[2rem] sm:max-w-md">
-                  <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="space-y-2"><Label>Display Name</Label><Input value={formData.displayName} onChange={e => setFormData({...formData, displayName: e.target.value})} className="rounded-xl" /></div>
-                    <div className="space-y-2"><Label>College</Label><Input value={formData.collegeName} onChange={e => setFormData({...formData, collegeName: e.target.value})} className="rounded-xl" /></div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>City</Label><Input value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="rounded-xl" /></div>
-                      <div className="space-y-2"><Label>Country</Label><Input value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="rounded-xl" /></div>
+            <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
+              <div className="space-y-1 md:space-y-2">
+                <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2">
+                  {profile.displayName}
+                  {profile.credibilityScore > 80 && <ShieldCheck className="w-6 h-6 text-primary" />}
+                </h1>
+                <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                   <p className="text-primary font-bold text-sm">@{profile.role || 'builder'}</p>
+                   {profile.collegeName && (
+                     <span className="text-muted-foreground font-bold text-xs">• {profile.collegeName}</span>
+                   )}
+                </div>
+                <div className="flex flex-wrap items-center gap-4 text-muted-foreground font-bold text-[11px] mt-2">
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-primary" /> {profile.location?.city || 'Earth'}, {profile.location?.country || 'Core'}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-primary" /> Building for {buildingDuration}
+                  </span>
+                </div>
+              </div>
+
+              {isOwnProfile && (
+                <Dialog open={isEditing} onOpenChange={setIsEditing}>
+                  <DialogTrigger asChild>
+                    <Button className="rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow">
+                      <Edit2 className="w-4 h-4" /> Edit Profile
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="rounded-[2rem] sm:max-w-md">
+                    <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="space-y-2"><Label>Display Name</Label><Input value={formData.displayName} onChange={e => setFormData({...formData, displayName: e.target.value})} className="rounded-xl" /></div>
+                      <div className="space-y-2"><Label>College</Label><Input value={formData.collegeName} onChange={e => setFormData({...formData, collegeName: e.target.value})} className="rounded-xl" /></div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2"><Label>City</Label><Input value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="rounded-xl" /></div>
+                        <div className="space-y-2"><Label>Country</Label><Input value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="rounded-xl" /></div>
+                      </div>
+                      <div className="space-y-2"><Label>Avatar URL</Label><Input value={formData.photoURL} onChange={e => setFormData({...formData, photoURL: e.target.value})} className="rounded-xl" /></div>
                     </div>
-                  </div>
-                  <DialogFooter>
-                    <Button onClick={handleUpdateProfile} disabled={loading} className="w-full h-12 rounded-full font-bold">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save Changes"}</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            )}
+                    <DialogFooter>
+                      <Button onClick={handleUpdateProfile} disabled={loading} className="w-full h-12 rounded-full font-bold">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save Changes"}</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Briefcase, GraduationCap, Plus, Trash2, Loader2 } from 'lucide-react';
+import { Briefcase, GraduationCap, Plus, Trash2, Loader2, CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
@@ -11,6 +11,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { UserProfileData, ExperienceEntry, EducationEntry } from '../types';
 import { addExperience, addEducation, removeExperience, removeEducation } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface ProfessionalHistoryProps {
   profile: UserProfileData;
@@ -24,11 +29,11 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
   const [expOpen, setExpOpen] = useState(false);
 
   const [eduForm, setEduForm] = useState<Partial<EducationEntry>>({
-    school: '', degree: '', fieldOfStudy: '', startYear: '', description: ''
+    school: '', degree: '', fieldOfStudy: '', startYear: '', endDate: '', isCurrent: false, description: ''
   });
 
   const [expForm, setExpForm] = useState<Partial<ExperienceEntry>>({
-    company: '', role: '', startDate: '', description: '', isCurrent: false
+    company: '', role: '', startDate: '', endDate: '', description: '', isCurrent: false
   });
 
   const handleAddEdu = async () => {
@@ -41,7 +46,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
       };
       await addEducation(profile.uid, entry);
       setEduOpen(false);
-      setEduForm({ school: '', degree: '', fieldOfStudy: '', startYear: '', description: '' });
+      setEduForm({ school: '', degree: '', fieldOfStudy: '', startYear: '', endDate: '', isCurrent: false, description: '' });
       toast({ title: "Education added!" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to add education" });
@@ -60,7 +65,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
       };
       await addExperience(profile.uid, entry);
       setExpOpen(false);
-      setExpForm({ company: '', role: '', startDate: '', description: '', isCurrent: false });
+      setExpForm({ company: '', role: '', startDate: '', endDate: '', description: '', isCurrent: false });
       toast({ title: "Experience added!" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to add experience" });
@@ -110,12 +115,22 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <Plus className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-[2rem]">
+                <DialogContent className="rounded-[2rem] max-h-[90vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Add Experience</DialogTitle></DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-1"><Label>Company</Label><Input value={expForm.company} onChange={e => setExpForm({...expForm, company: e.target.value})} className="rounded-xl" /></div>
                     <div className="space-y-1"><Label>Role</Label><Input value={expForm.role} onChange={e => setExpForm({...expForm, role: e.target.value})} className="rounded-xl" /></div>
-                    <div className="space-y-1"><Label>Start Date</Label><Input placeholder="MM/YYYY" value={expForm.startDate} onChange={e => setExpForm({...expForm, startDate: e.target.value})} className="rounded-xl" /></div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1"><Label>Start Date</Label><Input placeholder="MM/YYYY" value={expForm.startDate} onChange={e => setExpForm({...expForm, startDate: e.target.value})} className="rounded-xl" /></div>
+                      <div className="space-y-1"><Label>End Date</Label><Input placeholder="MM/YYYY" value={expForm.endDate} onChange={e => setExpForm({...expForm, endDate: e.target.value})} disabled={expForm.isCurrent} className="rounded-xl" /></div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 py-2">
+                      <Checkbox id="exp-current" checked={expForm.isCurrent} onCheckedChange={(checked) => setExpForm({...expForm, isCurrent: !!checked, endDate: checked ? '' : expForm.endDate})} />
+                      <label htmlFor="exp-current" className="text-sm font-medium">Currently working here</label>
+                    </div>
+
                     <div className="space-y-1"><Label>Description</Label><Textarea value={expForm.description} onChange={e => setExpForm({...expForm, description: e.target.value})} className="rounded-xl" /></div>
                   </div>
                   <DialogFooter><Button onClick={handleAddExp} disabled={loading} className="w-full rounded-full h-12 font-bold">{loading ? <Loader2 className="animate-spin" /> : "Save Experience"}</Button></DialogFooter>
@@ -133,7 +148,9 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                   <p className="font-bold text-sm leading-tight">{exp.role}</p>
                   {isOwnProfile && <button onClick={() => handleRemoveExp(exp)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>}
                 </div>
-                <p className="text-[10px] text-muted-foreground font-bold">{exp.company} • {exp.startDate}</p>
+                <p className="text-[10px] text-muted-foreground font-bold">
+                  {exp.company} • {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
+                </p>
                 {exp.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2">{exp.description}</p>}
               </div>
             </div>
@@ -155,13 +172,24 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <Plus className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-[2rem]">
+                <DialogContent className="rounded-[2rem] max-h-[90vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Add Education</DialogTitle></DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-1"><Label>School</Label><Input value={eduForm.school} onChange={e => setEduForm({...eduForm, school: e.target.value})} className="rounded-xl" /></div>
                     <div className="space-y-1"><Label>Degree</Label><Input value={eduForm.degree} onChange={e => setEduForm({...eduForm, degree: e.target.value})} className="rounded-xl" /></div>
                     <div className="space-y-1"><Label>Field of Study</Label><Input value={eduForm.fieldOfStudy} onChange={e => setEduForm({...eduForm, fieldOfStudy: e.target.value})} className="rounded-xl" /></div>
-                    <div className="space-y-1"><Label>Start Year</Label><Input value={eduForm.startYear} onChange={e => setEduForm({...eduForm, startYear: e.target.value})} className="rounded-xl" /></div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1"><Label>Start Year</Label><Input value={eduForm.startYear} onChange={e => setEduForm({...eduForm, startYear: e.target.value})} className="rounded-xl" /></div>
+                      <div className="space-y-1"><Label>End Date / Expected</Label><Input value={eduForm.endDate} onChange={e => setEduForm({...eduForm, endDate: e.target.value})} disabled={eduForm.isCurrent} className="rounded-xl" /></div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 py-2">
+                      <Checkbox id="edu-current" checked={eduForm.isCurrent} onCheckedChange={(checked) => setEduForm({...eduForm, isCurrent: !!checked, endDate: checked ? '' : eduForm.endDate})} />
+                      <label htmlFor="edu-current" className="text-sm font-medium">Currently studying here</label>
+                    </div>
+
+                    <div className="space-y-1"><Label>Description</Label><Textarea value={eduForm.description} onChange={e => setEduForm({...eduForm, description: e.target.value})} className="rounded-xl" /></div>
                   </div>
                   <DialogFooter><Button onClick={handleAddEdu} disabled={loading} className="w-full rounded-full h-12 font-bold">{loading ? <Loader2 className="animate-spin" /> : "Save Education"}</Button></DialogFooter>
                 </DialogContent>
@@ -178,8 +206,11 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                   <p className="font-bold text-sm leading-tight">{edu.degree}</p>
                   {isOwnProfile && <button onClick={() => handleRemoveEdu(edu)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>}
                 </div>
-                <p className="text-[10px] text-muted-foreground font-bold">{edu.school} • {edu.startYear}</p>
+                <p className="text-[10px] text-muted-foreground font-bold">
+                  {edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}
+                </p>
                 {edu.fieldOfStudy && <p className="text-[10px] text-muted-foreground mt-0.5">{edu.fieldOfStudy}</p>}
+                {edu.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2">{edu.description}</p>}
               </div>
             </div>
           )) : (
