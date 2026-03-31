@@ -7,7 +7,6 @@ import {
   Zap, 
   Trophy, 
   Globe, 
-  Clock, 
   ChevronRight,
   Eye,
   Briefcase,
@@ -17,16 +16,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { UserProfileData } from '@/features/auth/types';
+import { UserProfileData } from '../types';
+import { ProjectWorkspace, ProjectWorkspaceTeamMember } from '@/features/projects/types';
 
 interface ProfileViewProps {
   profile: UserProfileData;
-  projects: any[];
+  projects: ProjectWorkspace[];
   isOwnProfile: boolean;
 }
 
@@ -42,6 +42,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
             src={profile.bannerUrl || `https://picsum.photos/seed/${profile.uid}/1200/400`} 
             alt="Banner" 
             className="w-full h-full object-cover" 
+            data-ai-hint="builder banner"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-xl border border-white/30 p-3 md:p-4 rounded-2xl flex flex-col items-center">
@@ -56,6 +57,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/200/200`} 
               alt={profile.displayName} 
               className="w-full h-full object-cover rounded-[1.5rem] md:rounded-[2rem]" 
+              data-ai-hint="profile picture"
             />
           </div>
           
@@ -64,7 +66,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               <h1 className="text-2xl md:text-4xl font-headline font-bold text-foreground">{profile.displayName}</h1>
               <div className="flex flex-wrap items-center gap-2 mt-1">
                 <Badge className="bg-primary/10 text-primary border-none text-[10px] font-bold">
-                  {profile.role?.toUpperCase()}
+                  {profile.role?.toUpperCase() || 'BUILDER'}
                 </Badge>
                 <span className="text-xs md:text-sm text-muted-foreground font-medium flex items-center gap-1.5">
                   <Globe className="w-4 h-4" /> {profile.location?.city || 'India'}
@@ -88,7 +90,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                     </div>
                     <div className="space-y-2">
                       <Label>City</Label>
-                      <Input defaultValue={profile.location.city} className="rounded-xl" />
+                      <Input defaultValue={profile.location?.city} className="rounded-xl" />
                     </div>
                   </div>
                   <DialogFooter>
@@ -121,7 +123,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                 <div className="pt-4 border-t">
                   <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Core Domains</p>
                   <div className="flex flex-wrap gap-2">
-                    {profile.domains?.map(domain => (
+                    {profile.domains?.map((domain: string) => (
                       <Badge key={domain} variant="secondary" className="bg-muted text-muted-foreground border-none text-[10px] font-bold">
                         {domain.toUpperCase()}
                       </Badge>
@@ -152,7 +154,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
             </TabsList>
 
             <TabsContent value="portfolio" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {projects.length > 0 ? projects.map((project) => (
+              {projects.length > 0 ? projects.map((project: ProjectWorkspace) => (
                 <Card key={project.id} className="glass-card group overflow-hidden border-none shadow-xl rounded-[2rem] bg-white">
                   <div className="h-40 md:h-48 bg-muted relative">
                     <img src={project.coverImageUrl} className="w-full h-full object-cover" alt={project.title} />
@@ -163,7 +165,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   </div>
                   <div className="p-6 md:p-8">
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {project.tags.map(tag => (
+                      {project.tags.map((tag: string) => (
                         <Badge key={tag} className="bg-primary/5 text-primary border-none text-[10px] font-bold">
                           #{tag.toUpperCase()}
                         </Badge>
@@ -171,9 +173,9 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                     </div>
                     <div className="flex items-center justify-between">
                        <div className="flex -space-x-3">
-                         {project.team.slice(0, 3).map((mate, i) => (
+                         {project.team.slice(0, 3).map((mate: ProjectWorkspaceTeamMember, i: number) => (
                            <div key={i} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-4 border-white bg-muted overflow-hidden">
-                             <img src={mate.avatarUrl} className="w-full h-full object-cover" alt="" />
+                             <img src={mate.avatarUrl} className="w-full h-full object-cover" alt={mate.name} />
                            </div>
                          ))}
                        </div>

@@ -3,7 +3,7 @@
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { UserProfileData, UserPrivateData } from '@/features/auth/types';
+import { UserProfileData, UserPrivateData } from '../types';
 import { cache as reactCache } from 'react';
 import { unstable_cache as nextCache } from 'next/cache';
 

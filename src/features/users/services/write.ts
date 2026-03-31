@@ -3,7 +3,7 @@
 
 import { db } from '@/lib/firebase';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
-import { UserProfileData } from '@/features/auth/types';
+import { UserProfileData } from '../types';
 import { revalidateTag } from 'next/cache';
 
 /**
