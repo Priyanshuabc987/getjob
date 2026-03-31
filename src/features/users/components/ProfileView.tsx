@@ -14,7 +14,8 @@ import {
   MapPin, 
   Clock,
   LayoutGrid,
-  Loader2
+  Loader2,
+  ShieldCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +31,7 @@ import { UserProfileData, ExperienceEntry, EducationEntry } from '../types';
 import { ProjectWorkspace } from '@/features/projects/types';
 import { updateProfile, addExperience, addEducation } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface ProfileViewProps {
   profile: UserProfileData;
@@ -137,7 +139,8 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               className="w-full h-full object-cover" 
             />
           )}
-          <div className="absolute top-8 right-8 bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-[2rem] flex flex-col items-center shadow-2xl scale-90 md:scale-100">
+          {/* Credibility Badge - Top Left as per Image */}
+          <div className="absolute top-8 left-8 bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-[2rem] flex flex-col items-center shadow-2xl scale-90 md:scale-100">
             <span className="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em] mb-1">Credibility</span>
             <span className="text-4xl font-headline font-bold text-white">{profile.credibilityScore}</span>
           </div>
@@ -145,6 +148,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
 
         <div className="px-6 md:px-12 -mt-20 md:-mt-24 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-10">
+            {/* Rounded Square Avatar */}
             <div className="w-40 h-40 md:w-52 md:h-52 rounded-[3rem] p-2 bg-white shadow-2xl shrink-0 group relative overflow-hidden">
               <img 
                 src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/300/300`} 
@@ -226,7 +230,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Sidebar */}
+        {/* Sidebar - Left side as per image */}
         <aside className="space-y-8">
           <Card className="glass-card border-none shadow-xl rounded-[2.5rem] bg-white p-10">
             <div className="flex items-center justify-between mb-10">
@@ -340,6 +344,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
           </Card>
         </aside>
 
+        {/* Portfolio Tabs & Main Column */}
         <section className="lg:col-span-2">
           <Tabs defaultValue="portfolio" className="w-full">
             <TabsList className="bg-white p-2 rounded-[2.5rem] w-full h-auto mb-10 shadow-lg border border-muted/50">
@@ -400,6 +405,22 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   </Button>
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="jobs" className="space-y-6">
+              <div className="text-center py-20">
+                <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-bold">Active Micro-Jobs</h3>
+                <p className="text-sm text-muted-foreground">Complete tasks to build your credibility score.</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="badges" className="space-y-6">
+              <div className="text-center py-20">
+                <Trophy className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-bold">Achievements</h3>
+                <p className="text-sm text-muted-foreground">Proof of excellence in your domain.</p>
+              </div>
             </TabsContent>
           </Tabs>
         </section>
