@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from 'react';
-import { 
-  Edit2, 
-  Zap, 
-  Trophy, 
-  Globe, 
+import {
+  Edit2,
+  Zap,
+  Trophy,
+  Globe,
   ChevronRight,
   Eye,
   Briefcase,
@@ -132,10 +132,10 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
         <div className="h-64 md:h-80 w-full rounded-[2.5rem] bg-gradient-to-br from-[#6626D9] to-[#3B82F6] overflow-hidden shadow-2xl relative group">
           <div className="absolute inset-0 bg-black/10" />
           {profile.bannerUrl && (
-            <img 
-              src={profile.bannerUrl} 
-              alt="Banner" 
-              className="w-full h-full object-cover" 
+            <img
+              src={profile.bannerUrl}
+              alt="Banner"
+              className="w-full h-full object-cover"
             />
           )}
           <div className="absolute top-8 right-8 bg-white/10 backdrop-blur-2xl border border-white/20 p-6 rounded-[2rem] flex flex-col items-center shadow-2xl scale-90 md:scale-100">
@@ -143,27 +143,31 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
             <span className="text-4xl font-headline font-bold text-white">{profile.credibilityScore}</span>
           </div>
         </div>
-        
+
         <div className="px-6 md:px-12 -mt-20 md:-mt-24 relative z-10">
           <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-10">
             <div className="w-40 h-40 md:w-52 md:h-52 rounded-[3rem] p-2 bg-white shadow-2xl shrink-0 group relative overflow-hidden">
-              <img 
-                src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/300/300`} 
-                alt={profile.displayName} 
-                className="w-full h-full object-cover rounded-[2.5rem]" 
+              <img
+                src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/300/300`}
+                alt={profile.displayName}
+                className="w-full h-full object-cover rounded-[2.5rem]"
               />
             </div>
-            
+
             <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6">
               <div className="space-y-2">
                 <h1 className="text-4xl md:text-5xl font-headline font-bold text-foreground tracking-tight">{profile.displayName}</h1>
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    {profile.domains.map(domain => (
-                      <Badge key={domain} className="bg-primary/10 text-primary border-none text-sm px-3 py-1 font-bold">
+                    {profile?.domains?.map((domain) => (
+                      <Badge
+                        key={domain}
+                        className="bg-primary/10 text-primary border-none text-sm px-3 py-1 font-bold"
+                      >
                         {domain}
                       </Badge>
                     ))}
+
                   </div>
                   <p className="text-muted-foreground font-bold text-base">{profile.collegeName}</p>
                   <div className="flex flex-wrap items-center gap-6 text-muted-foreground font-bold text-sm">
@@ -173,7 +177,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   </div>
                 </div>
               </div>
-              
+
               {isOwnProfile && (
                 <Dialog open={isEditing} onOpenChange={setIsEditing}>
                   <DialogTrigger asChild>
@@ -186,24 +190,24 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                     <div className="grid gap-6 py-6 pr-2">
                       <div className="space-y-2">
                         <Label>Display Name</Label>
-                        <Input value={formData.displayName} onChange={(e) => setFormData({...formData, displayName: e.target.value})} className="rounded-xl h-12" />
+                        <Input value={formData.displayName} onChange={(e) => setFormData({ ...formData, displayName: e.target.value })} className="rounded-xl h-12" />
                       </div>
                       <div className="space-y-2">
                         <Label>Profile Picture URL</Label>
-                        <Input value={formData.photoURL} onChange={(e) => setFormData({...formData, photoURL: e.target.value})} className="rounded-xl h-12" />
+                        <Input value={formData.photoURL} onChange={(e) => setFormData({ ...formData, photoURL: e.target.value })} className="rounded-xl h-12" />
                       </div>
                       <div className="space-y-2">
                         <Label>College/University</Label>
-                        <Input value={formData.collegeName} onChange={(e) => setFormData({...formData, collegeName: e.target.value})} className="rounded-xl h-12" />
+                        <Input value={formData.collegeName} onChange={(e) => setFormData({ ...formData, collegeName: e.target.value })} className="rounded-xl h-12" />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label>City</Label>
-                          <Input value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="rounded-xl h-12" />
+                          <Input value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} className="rounded-xl h-12" />
                         </div>
                         <div className="space-y-2">
                           <Label>Country</Label>
-                          <Input value={formData.country} onChange={(e) => setFormData({...formData, country: e.target.value})} className="rounded-xl h-12" />
+                          <Input value={formData.country} onChange={(e) => setFormData({ ...formData, country: e.target.value })} className="rounded-xl h-12" />
                         </div>
                       </div>
                     </div>
@@ -224,122 +228,122 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
         {/* Sidebar */}
         <aside className="space-y-8">
           <Card className="glass-card border-none shadow-xl rounded-[2.5rem] bg-white p-10">
-             <div className="flex items-center justify-between mb-10">
-               <h3 className="font-headline text-xl font-bold flex items-center gap-3"><Briefcase className="w-6 h-6 text-primary" /> Building History</h3>
-             </div>
-             
-             <div className="space-y-10">
-                {/* Experiences */}
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em]">Experiences</p>
-                    {isOwnProfile && (
-                      <Dialog open={isAddingExp} onOpenChange={setIsAddingExp}>
-                        <DialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10 text-primary">
-                            <Plus className="w-4 h-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="rounded-[2.5rem]">
-                          <DialogHeader><DialogTitle className="font-headline">Add Experience</DialogTitle></DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div className="space-y-2"><Label>Role</Label><Input placeholder="Frontend Engineer" value={expData.role} onChange={e => setExpData({...expData, role: e.target.value})} /></div>
-                            <div className="space-y-2"><Label>Company</Label><Input placeholder="Acme Inc" value={expData.company} onChange={e => setExpData({...expData, company: e.target.value})} /></div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="space-y-2"><Label>Start Date</Label><Input type="date" value={expData.startDate} onChange={e => setExpData({...expData, startDate: e.target.value})} /></div>
-                              <div className="space-y-2"><Label>End Date</Label><Input type="date" value={expData.endDate} onChange={e => setExpData({...expData, endDate: e.target.value})} /></div>
-                            </div>
-                            <div className="space-y-2"><Label>Description</Label><Textarea placeholder="What did you build?" value={expData.description} onChange={e => setExpData({...expData, description: e.target.value})} /></div>
+            <div className="flex items-center justify-between mb-10">
+              <h3 className="font-headline text-xl font-bold flex items-center gap-3"><Briefcase className="w-6 h-6 text-primary" /> Building History</h3>
+            </div>
+
+            <div className="space-y-10">
+              {/* Experiences */}
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em]">Experiences</p>
+                  {isOwnProfile && (
+                    <Dialog open={isAddingExp} onOpenChange={setIsAddingExp}>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10 text-primary">
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="rounded-[2.5rem]">
+                        <DialogHeader><DialogTitle className="font-headline">Add Experience</DialogTitle></DialogHeader>
+                        <div className="space-y-4 py-4">
+                          <div className="space-y-2"><Label>Role</Label><Input placeholder="Frontend Engineer" value={expData.role} onChange={e => setExpData({ ...expData, role: e.target.value })} /></div>
+                          <div className="space-y-2"><Label>Company</Label><Input placeholder="Acme Inc" value={expData.company} onChange={e => setExpData({ ...expData, company: e.target.value })} /></div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2"><Label>Start Date</Label><Input type="date" value={expData.startDate} onChange={e => setExpData({ ...expData, startDate: e.target.value })} /></div>
+                            <div className="space-y-2"><Label>End Date</Label><Input type="date" value={expData.endDate} onChange={e => setExpData({ ...expData, endDate: e.target.value })} /></div>
                           </div>
-                          <DialogFooter>
-                            <Button onClick={handleAddExp} disabled={loading} className="w-full rounded-full h-12 action-button-glow font-bold">
-                              {loading ? <Loader2 className="animate-spin" /> : "Save Experience"}
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    )}
-                  </div>
-                  {profile.experience.length > 0 ? profile.experience.map((exp) => (
-                    <div key={exp.id} className="flex gap-4 group">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center shrink-0 border">
-                        <Briefcase className="w-6 h-6 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-base leading-tight">{exp.role}</p>
-                        <p className="text-xs text-muted-foreground mt-1 font-bold">{exp.company}</p>
-                        <p className="text-[10px] text-muted-foreground">{exp.startDate} - {exp.endDate || 'Present'}</p>
-                        {exp.description && <p className="text-xs text-muted-foreground mt-2 line-clamp-2 italic">"{exp.description}"</p>}
-                      </div>
-                    </div>
-                  )) : (
-                    <div className="p-4 rounded-2xl bg-primary/5 border border-dashed border-primary/20 text-center space-y-2">
-                      <p className="text-xs font-bold text-primary italic">"Proof-of-work speaks louder than words."</p>
-                      <p className="text-[10px] text-muted-foreground">Add your experience to get noticed by top startups.</p>
-                    </div>
+                          <div className="space-y-2"><Label>Description</Label><Textarea placeholder="What did you build?" value={expData.description} onChange={e => setExpData({ ...expData, description: e.target.value })} /></div>
+                        </div>
+                        <DialogFooter>
+                          <Button onClick={handleAddExp} disabled={loading} className="w-full rounded-full h-12 action-button-glow font-bold">
+                            {loading ? <Loader2 className="animate-spin" /> : "Save Experience"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </div>
-
-                <Separator />
-
-                {/* Education */}
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em]">Education</p>
-                    {isOwnProfile && (
-                      <Dialog open={isAddingEdu} onOpenChange={setIsAddingEdu}>
-                        <DialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10 text-primary">
-                            <Plus className="w-4 h-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="rounded-[2.5rem]">
-                          <DialogHeader><DialogTitle className="font-headline">Add Education</DialogTitle></DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div className="space-y-2"><Label>School/University</Label><Input placeholder="IIT Delhi" value={eduData.school} onChange={e => setEduData({...eduData, school: e.target.value})} /></div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="space-y-2"><Label>Degree</Label><Input placeholder="B.Tech" value={eduData.degree} onChange={e => setEduData({...eduData, degree: e.target.value})} /></div>
-                              <div className="space-y-2"><Label>Field of Study</Label><Input placeholder="Computer Science" value={eduData.fieldOfStudy} onChange={e => setEduData({...eduData, fieldOfStudy: e.target.value})} /></div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="space-y-2"><Label>Start Year</Label><Input placeholder="2021" value={eduData.startYear} onChange={e => setEduData({...eduData, startYear: e.target.value})} /></div>
-                              <div className="space-y-2"><Label>End Year (Expected)</Label><Input placeholder="2025" value={eduData.endYear} onChange={e => setEduData({...eduData, endYear: e.target.value})} /></div>
-                            </div>
-                            <div className="space-y-2"><Label>Description</Label><Textarea placeholder="Relevant courses or activities" value={eduData.description} onChange={e => setEduData({...eduData, description: e.target.value})} /></div>
-                          </div>
-                          <DialogFooter>
-                            <Button onClick={handleAddEdu} disabled={loading} className="w-full rounded-full h-12 action-button-glow font-bold">
-                              {loading ? <Loader2 className="animate-spin" /> : "Save Education"}
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    )}
+                {profile?.experience?.length ? profile.experience.map((exp) => (
+                  <div key={exp.id} className="flex gap-4 group">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center shrink-0 border">
+                      <Briefcase className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-base leading-tight">{exp.role}</p>
+                      <p className="text-xs text-muted-foreground mt-1 font-bold">{exp.company}</p>
+                      <p className="text-[10px] text-muted-foreground">{exp.startDate} - {exp.endDate || 'Present'}</p>
+                      {exp.description && <p className="text-xs text-muted-foreground mt-2 line-clamp-2 italic">"{exp.description}"</p>}
+                    </div>
                   </div>
-                  {profile.education.length > 0 ? profile.education.map((edu) => (
-                    <div key={edu.id} className="flex gap-4 group">
-                      <div className="w-12 h-12 rounded-2xl bg-secondary/5 flex items-center justify-center shrink-0 border border-secondary/20">
-                        <GraduationCap className="w-6 h-6 text-secondary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-base leading-tight">{edu.school}</p>
-                        <p className="text-xs text-muted-foreground mt-1 font-bold">{edu.degree} in {edu.fieldOfStudy}</p>
-                        <p className="text-[10px] text-muted-foreground">{edu.startYear} - {edu.endYear || 'Present'}</p>
-                      </div>
-                    </div>
-                  )) : (
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-secondary/5 flex items-center justify-center shrink-0 border border-secondary/20">
-                        <GraduationCap className="w-6 h-6 text-secondary" />
-                      </div>
-                      <div>
-                        <p className="font-bold text-base leading-tight">{profile.collegeName || 'Education not listed'}</p>
-                        <p className="text-xs text-muted-foreground mt-1">Add your academic background to build credibility.</p>
-                      </div>
-                    </div>
+                )) : (
+                  <div className="p-4 rounded-2xl bg-primary/5 border border-dashed border-primary/20 text-center space-y-2">
+                    <p className="text-xs font-bold text-primary italic">"Proof-of-work speaks louder than words."</p>
+                    <p className="text-[10px] text-muted-foreground">Add your experience to get noticed by top startups.</p>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              {/* Education */}
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em]">Education</p>
+                  {isOwnProfile && (
+                    <Dialog open={isAddingEdu} onOpenChange={setIsAddingEdu}>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-primary/10 text-primary">
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="rounded-[2.5rem]">
+                        <DialogHeader><DialogTitle className="font-headline">Add Education</DialogTitle></DialogHeader>
+                        <div className="space-y-4 py-4">
+                          <div className="space-y-2"><Label>School/University</Label><Input placeholder="IIT Delhi" value={eduData.school} onChange={e => setEduData({ ...eduData, school: e.target.value })} /></div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2"><Label>Degree</Label><Input placeholder="B.Tech" value={eduData.degree} onChange={e => setEduData({ ...eduData, degree: e.target.value })} /></div>
+                            <div className="space-y-2"><Label>Field of Study</Label><Input placeholder="Computer Science" value={eduData.fieldOfStudy} onChange={e => setEduData({ ...eduData, fieldOfStudy: e.target.value })} /></div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2"><Label>Start Year</Label><Input placeholder="2021" value={eduData.startYear} onChange={e => setEduData({ ...eduData, startYear: e.target.value })} /></div>
+                            <div className="space-y-2"><Label>End Year (Expected)</Label><Input placeholder="2025" value={eduData.endYear} onChange={e => setEduData({ ...eduData, endYear: e.target.value })} /></div>
+                          </div>
+                          <div className="space-y-2"><Label>Description</Label><Textarea placeholder="Relevant courses or activities" value={eduData.description} onChange={e => setEduData({ ...eduData, description: e.target.value })} /></div>
+                        </div>
+                        <DialogFooter>
+                          <Button onClick={handleAddEdu} disabled={loading} className="w-full rounded-full h-12 action-button-glow font-bold">
+                            {loading ? <Loader2 className="animate-spin" /> : "Save Education"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </div>
-             </div>
+                {profile?.education?.length > 0 ? profile.education.map((edu) => (
+                  <div key={edu.id} className="flex gap-4 group">
+                    <div className="w-12 h-12 rounded-2xl bg-secondary/5 flex items-center justify-center shrink-0 border border-secondary/20">
+                      <GraduationCap className="w-6 h-6 text-secondary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-bold text-base leading-tight">{edu.school}</p>
+                      <p className="text-xs text-muted-foreground mt-1 font-bold">{edu.degree} in {edu.fieldOfStudy}</p>
+                      <p className="text-[10px] text-muted-foreground">{edu.startYear} - {edu.endYear || 'Present'}</p>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-secondary/5 flex items-center justify-center shrink-0 border border-secondary/20">
+                      <GraduationCap className="w-6 h-6 text-secondary" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-base leading-tight">{profile.collegeName || 'Education not listed'}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Add your academic background to build credibility.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </Card>
         </aside>
 
@@ -376,16 +380,16 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                       ))}
                     </div>
                     <div className="flex items-center justify-between pt-8 border-t border-muted">
-                       <div className="flex -space-x-3">
-                         {project.team.slice(0, 3).map((mate, i) => (
-                           <div key={mate.userId} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-lg bg-muted">
-                             <img src={mate.avatarUrl} className="w-full h-full object-cover" alt={mate.name} />
-                           </div>
-                         ))}
-                       </div>
-                       <Button variant="ghost" className="text-primary font-bold hover:bg-primary/5 group/btn rounded-full px-6">
-                         View Roadmap <ChevronRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                       </Button>
+                      <div className="flex -space-x-3">
+                        {project.team.slice(0, 3).map((mate, i) => (
+                          <div key={mate.userId} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden shadow-lg bg-muted">
+                            <img src={mate.avatarUrl} className="w-full h-full object-cover" alt={mate.name} />
+                          </div>
+                        ))}
+                      </div>
+                      <Button variant="ghost" className="text-primary font-bold hover:bg-primary/5 group/btn rounded-full px-6">
+                        View Roadmap <ChevronRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
                     </div>
                   </div>
                 </Card>
