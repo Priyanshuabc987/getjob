@@ -31,6 +31,7 @@ export interface UserProfileData {
   displayName: string;
   photoURL?: string;
   bannerUrl?: string;
+  bio?: string;
   role: UserRole;
   domains: string[];
   experienceLevel: ExperienceLevel;

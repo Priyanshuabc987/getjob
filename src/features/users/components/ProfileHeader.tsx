@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from 'react';
-import { Edit2, MapPin, Clock, Loader2, ShieldCheck } from 'lucide-react';
+import { Edit2, MapPin, Clock, Loader2, ShieldCheck, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { UserProfileData } from '../types';
 import { updateProfile } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +30,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
     city: profile.location?.city || '',
     country: profile.location?.country || '',
     photoURL: profile.photoURL || '',
+    bio: profile.bio || '',
   });
 
   const handleUpdateProfile = async () => {
@@ -38,6 +40,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         displayName: formData.displayName,
         collegeName: formData.collegeName,
         photoURL: formData.photoURL,
+        bio: formData.bio,
         location: { city: formData.city, country: formData.country }
       });
       setIsEditing(false);
@@ -63,17 +66,18 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             <img src={profile.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
           )}
           
-          {/* Credibility Badge */}
-          <div className="absolute top-6 left-6 md:top-8 md:left-12 bg-white/10 backdrop-blur-xl border border-white/20 px-4 py-2 md:px-6 md:py-3 rounded-[1.5rem] flex flex-col items-center shadow-xl">
-            <span className="text-[9px] md:text-[10px] font-bold text-white/80 uppercase tracking-widest mb-0.5">Credibility</span>
+          {/* Credibility Badge - Top Right */}
+          <div className="absolute top-6 right-6 md:top-8 md:right-12 bg-white/20 backdrop-blur-xl border border-white/30 px-5 py-2.5 rounded-[1.5rem] flex flex-col items-center shadow-2xl">
+            <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest mb-0.5">Credibility</span>
             <span className="text-2xl md:text-3xl font-headline font-bold text-white">{profile.credibilityScore}</span>
           </div>
         </div>
 
-        {/* Profile Info Row with overlapping avatar */}
-        <div className="px-6 md:px-12 -mt-16 md:-mt-20 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end gap-6">
-            <div className="w-32 h-32 md:w-44 md:h-44 rounded-[2.5rem] p-1.5 bg-white shadow-2xl shrink-0">
+        {/* Profile Info Row with Overlapping Avatar */}
+        <div className="px-6 md:px-12 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end gap-6 -mt-20 md:-mt-24">
+            {/* Avatar - Half overlapping */}
+            <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2.5rem] p-1.5 bg-white shadow-2xl shrink-0">
               <img 
                 src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
                 alt={profile.displayName} 
@@ -81,39 +85,41 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
               />
             </div>
 
-            <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
-              <div className="space-y-1 md:space-y-2">
-                <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2">
+            {/* User Meta */}
+            <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-4">
+              <div className="space-y-1.5 md:space-y-3">
+                <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-3">
                   {profile.displayName}
-                  {profile.credibilityScore > 80 && <ShieldCheck className="w-6 h-6 text-primary" />}
+                  {profile.credibilityScore > 80 && <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 text-primary fill-current text-white" />}
                 </h1>
-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                   <p className="text-primary font-bold text-sm">@{profile.role || 'builder'}</p>
+                <div className="flex flex-wrap items-center gap-2 md:gap-4">
+                   <p className="text-primary font-bold text-sm md:text-base">@{profile.role || 'builder'}</p>
                    {profile.collegeName && (
-                     <span className="text-muted-foreground font-bold text-xs">• {profile.collegeName}</span>
+                     <span className="text-muted-foreground font-bold text-xs md:text-sm">• {profile.collegeName}</span>
                    )}
                 </div>
-                <div className="flex flex-wrap items-center gap-4 text-muted-foreground font-bold text-[11px] mt-2">
-                  <span className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-4 text-muted-foreground font-bold text-[11px] md:text-xs mt-2">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm border border-muted/50">
                     <MapPin className="w-3.5 h-3.5 text-primary" /> {profile.location?.city || 'Earth'}, {profile.location?.country || 'Core'}
-                  </span>
-                  <span className="flex items-center gap-1.5">
+                  </div>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full shadow-sm border border-muted/50">
                     <Clock className="w-3.5 h-3.5 text-primary" /> Building for {buildingDuration}
-                  </span>
+                  </div>
                 </div>
               </div>
 
               {isOwnProfile && (
                 <Dialog open={isEditing} onOpenChange={setIsEditing}>
                   <DialogTrigger asChild>
-                    <Button className="rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow">
+                    <Button className="rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow mb-2">
                       <Edit2 className="w-4 h-4" /> Edit Profile
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="rounded-[2rem] sm:max-w-md">
                     <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
-                    <div className="grid gap-4 py-4">
+                    <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
                       <div className="space-y-2"><Label>Display Name</Label><Input value={formData.displayName} onChange={e => setFormData({...formData, displayName: e.target.value})} className="rounded-xl" /></div>
+                      <div className="space-y-2"><Label>Short Bio</Label><Textarea value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} className="rounded-xl" placeholder="Tell the community about yourself..." /></div>
                       <div className="space-y-2"><Label>College</Label><Input value={formData.collegeName} onChange={e => setFormData({...formData, collegeName: e.target.value})} className="rounded-xl" /></div>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2"><Label>City</Label><Input value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="rounded-xl" /></div>

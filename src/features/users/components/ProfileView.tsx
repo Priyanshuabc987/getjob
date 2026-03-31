@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Trophy, Zap, LayoutGrid, ChevronRight } from 'lucide-react';
+import { Eye, Trophy, Zap, LayoutGrid, ChevronRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -22,9 +22,29 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
     <div className="space-y-8 pb-20">
       <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
 
-      <div className="max-w-6xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Left Sidebar - Professional History */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Sidebar */}
         <aside className="space-y-8">
+          {/* Bio Section */}
+          <Card className="rounded-[2.5rem] border-none shadow-xl bg-white p-8">
+            <h3 className="font-headline text-lg font-bold flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+                <User className="w-4 h-4 text-secondary" />
+              </div>
+              About Builder
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {profile.bio || "This builder hasn't written their bio yet. Encourage them to share their vision!"}
+            </p>
+            <div className="flex flex-wrap gap-2 mt-6">
+              {profile.domains?.map((domain: string) => (
+                <Badge key={domain} variant="outline" className="rounded-lg text-[10px] font-bold text-muted-foreground uppercase py-1">
+                  {domain}
+                </Badge>
+              ))}
+            </div>
+          </Card>
+
           <ProfessionalHistory profile={profile} isOwnProfile={isOwnProfile} />
         </aside>
 
@@ -52,7 +72,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                     <div className="absolute bottom-8 left-8 right-8">
                       <h3 className="text-3xl font-headline font-bold text-white mb-2">{project.title}</h3>
                       <div className="flex flex-wrap gap-2">
-                        {project.tags?.map(tag => (
+                        {project.tags?.map((tag: string) => (
                           <Badge key={tag} className="bg-primary/20 text-white backdrop-blur-md border-none text-[10px] font-bold px-4 py-1.5 rounded-lg">
                             #{tag.toUpperCase()}
                           </Badge>

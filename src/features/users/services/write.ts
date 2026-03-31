@@ -25,6 +25,7 @@ export async function createInitialUser(
       displayName,
       photoURL,
       bannerUrl: '',
+      bio: '',
       role: 'builder',
       domains: [],
       experienceLevel: 'Beginner',

@@ -122,8 +122,34 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <div className="space-y-1"><Label>Role</Label><Input value={expForm.role} onChange={e => setExpForm({...expForm, role: e.target.value})} className="rounded-xl" /></div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1"><Label>Start Date</Label><Input placeholder="MM/YYYY" value={expForm.startDate} onChange={e => setExpForm({...expForm, startDate: e.target.value})} className="rounded-xl" /></div>
-                      <div className="space-y-1"><Label>End Date</Label><Input placeholder="MM/YYYY" value={expForm.endDate} onChange={e => setExpForm({...expForm, endDate: e.target.value})} disabled={expForm.isCurrent} className="rounded-xl" /></div>
+                      <div className="space-y-1">
+                        <Label>Start Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-xl", !expForm.startDate && "text-muted-foreground")}>
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {expForm.startDate ? expForm.startDate : "Pick date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" onSelect={(d) => setExpForm({...expForm, startDate: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="space-y-1">
+                        <Label>End Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" disabled={expForm.isCurrent} className={cn("w-full justify-start text-left font-normal rounded-xl", !expForm.endDate && "text-muted-foreground")}>
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {expForm.endDate ? expForm.endDate : "Pick date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" onSelect={(d) => setExpForm({...expForm, endDate: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                     </div>
                     
                     <div className="flex items-center space-x-2 py-2">
@@ -180,8 +206,34 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <div className="space-y-1"><Label>Field of Study</Label><Input value={eduForm.fieldOfStudy} onChange={e => setEduForm({...eduForm, fieldOfStudy: e.target.value})} className="rounded-xl" /></div>
                     
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1"><Label>Start Year</Label><Input value={eduForm.startYear} onChange={e => setEduForm({...eduForm, startYear: e.target.value})} className="rounded-xl" /></div>
-                      <div className="space-y-1"><Label>End Date / Expected</Label><Input value={eduForm.endDate} onChange={e => setEduForm({...eduForm, endDate: e.target.value})} disabled={eduForm.isCurrent} className="rounded-xl" /></div>
+                      <div className="space-y-1">
+                        <Label>Start Date</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-xl", !eduForm.startYear && "text-muted-foreground")}>
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {eduForm.startYear ? eduForm.startYear : "Pick date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" onSelect={(d) => setEduForm({...eduForm, startYear: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                      <div className="space-y-1">
+                        <Label>End Date / Expected</Label>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" disabled={eduForm.isCurrent} className={cn("w-full justify-start text-left font-normal rounded-xl", !eduForm.endDate && "text-muted-foreground")}>
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {eduForm.endDate ? eduForm.endDate : "Pick date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" onSelect={(d) => setEduForm({...eduForm, endDate: d ? format(d, 'MM/yyyy') : ''})} initialFocus />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                     </div>
 
                     <div className="flex items-center space-x-2 py-2">
