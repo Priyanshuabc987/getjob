@@ -2,7 +2,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { projectWorkspaces } from '@/lib/mock-data';
 import { getCachedUserProfile } from '@/features/users/services/read';
 import { ProfileView } from '@/features/users/components/ProfileView';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 import { getSession } from '@/features/auth/actions';
 
 export const metadata = {
@@ -27,15 +27,12 @@ export default async function ProfilePage({
 
   const profileData = await getCachedUserProfile(targetUid);
   
-  console.log("Profile Fetch Result:", profileData ? profileData.displayName : "null");
-
   if (!profileData) {
     // If it's the current user and no profile exists, send to onboarding
     if (targetUid === sessionUid) {
       redirect('/onboarding');
     }
-    // If looking for another user that doesn't exist
-    redirect('/404');
+    notFound();
   }
 
   // Filter projects owned by this user

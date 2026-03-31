@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { UserProfileData, EducationEntry, ExperienceEntry } from '../types';
 import { revalidateTag } from 'next/cache';
 
@@ -74,10 +74,26 @@ export async function addEducation(uid: string, entry: EducationEntry) {
   revalidateTag(`user:${uid}:profile`);
 }
 
+export async function removeEducation(uid: string, entry: EducationEntry) {
+  const docRef = doc(db, 'users', uid);
+  await updateDoc(docRef, {
+    education: arrayRemove(entry)
+  });
+  revalidateTag(`user:${uid}:profile`);
+}
+
 export async function addExperience(uid: string, entry: ExperienceEntry) {
   const docRef = doc(db, 'users', uid);
   await updateDoc(docRef, {
     experience: arrayUnion(entry)
+  });
+  revalidateTag(`user:${uid}:profile`);
+}
+
+export async function removeExperience(uid: string, entry: ExperienceEntry) {
+  const docRef = doc(db, 'users', uid);
+  await updateDoc(docRef, {
+    experience: arrayRemove(entry)
   });
   revalidateTag(`user:${uid}:profile`);
 }
