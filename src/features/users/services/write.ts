@@ -30,7 +30,7 @@ export async function createInitialUser(
       experienceLevel: 'Beginner',
       goals: [],
       collegeName: '',
-      location: { city: '', country: 'India' },
+      location: { city: '', country: '' },
       credibilityScore: 50,
       onboardingCompleted: false,
       education: [],

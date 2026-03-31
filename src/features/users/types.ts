@@ -6,18 +6,23 @@ export type UserRole = 'builder' | 'learner' | 'job_seeker' | 'founder';
 export type ExperienceLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export interface EducationEntry {
+  id: string;
   school: string;
   degree: string;
+  fieldOfStudy: string;
   startYear: string;
   endYear?: string;
+  description?: string;
 }
 
 export interface ExperienceEntry {
+  id: string;
   company: string;
   role: string;
   startDate: string;
   endDate?: string;
   isCurrent: boolean;
+  description?: string;
 }
 
 export interface UserProfileData {
