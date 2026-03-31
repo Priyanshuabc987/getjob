@@ -1,50 +1,54 @@
 
-# PrepLinc - Proof-of-Work Platform
+# PrepLinc - Proof-of-Work Platform for Builders
 
-## 🏗️ Architecture & Contribution Guide
+## 🏗️ Technical Architecture & Strategy
 
-This project follows a **Feature-Based Architecture** with strict data isolation and server-first rendering.
+This project is built on a **Feature-Based Architecture** designed for high modularity, security, and developer productivity.
 
 ### 📂 Folder Structure
+- `src/app/`: Next.js App Router. Contains only **Routing, Layouts, and Server Entry Points**.
+- `src/features/`: **Core Domain Logic**. Each domain is fully isolated.
+    - `[feature]/components/`: Feature-specific UI.
+    - `[feature]/services/`: Data access layer.
+        - `read.ts`: **Server-Only** GET operations using dual-layer caching.
+        - `write.ts`: **Server Actions** for all POST/PUT operations.
+    - `[feature]/types.ts`: Domain models and TypeScript interfaces.
+- `src/firebase/`: Standardized Firebase infrastructure (Auth, Firestore, and Hooks).
+- `src/components/ui/`: Atomic Shadcn components.
 
-- `src/app/`: Next.js App Router (Routing and Layouts only).
-- `src/features/[name]/`: Core Domain Logic.
-    - `components/`: UI specific to the feature.
-    - `services/`: Data operations.
-        - `read.ts`: GET operations with React/Next caching. MUST use `'use server'`.
-        - `write.ts`: SET/UPDATE operations as Server Actions. MUST use `'use server'`.
-    - `types.ts`: Domain models.
+### 🚀 Data Access & Caching Strategy
+We use a **Dual-Layer Caching** pattern to ensure sub-100ms response times for user profiles.
 
-### 🛠️ Strict Rules for Contributors
+1.  **React Cache (`reactCache`)**: Ensures data consistency within a single request (deduplication).
+2.  **Next.js `unstable_cache` (`nextCache`)**: Persists data across multiple requests and users until revalidation.
 
-1. **Isolation & Modularity**:
-   - No file should exceed **400-500 lines**. If it does, break it into smaller components.
-   - Use `shared` folders for cross-sub-feature components within a domain.
-2. **Server-First Rendering**:
-   - Data fetching MUST happen in **Server Components** using the `read.ts` services.
-   - Avoid importing `unstable_cache` or `read.ts` directly into Client Components to prevent `incrementalCache` errors.
-3. **Caching Strategy**:
-   - Use the `reactCache` + `nextCache` (unstable_cache) pattern for all database reads.
-   - Always include revalidation tags: `tags: ['user:${id}:profile']`.
-4. **Data Privacy**:
-   - Sensitive user information MUST live in `users_private` collection.
-   - Public profiles live in `users`.
-5. **Types First**: Define structures in `types.ts` before implementing logic.
-6. **Responsiveness**:
-   - UI must be optimized for both **Desktop** and **Mobile**.
-   - Mobile navigation uses the Bottom Nav bar; Desktop uses the Sidebar.
-
-### 🚀 Caching Pattern Example
+#### Standard Caching Pattern:
 ```ts
 // src/features/users/services/read.ts
 export const getCachedUserProfile = reactCache(async (uid: string) => {
   return nextCache(
-    () => fetchFromDB(uid),
+    () => fetchFromFirestore(uid),
     ['user-profile', uid],
     { revalidate: 3600, tags: [`user:${uid}:profile`] }
   )();
 });
 ```
 
-### 👤 User Data Access
-Use `getCachedUserProfile(uid)` to fetch user profile data on the server. This ensures consistent, high-performance data across the platform.
+### 👤 User Data & Privacy Model
+- **`users` (Public)**: Contains profile data used for networking (Display name, Role, Domains, Credibility).
+- **`users_private` (Private)**: Contains sensitive PII (Email, Phone, Status). Blocked by strict Firestore Rules.
+
+### 🛠️ Developer Rules & Guidelines
+1.  **Server Actions First**: All data mutations **MUST** live in `write.ts` and use the `'use server'` directive.
+2.  **No Direct Client Reads**: Never call `getDoc` directly in a Client Component. Always use a `read.ts` service or a provided hook (`useDoc`).
+3.  **Responsive Layouts**: UI must be optimized for both Desktop (Sidebar) and Mobile (Bottom Nav).
+4.  **Error Boundaries**: Every top-level route group MUST have an `error.js` and `not-found.js`.
+5.  **Global User Fetching**: Use `getCachedUserProfile(uid)` for server-side profile data.
+
+### 🔌 Standardized Hooks
+- `useUser()`: Get the current authenticated user and their metadata.
+- `useDoc(collection, id)`: Real-time client-side subscription to a document.
+- `useCollection(query)`: Real-time client-side list fetching.
+
+---
+Built with ❤️ for the next generation of builders.
