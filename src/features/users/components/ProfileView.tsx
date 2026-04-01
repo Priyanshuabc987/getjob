@@ -60,18 +60,18 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               {isOwnProfile && (
                 <Dialog open={isEditingBio} onOpenChange={setIsEditingBio}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full md:opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
                       <Edit3 className="w-4 h-4 text-muted-foreground hover:text-primary" />
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-lg">
+                  <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-2xl">
                     <DialogHeader><DialogTitle>Edit Builder Bio</DialogTitle></DialogHeader>
                     <div className="py-4">
                       <Textarea 
                         value={bioText} 
                         onChange={e => setBioText(e.target.value)} 
                         placeholder="Tell the community about your journey, skills, and vision..." 
-                        className="min-h-[150px] rounded-2xl"
+                        className="min-h-[250px] rounded-2xl text-base"
                       />
                     </div>
                     <DialogFooter>
@@ -83,9 +83,17 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                 </Dialog>
               )}
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {profile.bio || "This builder hasn't shared their story yet. Proof-of-work speaks volumes, but a bio helps tell the narrative."}
-            </p>
+            
+            <div className="text-sm text-muted-foreground leading-relaxed">
+              {profile.bio ? (
+                profile.bio
+              ) : isOwnProfile ? (
+                <p className="italic">This builder hasn't shared their story yet. Proof-of-work speaks volumes, but a bio helps tell the narrative. Use the edit icon above to share your journey.</p>
+              ) : (
+                <p className="italic">This builder has not shared their bio yet.</p>
+              )}
+            </div>
+
             {profile.domains && profile.domains.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-6">
                 {profile.domains.map((domain: string) => (
@@ -125,7 +133,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                       <h3 className="text-2xl md:text-3xl font-headline font-bold text-white mb-2">{project.title}</h3>
                       <div className="flex flex-wrap gap-2">
                         {project.tags?.map((tag: string) => (
-                          <Badge key={tag} className="bg-primary/20 text-white backdrop-blur-md border-none text-[10px] font-bold px-3 md:px-4 py-1.5 rounded-lg">
+                          <Badge key={tag} className="bg-white/20 text-white backdrop-blur-md border-none text-[10px] font-bold px-3 md:px-4 py-1.5 rounded-lg">
                             #{tag.toUpperCase()}
                           </Badge>
                         ))}
@@ -144,9 +152,20 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-muted/50 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <LayoutGrid className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
                   </div>
-                  <h4 className="text-xl md:text-2xl font-headline font-bold mb-2">Build Your First Proof</h4>
-                  <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto font-medium">Proof-of-work speaks louder than words. Start a project today.</p>
-                  <Button asChild className="rounded-full px-10 h-14 action-button-glow font-bold text-lg w-full sm:w-auto"><Link href="/projects">Start Building</Link></Button>
+                  <h4 className="text-xl md:text-2xl font-headline font-bold mb-2">
+                    {isOwnProfile ? "Build Your First Proof" : "No Projects Found"}
+                  </h4>
+                  <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto font-medium">
+                    {isOwnProfile 
+                      ? "Proof-of-work speaks louder than words. Start a project today to show the community your impact." 
+                      : "This builder has not added any projects to their portfolio yet."
+                    }
+                  </p>
+                  {isOwnProfile && (
+                    <Button asChild className="rounded-full px-10 h-14 action-button-glow font-bold text-lg w-full sm:w-auto">
+                      <Link href="/projects">Start Building</Link>
+                    </Button>
+                  )}
                 </div>
               )}
             </TabsContent>

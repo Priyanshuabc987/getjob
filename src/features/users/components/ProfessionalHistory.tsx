@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { UserProfileData, ExperienceEntry, EducationEntry } from '../types';
 import { addExperience, addEducation, removeExperience, removeEducation } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
@@ -191,7 +190,12 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               </div>
             )) : !isAddingExp && (
               <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
-                <p className="text-[10px] text-muted-foreground italic font-medium">Your work history tells a story of effort. Add your experiences.</p>
+                <p className="text-[10px] text-muted-foreground italic font-medium">
+                  {isOwnProfile 
+                    ? "Your work history tells a story of effort. Add your experiences to build credibility." 
+                    : "No experience listed."
+                  }
+                </p>
               </div>
             )}
           </div>
@@ -266,7 +270,12 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               </div>
             )) : !isAddingEdu && (
               <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
-                <p className="text-[10px] text-muted-foreground italic font-medium">Academic roots help connect you with your community. Add your school.</p>
+                <p className="text-[10px] text-muted-foreground italic font-medium">
+                  {isOwnProfile 
+                    ? "Academic roots help connect you with your community. Add your school to complete your builder profile." 
+                    : "No education listed."
+                  }
+                </p>
               </div>
             )}
           </div>
