@@ -42,10 +42,10 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
   };
 
   return (
-    <div className="space-y-4 md:space-y-8 pb-20 bg-background">
+    <div className="space-y-4 md:space-y-8 pb-20 bg-background min-h-screen">
       <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mt-8">
         {/* Left Sidebar - Bio & History */}
         <aside className="space-y-6 md:space-y-8 order-2 lg:order-1">
           {/* Bio Section */}

@@ -34,7 +34,7 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
 
   const dateValue = typeof value === 'string' ? toDate(value) : value instanceof Date ? value : undefined;
 
-  // Initialize from dateValue, not hardcoded new Date()
+  // Initialize from dateValue, or current date if no value
   const [viewMonth, setViewMonth] = React.useState<Date>(
     dateValue ?? new Date()
   );
@@ -54,13 +54,14 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 71 }, (_, i) => currentYear - 50 + i).reverse();
 
-  // Dropdown changes now update the single viewMonth state
   const handleMonthSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setViewMonth(prev => new Date(prev.getFullYear(), parseInt(e.target.value), 1));
+    const newMonth = new Date(viewMonth.getFullYear(), parseInt(e.target.value), 1);
+    setViewMonth(newMonth);
   };
 
   const handleYearSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setViewMonth(prev => new Date(parseInt(e.target.value), prev.getMonth(), 1));
+    const newYear = new Date(parseInt(e.target.value), viewMonth.getMonth(), 1);
+    setViewMonth(newYear);
   };
 
   const handleSelect = (date?: Date) => {
@@ -97,24 +98,26 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-auto p-0" 
+        className="w-auto p-0 z-[100]" 
         align="start"
-        onMouseDown={(e) => e.stopPropagation()} // Prevent closing on click interaction
+        onMouseDown={(e) => e.stopPropagation()} // Stop propagation to prevent closing parent modals
       >
         <div className="flex justify-between items-center gap-2 px-4 pt-4 mb-2">
           <select
-            className="border rounded-md px-2 py-1 text-sm bg-background"
+            className="border rounded-md px-2 py-1 text-sm bg-background cursor-pointer"
             value={viewMonth.getMonth()}
             onChange={handleMonthSelect}
+            onMouseDown={(e) => e.stopPropagation()}
           >
             {months.map((m, idx) => (
               <option key={m} value={idx}>{m}</option>
             ))}
           </select>
           <select
-            className="border rounded-md px-2 py-1 text-sm bg-background"
+            className="border rounded-md px-2 py-1 text-sm bg-background cursor-pointer"
             value={viewMonth.getFullYear()}
             onChange={handleYearSelect}
+            onMouseDown={(e) => e.stopPropagation()}
           >
             {years.map((y) => (
               <option key={y} value={y}>{y}</option>
