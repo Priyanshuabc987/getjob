@@ -1,17 +1,12 @@
+
 "use client";
 
-import { useState } from 'react';
-import { Edit2, MapPin, Clock, Loader2, ShieldCheck } from 'lucide-react';
+import { Edit2, MapPin, Clock, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { UserProfileData } from '../types';
-import { updateProfile } from '../services/write';
-import { useToast } from '@/hooks/use-toast';
 import { formatBuildingDuration } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface ProfileHeaderProps {
   profile: UserProfileData;
@@ -19,71 +14,13 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
-
-  const [formData, setFormData] = useState({
-    displayName: profile.displayName || '',
-    collegeName: profile.collegeName || '',
-    city: profile.location?.city || '',
-    country: profile.location?.country || '',
-    photoURL: profile.photoURL || '',
-    bannerUrl: profile.bannerUrl || '',
-  });
-
-  const handleUpdateProfile = async () => {
-    setLoading(true);
-    try {
-      await updateProfile(profile.uid, {
-        displayName: formData.displayName,
-        collegeName: formData.collegeName,
-        photoURL: formData.photoURL,
-        bannerUrl: formData.bannerUrl,
-        location: { city: formData.city, country: formData.country }
-      });
-      setIsEditing(false);
-      toast({ title: "Profile updated!" });
-    } catch (e) {
-      toast({ variant: "destructive", title: "Update failed" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const buildingDuration = formatBuildingDuration(profile.createdAt);
-
-  const EditButtonContent = () => (
-    <Dialog open={isEditing} onOpenChange={setIsEditing}>
-      <DialogTrigger asChild>
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5">
-          <Edit2 className="w-4 h-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-md">
-        <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
-        <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
-          <div className="space-y-2"><Label>Display Name</Label><Input value={formData.displayName} onChange={e => setFormData({...formData, displayName: e.target.value})} className="rounded-xl" /></div>
-          <div className="space-y-2"><Label>College</Label><Input value={formData.collegeName} onChange={e => setFormData({...formData, collegeName: e.target.value})} className="rounded-xl" /></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2"><Label>City</Label><Input value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} className="rounded-xl" /></div>
-            <div className="space-y-2"><Label>Country</Label><Input value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="rounded-xl" /></div>
-          </div>
-          <div className="space-y-2"><Label>Avatar URL</Label><Input value={formData.photoURL} onChange={e => setFormData({...formData, photoURL: e.target.value})} className="rounded-xl" /></div>
-          <div className="space-y-2"><Label>Banner Image URL</Label><Input value={formData.bannerUrl} onChange={e => setFormData({...formData, bannerUrl: e.target.value})} className="rounded-xl" /></div>
-        </div>
-        <DialogFooter>
-          <Button onClick={handleUpdateProfile} disabled={loading} className="w-full h-12 rounded-full font-bold">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save Changes"}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
 
   return (
     <div className="relative pt-4 md:pt-6 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
       {/* Banner Container */}
       <div className={cn(
-        "h-48 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-lg",
+        "h-48 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-sm",
         !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
       )}>
         <img 
@@ -119,7 +56,13 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                   {profile.displayName}
                   {profile.credibilityScore > 80 && <ShieldCheck className="w-5 h-5 md:w-8 md:h-8 text-primary fill-current text-white" />}
                 </h1>
-                {isOwnProfile && <EditButtonContent />}
+                {isOwnProfile && (
+                  <Link href="/profile/edit">
+                    <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5">
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                )}
               </div>
               <div className="flex flex-wrap items-center gap-2 md:gap-4">
                  <p className="text-primary font-bold text-xs md:text-base">@{profile.role || 'builder'}</p>

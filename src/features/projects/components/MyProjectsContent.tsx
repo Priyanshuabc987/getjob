@@ -1,47 +1,55 @@
+
 "use client";
 
 import { mockProjects } from '../data';
-import { Plus, LayoutGrid, Rocket, Target, Sparkles, ArrowRight, Lightbulb } from 'lucide-react';
+import { Plus, LayoutGrid, Rocket, Target, Sparkles, PlusCircle, Briefcase, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ProjectCard } from '../shared/components/ProjectCard';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/features/auth/hooks';
 import Link from 'next/link';
 
 export function MyProjectsContent() {
+  const { user } = useAuth();
   // In a real app, filter by currentUser.id
   const myProjects = mockProjects;
 
   return (
-    <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-10">
-      {/* Motivation Section - Hero */}
-      <Card className="rounded-[2rem] border-none shadow-2xl bg-primary text-white overflow-hidden relative group">
-        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
-          <Rocket className="w-48 h-48 -rotate-12" />
+    <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+      {/* Quick Action Hub - LinkedIn Style */}
+      <Card className="rounded-2xl border-none shadow-sm bg-white overflow-hidden p-4">
+        <div className="flex items-center gap-4 mb-4">
+          <Avatar className="w-12 h-12 border">
+            <AvatarImage src={user?.photoURL || "https://picsum.photos/seed/user/100/100"} />
+            <AvatarFallback>{user?.displayName?.[0] || 'B'}</AvatarFallback>
+          </Avatar>
+          <Link href="/projects/create" className="flex-1">
+            <button className="w-full text-left px-5 h-12 rounded-full bg-muted/50 hover:bg-muted text-muted-foreground font-medium text-sm border border-transparent hover:border-muted transition-all">
+              What's on your build list, {user?.displayName?.split(' ')[0] || 'Builder'}?
+            </button>
+          </Link>
         </div>
-        <CardContent className="p-8 md:p-12 relative z-10">
-          <div className="max-w-2xl space-y-6">
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold">
-              <Sparkles className="w-4 h-4 fill-current" /> BUILDER ALPHA
-            </div>
-            <h1 className="text-3xl md:text-5xl font-headline font-bold leading-tight">
-              Turn your effort into <br />
-              <span className="text-secondary-foreground">Verified Proof.</span>
-            </h1>
-            <p className="text-lg text-white/80 leading-relaxed font-medium">
-              Projects with active roadmaps and proof-of-work links are 5x more likely to be noticed by top startups. What's next on your build list?
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-              <Button className="w-full sm:w-auto rounded-full px-8 h-14 bg-white text-primary hover:bg-white/90 font-bold text-lg shadow-xl shadow-black/10 transition-all active:scale-95">
-                <Plus className="w-5 h-5 mr-2" /> Start New Project
-              </Button>
-              <Button variant="ghost" asChild className="w-full sm:w-auto text-white hover:bg-white/10 rounded-full h-14 px-8 font-bold">
-                <Link href="/problems">
-                  <Lightbulb className="w-5 h-5 mr-2" /> Browse Challenges
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </CardContent>
+        <div className="flex items-center justify-around pt-2 border-t">
+          <Link href="/projects/create">
+            <Button variant="ghost" className="rounded-xl gap-2 font-bold text-muted-foreground hover:text-primary hover:bg-primary/5">
+              <PlusCircle className="w-5 h-5 text-primary" />
+              <span className="text-xs sm:text-sm">Start Project</span>
+            </Button>
+          </Link>
+          <Link href="/jobs/create">
+            <Button variant="ghost" className="rounded-xl gap-2 font-bold text-muted-foreground hover:text-secondary hover:bg-secondary/5">
+              <Briefcase className="w-5 h-5 text-secondary" />
+              <span className="text-xs sm:text-sm">Post Job</span>
+            </Button>
+          </Link>
+          <Link href="/problems/create">
+            <Button variant="ghost" className="rounded-xl gap-2 font-bold text-muted-foreground hover:text-yellow-600 hover:bg-yellow-500/5">
+              <Lightbulb className="w-5 h-5 text-yellow-600" />
+              <span className="text-xs sm:text-sm">Share Problem</span>
+            </Button>
+          </Link>
+        </div>
       </Card>
 
       {/* Projects Grid Section */}
@@ -51,7 +59,6 @@ export function MyProjectsContent() {
             <h2 className="text-2xl font-headline font-bold flex items-center gap-3">
               <LayoutGrid className="w-6 h-6 text-primary" /> Active Builds
             </h2>
-            <p className="text-sm text-muted-foreground font-medium">Manage your portfolio and proof links.</p>
           </div>
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted px-3 py-1.5 rounded-full">
             {myProjects.length} Projects
@@ -59,42 +66,25 @@ export function MyProjectsContent() {
         </div>
 
         {myProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {myProjects.map(proj => (
               <ProjectCard key={proj.id} project={proj} showStats={true} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-24 bg-card rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm px-6">
+          <div className="text-center py-20 bg-card rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm px-6">
             <div className="w-20 h-20 bg-muted/50 rounded-3xl flex items-center justify-center mx-auto mb-6">
               <Target className="w-10 h-10 text-muted-foreground" />
             </div>
             <h3 className="text-2xl font-headline font-bold mb-3">No active projects</h3>
-            <p className="text-muted-foreground mb-10 max-w-sm mx-auto font-medium leading-relaxed">
+            <p className="text-muted-foreground mb-8 max-w-sm mx-auto font-medium leading-relaxed">
               Start your first project to begin building your verified proof-of-work history.
             </p>
-            <Button className="rounded-full px-10 h-14 font-bold action-button-glow text-lg">
-              <Plus className="w-5 h-5 mr-2" /> Create My First Project
+            <Button asChild className="rounded-full px-10 h-14 font-bold action-button-glow text-lg">
+              <Link href="/projects/create"><Plus className="w-5 h-5 mr-2" /> Create My First Project</Link>
             </Button>
           </div>
         )}
-      </div>
-
-      {/* Quick Stats - Sidebar Style Motivation */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
-        {[
-          { icon: Target, label: "Earn Credibility", desc: "Every project update increases your platform score." },
-          { icon: Target, label: "Find Squads", desc: "Open your project to collaborators to build faster." },
-          { icon: ArrowRight, label: "Get Noticed", desc: "Startups can see your verified history in the hub." },
-        ].map((item, i) => (
-          <Card key={i} className="glass-card p-6 border-none bg-white rounded-3xl shadow-lg hover:-translate-y-1 transition-transform">
-             <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center mb-4">
-               <item.icon className="w-5 h-5 text-primary" />
-             </div>
-             <h4 className="font-bold text-sm mb-1">{item.label}</h4>
-             <p className="text-xs text-muted-foreground font-medium">{item.desc}</p>
-          </Card>
-        ))}
       </div>
     </main>
   );
