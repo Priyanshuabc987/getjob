@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from 'react';
-import { Briefcase, GraduationCap, Plus, Trash2, Loader2, X, Check } from 'lucide-react';
+import { Briefcase, GraduationCap, Plus, Trash2, Loader2, X, Check, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { UserProfileData, ExperienceEntry, EducationEntry } from '../types';
 import { addExperience, addEducation, removeExperience, removeEducation } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
@@ -22,10 +23,13 @@ interface ProfessionalHistoryProps {
 export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHistoryProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   
-  // Inline Form States
   const [isAddingExp, setIsAddingExp] = useState(false);
   const [isAddingEdu, setIsAddingEdu] = useState(false);
+  
+  const [editingExp, setEditingExp] = useState<ExperienceEntry | null>(null);
+  const [editingEdu, setEditingEdu] = useState<EducationEntry | null>(null);
 
   const [eduForm, setEduForm] = useState<Partial<EducationEntry>>({
     school: '', degree: '', fieldOfStudy: '', startYear: '', endDate: '', isCurrent: false, description: ''
@@ -79,9 +83,43 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
     }
   };
 
+  const handleUpdateExp = async () => {
+    if (!editingExp) return;
+    setLoading(true);
+    try {
+      // For simple array management, we remove the old and add the new
+      const oldVersion = profile.experience.find(e => e.id === editingExp.id);
+      if (oldVersion) await removeExperience(profile.uid, oldVersion);
+      await addExperience(profile.uid, editingExp);
+      setEditingExp(null);
+      toast({ title: "Experience updated" });
+    } catch (e) {
+      toast({ variant: "destructive", title: "Failed to update" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateEdu = async () => {
+    if (!editingEdu) return;
+    setLoading(true);
+    try {
+      const oldVersion = profile.education.find(e => e.id === editingEdu.id);
+      if (oldVersion) await removeEducation(profile.uid, oldVersion);
+      await addEducation(profile.uid, editingEdu);
+      setEditingEdu(null);
+      toast({ title: "Education updated" });
+    } catch (e) {
+      toast({ variant: "destructive", title: "Failed to update" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleRemoveExp = async (entry: ExperienceEntry) => {
     try {
       await removeExperience(profile.uid, entry);
+      setEditingExp(null);
       toast({ title: "Experience removed" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to remove" });
@@ -91,6 +129,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
   const handleRemoveEdu = async (entry: EducationEntry) => {
     try {
       await removeEducation(profile.uid, entry);
+      setEditingEdu(null);
       toast({ title: "Education removed" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to remove" });
@@ -109,12 +148,24 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
 
   return (
     <Card className="rounded-[1.5rem] md:rounded-[2.5rem] border-none shadow-xl bg-card p-6 md:p-8">
-      <h3 className="font-headline text-lg font-bold flex items-center gap-3 mb-6 md:mb-8 text-foreground">
-        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-          <Briefcase className="w-4 h-4 text-primary" />
-        </div>
-        Professional History
-      </h3>
+      <div className="flex items-center justify-between mb-6 md:mb-8">
+        <h3 className="font-headline text-lg font-bold flex items-center gap-3 text-foreground">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Briefcase className="w-4 h-4 text-primary" />
+          </div>
+          Professional History
+        </h3>
+        {isOwnProfile && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={cn("h-8 w-8 rounded-full transition-colors", isEditMode ? "text-primary bg-primary/10" : "text-muted-foreground")}
+          >
+            <Edit2 className="w-4 h-4" />
+          </Button>
+        )}
+      </div>
 
       <div className="space-y-8 md:space-y-10">
         {/* Experience Section */}
@@ -133,7 +184,6 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
             )}
           </div>
 
-          {/* Inline Form: Experience */}
           {isAddingExp && (
             <div className="p-4 rounded-2xl bg-muted/20 border border-primary/20 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="space-y-3">
@@ -155,10 +205,6 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <DatePicker value={expForm.endDate} onChange={handleDateChange('endDate', setExpForm)} showPresentButton className="h-9" />
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox id="exp-current" checked={expForm.isCurrent} onCheckedChange={(checked) => setExpForm({...expForm, isCurrent: !!checked, endDate: checked ? 'Present' : expForm.endDate})} />
-                  <label htmlFor="exp-current" className="text-[11px] font-bold text-muted-foreground">Currently working here</label>
-                </div>
               </div>
               <div className="flex gap-2 pt-2">
                 <Button onClick={handleAddExp} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">
@@ -173,26 +219,29 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
 
           <div className="space-y-4">
             {profile.experience && profile.experience.length > 0 ? profile.experience.map(exp => (
-              <div key={exp.id} className="flex gap-4 group">
+              <div key={exp.id} className="flex gap-4 group relative">
                 <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
                   <Briefcase className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-bold text-sm leading-tight truncate">{exp.role}</p>
-                    {isOwnProfile && <button onClick={() => handleRemoveExp(exp)} className="md:opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
+                    {isEditMode && isOwnProfile && (
+                      <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-primary hover:bg-primary/5" onClick={() => setEditingExp(exp)}>
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </Button>
+                    )}
                   </div>
                   <p className="text-[10px] text-muted-foreground font-bold">
                     {exp.company} • {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
                   </p>
-                  {exp.description && <p className="text-[10px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{exp.description}</p>}
                 </div>
               </div>
             )) : !isAddingExp && (
               <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
                 <p className="text-[10px] text-muted-foreground italic font-medium">
                   {isOwnProfile 
-                    ? "Your work history tells a story of effort. Add your experiences to build credibility." 
+                    ? "Add your work history to show what you're capable of." 
                     : "No experience listed."
                   }
                 </p>
@@ -217,7 +266,6 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
             )}
           </div>
 
-          {/* Inline Form: Education */}
           {isAddingEdu && (
             <div className="p-4 rounded-2xl bg-muted/20 border border-primary/20 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="space-y-3">
@@ -253,26 +301,29 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
 
           <div className="space-y-4">
             {profile.education && profile.education.length > 0 ? profile.education.map(edu => (
-              <div key={edu.id} className="flex gap-4 group">
+              <div key={edu.id} className="flex gap-4 group relative">
                 <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0">
                   <GraduationCap className="w-5 h-5 text-secondary" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-bold text-sm leading-tight truncate">{edu.degree}</p>
-                    {isOwnProfile && <button onClick={() => handleRemoveEdu(edu)} className="md:opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
+                    {isEditMode && isOwnProfile && (
+                      <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-secondary hover:bg-secondary/5" onClick={() => setEditingEdu(edu)}>
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </Button>
+                    )}
                   </div>
                   <p className="text-[10px] text-muted-foreground font-bold">
                     {edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}
                   </p>
-                  {edu.fieldOfStudy && <p className="text-[10px] text-muted-foreground mt-0.5">{edu.fieldOfStudy}</p>}
                 </div>
               </div>
             )) : !isAddingEdu && (
               <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
                 <p className="text-[10px] text-muted-foreground italic font-medium">
                   {isOwnProfile 
-                    ? "Academic roots help connect you with your community. Add your school to complete your builder profile." 
+                    ? "Add your school to complete your builder profile." 
                     : "No education listed."
                   }
                 </p>
@@ -281,6 +332,51 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
           </div>
         </div>
       </div>
+
+      {/* Edit Dialogs */}
+      <Dialog open={!!editingExp} onOpenChange={(open) => !open && setEditingExp(null)}>
+        <DialogContent className="rounded-[2rem]">
+          <DialogHeader><DialogTitle>Edit Experience</DialogTitle></DialogHeader>
+          {editingExp && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2"><Label>Company</Label><Input value={editingExp.company} onChange={e => setEditingExp({...editingExp, company: e.target.value})} /></div>
+              <div className="space-y-2"><Label>Role</Label><Input value={editingExp.role} onChange={e => setEditingExp({...editingExp, role: e.target.value})} /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2"><Label>Start</Label><DatePicker value={editingExp.startDate} onChange={handleDateChange('startDate', (val) => setEditingExp(prev => ({...prev!, ...val})))} /></div>
+                <div className="space-y-2"><Label>End</Label><DatePicker value={editingExp.endDate} onChange={handleDateChange('endDate', (val) => setEditingExp(prev => ({...prev!, ...val})))} showPresentButton /></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="destructive" className="rounded-full" onClick={() => editingExp && handleRemoveExp(editingExp)}><Trash2 className="w-4 h-4 mr-2" /> Delete</Button>
+            <div className="flex-1" />
+            <Button variant="ghost" onClick={() => setEditingExp(null)} className="rounded-full">Cancel</Button>
+            <Button onClick={handleUpdateExp} disabled={loading} className="rounded-full px-8">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingEdu} onOpenChange={(open) => !open && setEditingEdu(null)}>
+        <DialogContent className="rounded-[2rem]">
+          <DialogHeader><DialogTitle>Edit Education</DialogTitle></DialogHeader>
+          {editingEdu && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2"><Label>School</Label><Input value={editingEdu.school} onChange={e => setEditingEdu({...editingEdu, school: e.target.value})} /></div>
+              <div className="space-y-2"><Label>Degree</Label><Input value={editingEdu.degree} onChange={e => setEditingEdu({...editingEdu, degree: e.target.value})} /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2"><Label>Start</Label><DatePicker value={editingEdu.startYear} onChange={handleDateChange('startYear', (val) => setEditingEdu(prev => ({...prev!, ...val})))} /></div>
+                <div className="space-y-2"><Label>End</Label><DatePicker value={editingEdu.endDate} onChange={handleDateChange('endDate', (val) => setEditingEdu(prev => ({...prev!, ...val})))} showPresentButton /></div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="destructive" className="rounded-full" onClick={() => editingEdu && handleRemoveEdu(editingEdu)}><Trash2 className="w-4 h-4 mr-2" /> Delete</Button>
+            <div className="flex-1" />
+            <Button variant="ghost" onClick={() => setEditingEdu(null)} className="rounded-full">Cancel</Button>
+            <Button onClick={handleUpdateEdu} disabled={loading} className="rounded-full px-8">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

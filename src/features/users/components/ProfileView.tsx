@@ -64,14 +64,14 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                       <Edit3 className="w-4 h-4 text-muted-foreground hover:text-primary" />
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-2xl">
+                  <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-3xl">
                     <DialogHeader><DialogTitle>Edit Builder Bio</DialogTitle></DialogHeader>
                     <div className="py-4">
                       <Textarea 
                         value={bioText} 
                         onChange={e => setBioText(e.target.value)} 
                         placeholder="Tell the community about your journey, skills, and vision..." 
-                        className="min-h-[250px] rounded-2xl text-base"
+                        className="min-h-[350px] rounded-2xl text-base leading-relaxed"
                       />
                     </div>
                     <DialogFooter>
@@ -123,7 +123,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="portfolio" className="space-y-6 md:space-y-8 outline-none">
+            <TabsContent value="portfolio" className="space-y-6 md:space-y-8 outline-none py-6">
               {projects && projects.length > 0 ? projects.map(project => (
                 <Card key={project.id} className="rounded-2xl md:rounded-[2.5rem] overflow-hidden border-none shadow-xl group hover:shadow-2xl transition-all duration-500 bg-card">
                   <div className="h-48 sm:h-64 md:h-72 relative">
@@ -148,17 +148,17 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   </div>
                 </Card>
               )) : (
-                <div className="text-center py-16 md:py-24 bg-card rounded-2xl md:rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm px-6">
+                <div className="text-center py-20 md:py-32 bg-card rounded-2xl md:rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm px-6">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-muted/50 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <LayoutGrid className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
                   </div>
                   <h4 className="text-xl md:text-2xl font-headline font-bold mb-2">
                     {isOwnProfile ? "Build Your First Proof" : "No Projects Found"}
                   </h4>
-                  <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto font-medium">
+                  <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto font-medium leading-relaxed">
                     {isOwnProfile 
                       ? "Proof-of-work speaks louder than words. Start a project today to show the community your impact." 
-                      : "This builder has not added any projects to their portfolio yet."
+                      : "This builder has not shared any projects in their portfolio yet."
                     }
                   </p>
                   {isOwnProfile && (
@@ -169,16 +169,31 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                 </div>
               )}
             </TabsContent>
-            <TabsContent value="jobs" className="outline-none">
-               <div className="text-center py-16 bg-card rounded-2xl border-none shadow-md">
+            <TabsContent value="jobs" className="outline-none py-6">
+               <div className="text-center py-24 bg-card rounded-2xl border-none shadow-md px-6">
                  <Zap className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-                 <p className="text-muted-foreground font-medium">Coming Soon: Your Earned Micro-Jobs</p>
+                 <h4 className="text-xl font-headline font-bold mb-2">Work History</h4>
+                 <p className="text-muted-foreground font-medium max-w-xs mx-auto">
+                   {isOwnProfile 
+                     ? "Take on micro-jobs to build your verified work history and earn rewards." 
+                     : "This builder has not completed any micro-jobs yet."}
+                 </p>
+                 {isOwnProfile && (
+                   <Button asChild variant="outline" className="mt-6 rounded-full px-8">
+                     <Link href="/jobs">Explore Marketplace</Link>
+                   </Button>
+                 )}
                </div>
             </TabsContent>
-            <TabsContent value="badges" className="outline-none">
-               <div className="text-center py-16 bg-card rounded-2xl border-none shadow-md">
+            <TabsContent value="badges" className="outline-none py-6">
+               <div className="text-center py-24 bg-card rounded-2xl border-none shadow-md px-6">
                  <Trophy className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-                 <p className="text-muted-foreground font-medium">Coming Soon: Verified Builder Badges</p>
+                 <h4 className="text-xl font-headline font-bold mb-2">Builder Badges</h4>
+                 <p className="text-muted-foreground font-medium max-w-xs mx-auto">
+                   {isOwnProfile 
+                    ? "Complete challenges and hit milestones to earn verified badges." 
+                    : "No verified badges earned yet."}
+                 </p>
                </div>
             </TabsContent>
           </Tabs>

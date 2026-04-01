@@ -56,16 +56,9 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const EditButtonContent = () => (
     <Dialog open={isEditing} onOpenChange={setIsEditing}>
       <DialogTrigger asChild>
-        <div className="contents">
-          {/* Desktop Button */}
-          <Button className="hidden md:flex rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow mb-2">
-            <Edit2 className="w-4 h-4" /> Edit Profile
-          </Button>
-          {/* Mobile Icon Button */}
-          <Button size="icon" variant="ghost" className="md:hidden h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5">
-            <Edit2 className="w-4 h-4" />
-          </Button>
-        </div>
+        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5">
+          <Edit2 className="w-4 h-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-md">
         <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
@@ -107,7 +100,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
       </div>
 
       {/* User Info & Avatar Overlap */}
-      <div className="px-4 md:px-12 relative z-10 -mt-16 md:-mt-24">
+      <div className="px-4 md:px-12 relative z-10 -mt-20 md:-mt-28">
         <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-8">
           {/* Avatar - Circular and Overlapping */}
           <div className="w-32 h-32 md:w-56 md:h-56 rounded-full p-1.5 md:p-2 bg-card shadow-2xl shrink-0">
