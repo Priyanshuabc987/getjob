@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Briefcase, GraduationCap, Plus, Trash2, Loader2, CalendarIcon } from 'lucide-react';
+import { Briefcase, GraduationCap, Plus, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
@@ -11,11 +11,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { UserProfileData, ExperienceEntry, EducationEntry } from '../types';
 import { addExperience, addEducation, removeExperience, removeEducation } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Checkbox } from '@/components/ui/checkbox';
+import { format } from 'date-fns';
 
 interface ProfessionalHistoryProps {
   profile: UserProfileData;
@@ -93,6 +91,16 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
       toast({ variant: "destructive", title: "Failed to remove" });
     }
   };
+  
+  const handleDateChange = (field: string, formSetter: React.Dispatch<React.SetStateAction<any>>) => (date: Date | 'Present' | undefined) => {
+    if (date === 'Present') {
+      formSetter((prev: any) => ({...prev, [field]: 'Present', isCurrent: true}));
+    } else if (date) {
+      formSetter((prev: any) => ({...prev, [field]: format(date, 'MM/yyyy')}));
+    } else {
+      formSetter((prev: any) => ({...prev, [field]: ''}));
+    }
+  }
 
   return (
     <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-card p-8">
@@ -124,44 +132,23 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <Label>Start Date</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-xl", !expForm.startDate && "text-muted-foreground")}>
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {expForm.startDate ? expForm.startDate : "Pick date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar 
-                              mode="single" 
-                              onSelect={(d) => setExpForm({...expForm, startDate: d ? format(d, 'MM/yyyy') : ''})} 
-                              initialFocus 
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <DatePicker
+                          value={expForm.startDate}
+                          onChange={handleDateChange('startDate', setExpForm)}
+                        />
                       </div>
                       <div className="space-y-1">
                         <Label>End Date</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" disabled={expForm.isCurrent} className={cn("w-full justify-start text-left font-normal rounded-xl", !expForm.endDate && "text-muted-foreground")}>
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {expForm.endDate ? expForm.endDate : "Pick date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar 
-                              mode="single" 
-                              onSelect={(d) => setExpForm({...expForm, endDate: d ? format(d, 'MM/yyyy') : ''})} 
-                              initialFocus 
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <DatePicker
+                          value={expForm.endDate}
+                          onChange={handleDateChange('endDate', setExpForm)}
+                          showPresentButton
+                        />
                       </div>
                     </div>
                     
                     <div className="flex items-center space-x-2 py-2">
-                      <Checkbox id="exp-current" checked={expForm.isCurrent} onCheckedChange={(checked) => setExpForm({...expForm, isCurrent: !!checked, endDate: checked ? '' : expForm.endDate})} />
+                      <Checkbox id="exp-current" checked={expForm.isCurrent} onCheckedChange={(checked) => setExpForm({...expForm, isCurrent: !!checked, endDate: checked ? 'Present' : expForm.endDate})} />
                       <label htmlFor="exp-current" className="text-sm font-medium">Currently working here</label>
                     </div>
 
@@ -216,44 +203,23 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <Label>Start Date</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" className={cn("w-full justify-start text-left font-normal rounded-xl", !eduForm.startYear && "text-muted-foreground")}>
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {eduForm.startYear ? eduForm.startYear : "Pick date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar 
-                              mode="single" 
-                              onSelect={(d) => setEduForm({...eduForm, startYear: d ? format(d, 'MM/yyyy') : ''})} 
-                              initialFocus 
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <DatePicker
+                          value={eduForm.startYear}
+                          onChange={handleDateChange('startYear', setEduForm)}
+                        />
                       </div>
                       <div className="space-y-1">
                         <Label>End Date / Expected</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button variant="outline" disabled={eduForm.isCurrent} className={cn("w-full justify-start text-left font-normal rounded-xl", !eduForm.endDate && "text-muted-foreground")}>
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {eduForm.endDate ? eduForm.endDate : "Pick date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar 
-                              mode="single" 
-                              onSelect={(d) => setEduForm({...eduForm, endDate: d ? format(d, 'MM/yyyy') : ''})} 
-                              initialFocus 
-                            />
-                          </PopoverContent>
-                        </Popover>
+                        <DatePicker
+                          value={eduForm.endDate}
+                          onChange={handleDateChange('endDate', setEduForm)}
+                          showPresentButton
+                        />
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2 py-2">
-                      <Checkbox id="edu-current" checked={eduForm.isCurrent} onCheckedChange={(checked) => setEduForm({...eduForm, isCurrent: !!checked, endDate: checked ? '' : eduForm.endDate})} />
+                      <Checkbox id="edu-current" checked={eduForm.isCurrent} onCheckedChange={(checked) => setEduForm({...eduForm, isCurrent: !!checked, endDate: checked ? 'Present' : eduForm.endDate})} />
                       <label htmlFor="edu-current" className="text-sm font-medium">Currently studying here</label>
                     </div>
 
