@@ -57,12 +57,14 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
     <div className="relative pt-4 md:pt-6 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
       {/* Banner Container */}
       <div className={cn(
-        "h-40 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-lg",
+        "h-48 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-lg",
         !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
       )}>
-        {profile.bannerUrl && (
-          <img src={profile.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
-        )}
+        <img 
+          src={profile.bannerUrl || "https://picsum.photos/seed/preplinc-hero/1200/600"} 
+          alt="Banner" 
+          className="w-full h-full object-cover" 
+        />
         
         {/* Credibility Score - Top Right */}
         <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-white/20 backdrop-blur-xl border border-white/30 px-4 py-2 md:px-5 md:py-2.5 rounded-[1.2rem] md:rounded-[1.5rem] flex flex-col items-center shadow-2xl z-20">
