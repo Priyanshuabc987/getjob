@@ -78,7 +78,7 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -98,16 +98,14 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-auto p-0 z-[100]" 
+        className="w-auto p-0 z-[200]" 
         align="start"
-        onMouseDown={(e) => e.stopPropagation()} // Stop propagation to prevent closing parent modals
       >
         <div className="flex justify-between items-center gap-2 px-4 pt-4 mb-2">
           <select
             className="border rounded-md px-2 py-1 text-sm bg-background cursor-pointer"
             value={viewMonth.getMonth()}
             onChange={handleMonthSelect}
-            onMouseDown={(e) => e.stopPropagation()}
           >
             {months.map((m, idx) => (
               <option key={m} value={idx}>{m}</option>
@@ -117,7 +115,6 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
             className="border rounded-md px-2 py-1 text-sm bg-background cursor-pointer"
             value={viewMonth.getFullYear()}
             onChange={handleYearSelect}
-            onMouseDown={(e) => e.stopPropagation()}
           >
             {years.map((y) => (
               <option key={y} value={y}>{y}</option>

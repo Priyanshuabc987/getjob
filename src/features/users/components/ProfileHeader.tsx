@@ -60,12 +60,8 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         "h-40 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-lg",
         !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
       )}>
-        {profile.bannerUrl ? (
+        {profile.bannerUrl && (
           <img src={profile.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center opacity-20">
-            <div className="w-full h-full bg-primary/20 animate-pulse" />
-          </div>
         )}
         
         {/* Credibility Score - Top Right */}
