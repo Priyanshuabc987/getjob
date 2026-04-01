@@ -37,10 +37,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
       </div>
 
       {/* User Info & Avatar Overlap */}
-      <div className="px-4 md:px-12 relative z-10 -mt-20 md:-mt-28">
+      <div className="px-4 md:px-12 relative z-10 -mt-24 md:-mt-32">
         <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-8">
           {/* Avatar - Circular and Overlapping */}
-          <div className="w-32 h-32 md:w-56 md:h-56 rounded-full p-1.5 md:p-2 bg-card shadow-2xl shrink-0">
+          <div className="w-40 h-40 md:w-64 md:h-64 rounded-full p-2 md:p-3 bg-card shadow-2xl shrink-0">
             <img 
               src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
               alt={profile.displayName} 
@@ -49,15 +49,15 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
           </div>
 
           {/* User Details */}
-          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-4">
-            <div className="space-y-1.5 md:space-y-3">
+          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-8">
+            <div className="space-y-1.5 md:space-y-4">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2 md:gap-3">
                   {profile.displayName}
                   {profile.credibilityScore > 80 && <ShieldCheck className="w-5 h-5 md:w-8 md:h-8 text-primary fill-current text-white" />}
                 </h1>
                 {isOwnProfile && (
-                  <Link href="/profile/edit">
+                  <Link href="/profile/edit/basics">
                     <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5">
                       <Edit2 className="w-4 h-4" />
                     </Button>

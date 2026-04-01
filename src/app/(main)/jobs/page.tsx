@@ -14,7 +14,7 @@ export default function JobsPage() {
     <div className="min-h-screen bg-background pb-20 md:pb-0 pt-4">
       <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl text-center md:text-left">
             <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-xs font-bold mb-4">
               <Target className="w-4 h-4" /> Micro-Jobs Marketplace
             </div>
@@ -24,7 +24,7 @@ export default function JobsPage() {
           
           <Link href="/jobs/create">
             <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
-              <Plus className="w-5 h-5 mr-2" /> Post a Micro-Job
+              <Plus className="w-5 h-5 mr-2" /> Post a Job
             </Button>
           </Link>
         </div>

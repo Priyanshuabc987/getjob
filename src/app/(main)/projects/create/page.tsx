@@ -3,12 +3,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Rocket, Sparkles, Loader2, Plus } from 'lucide-react';
+import { ArrowLeft, Rocket, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { aiProjectCreationAssistant } from '@/ai/flows/ai-project-creation';
 import Link from 'next/link';
@@ -54,7 +54,6 @@ export default function CreateProjectPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate creation
     setTimeout(() => {
       setLoading(false);
       toast({ title: "Project Launched!", description: "Your new build is now active in the hub." });
@@ -71,7 +70,7 @@ export default function CreateProjectPage() {
         </Link>
 
         <div className="space-y-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-center md:text-left">
             <div>
               <h1 className="text-4xl font-headline font-bold mb-2">Launch New Project</h1>
               <p className="text-muted-foreground">Define your vision and start building your proof-of-work.</p>
@@ -90,9 +89,9 @@ export default function CreateProjectPage() {
           <form onSubmit={handleSubmit}>
             <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden">
               <CardContent className="p-8 md:p-12 space-y-8">
-                <div className="space-y-6">
+                <div className="space-y-6 text-left">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Project Title</Label>
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Project Title <span className="text-destructive">*</span></Label>
                     <Input 
                       placeholder="e.g. PrepLinc Engine" 
                       className="rounded-xl h-12 text-lg font-bold"
@@ -103,7 +102,7 @@ export default function CreateProjectPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tagline (One sentence impact)</Label>
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tagline (One sentence impact) <span className="text-destructive">*</span></Label>
                     <Input 
                       placeholder="The proof-of-work layer for hiring..." 
                       className="rounded-xl h-12 italic"
@@ -114,7 +113,7 @@ export default function CreateProjectPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Description & Roadmap</Label>
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Description & Roadmap <span className="text-destructive">*</span></Label>
                     <Textarea 
                       placeholder="What are you building? Why does it matter?" 
                       className="rounded-2xl min-h-[200px] leading-relaxed"
@@ -159,7 +158,7 @@ export default function CreateProjectPage() {
                 <div className="pt-6">
                   <Button type="submit" disabled={loading} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
                     {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Rocket className="w-5 h-5 mr-2" />}
-                    Launch Project to Hub
+                    Launch Project
                   </Button>
                 </div>
               </CardContent>

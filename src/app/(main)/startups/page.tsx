@@ -2,11 +2,10 @@
 "use client";
 
 import { startups } from '@/lib/mock-data';
-import { Rocket, Users, Plus, Globe, Search, UserPlus, Zap, Building2 } from 'lucide-react';
+import { Rocket, Users, Plus, Building2, UserPlus, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 
 export default function StartupsPage() {
@@ -22,9 +21,11 @@ export default function StartupsPage() {
             <p className="text-lg text-muted-foreground">Find student-led startups, explore their journeys, and join as a collaborator.</p>
           </div>
           
-          <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
-            <Plus className="w-5 h-5 mr-2" /> Register Startup
-          </Button>
+          <Link href="/startups/create">
+            <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
+              <Plus className="w-5 h-5 mr-2" /> Register Startup
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -85,9 +86,11 @@ export default function StartupsPage() {
                  <p className="text-sm text-white/80 leading-relaxed">
                    Building something new? Post your idea and find co-founders to help you grow.
                  </p>
-                 <Button className="w-full bg-white text-primary hover:bg-white/90 rounded-2xl h-14 font-bold shadow-xl">
-                   Find Co-Founders
-                 </Button>
+                 <Link href="/startups/create">
+                   <Button className="w-full bg-white text-primary hover:bg-white/90 rounded-2xl h-14 font-bold shadow-xl">
+                     Find Co-Founders
+                   </Button>
+                 </Link>
                </CardContent>
              </Card>
            </aside>

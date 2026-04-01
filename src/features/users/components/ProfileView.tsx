@@ -36,7 +36,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                 About Builder
               </h3>
               {isOwnProfile && (
-                <Link href="/profile/edit">
+                <Link href="/profile/edit/about">
                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
                     <Edit3 className="w-4 h-4 text-muted-foreground hover:text-primary" />
                   </Button>
@@ -48,7 +48,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               {profile.bio ? (
                 profile.bio
               ) : isOwnProfile ? (
-                <p className="italic">Proof-of-work speaks volumes, but a bio helps tell the narrative. Update your profile to share your journey.</p>
+                <p className="italic">Proof-of-work speaks volumes, but a bio helps tell the narrative. Share your builder story.</p>
               ) : (
                 <p className="italic">This builder has not shared their bio yet.</p>
               )}
@@ -117,7 +117,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   </h4>
                   <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto font-medium leading-relaxed">
                     {isOwnProfile 
-                      ? "Proof-of-work speaks louder than words. Start a project today to show the community your impact." 
+                      ? "Proof-of-work speaks louder than words. Start a project today." 
                       : "This builder has not shared any projects in their portfolio yet."
                     }
                   </p>
@@ -136,7 +136,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                  <h4 className="text-xl font-headline font-bold mb-2">Work History</h4>
                  <p className="text-muted-foreground font-medium max-w-xs mx-auto">
                    {isOwnProfile 
-                     ? "Take on micro-jobs to build your verified work history and earn rewards." 
+                     ? "Take on micro-jobs to build your verified work history." 
                      : "This builder has not completed any micro-jobs yet."}
                  </p>
                </div>
@@ -148,7 +148,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                  <h4 className="text-xl font-headline font-bold mb-2">Builder Badges</h4>
                  <p className="text-muted-foreground font-medium max-w-xs mx-auto">
                    {isOwnProfile 
-                    ? "Complete challenges and hit milestones to earn verified badges." 
+                    ? "Complete challenges to earn verified badges." 
                     : "No verified badges earned yet."}
                  </p>
                </div>
