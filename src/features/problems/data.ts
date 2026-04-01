@@ -1,9 +1,8 @@
+import { Problem } from './types';
 
-import { Challenge } from './types';
-
-export const challenges: Challenge[] = [
+export const problems: Problem[] = [
   {
-    id: 'ch-1',
+    id: 'prob-1',
     postedBy: 'Hostel Committee',
     title: 'Waste Reduction Dashboard',
     description: 'Predict daily food waste using historical mess attendance data and visitor trends.',
@@ -12,7 +11,7 @@ export const challenges: Challenge[] = [
     tags: ['Data Viz', 'Python', 'IoT']
   },
   {
-    id: 'ch-2',
+    id: 'prob-2',
     postedBy: 'Local NGO',
     title: 'Donation Tracking App',
     description: 'Build a transparent system for donors to see the real-time impact of their contributions.',

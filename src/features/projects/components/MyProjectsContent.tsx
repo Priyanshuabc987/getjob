@@ -1,10 +1,9 @@
-
 "use client";
 
 import { mockProjects } from '../data';
-import { Plus, LayoutGrid, Rocket, Target, Sparkles, PlusCircle, Briefcase, Lightbulb } from 'lucide-react';
+import { Plus, LayoutGrid, PlusCircle, Briefcase, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { ProjectCard } from '../shared/components/ProjectCard';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/features/auth/hooks';
@@ -17,7 +16,7 @@ export function MyProjectsContent() {
   return (
     <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
       {/* LinkedIn-Style Quick Action Hub */}
-      <Card className="rounded-2xl border-none shadow-sm bg-white overflow-hidden p-4">
+      <Card className="rounded-2xl border-none shadow-sm bg-white dark:bg-card overflow-hidden p-4">
         <div className="flex items-center gap-4 mb-4">
           <Avatar className="w-12 h-12 border">
             <AvatarImage src={user?.photoURL || "https://picsum.photos/seed/user/100/100"} />
@@ -45,7 +44,7 @@ export function MyProjectsContent() {
           <Link href="/problems/create">
             <Button variant="ghost" className="rounded-xl gap-2 font-bold text-muted-foreground hover:text-yellow-600 hover:bg-yellow-500/5">
               <Lightbulb className="w-5 h-5 text-yellow-600" />
-              <span className="text-xs sm:text-sm">Share Challenge</span>
+              <span className="text-xs sm:text-sm">Share Problem</span>
             </Button>
           </Link>
         </div>
@@ -59,7 +58,7 @@ export function MyProjectsContent() {
               <LayoutGrid className="w-6 h-6 text-primary" /> Active Builds
             </h2>
           </div>
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted px-3 py-1.5 rounded-full">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest bg-muted dark:bg-muted/50 px-3 py-1.5 rounded-full">
             {myProjects.length} Projects
           </span>
         </div>
@@ -73,7 +72,7 @@ export function MyProjectsContent() {
         ) : (
           <div className="text-center py-20 bg-card rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm px-6">
             <div className="w-20 h-20 bg-muted/50 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Target className="w-10 h-10 text-muted-foreground" />
+              <PlusCircle className="w-10 h-10 text-muted-foreground" />
             </div>
             <h3 className="text-2xl font-headline font-bold mb-3">No active projects</h3>
             <p className="text-muted-foreground mb-8 max-w-sm mx-auto font-medium leading-relaxed">
