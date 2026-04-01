@@ -6,12 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { UserProfileData, ExperienceEntry, EducationEntry } from '../types';
 import { addExperience, addEducation, removeExperience, removeEducation } from '../services/write';
 import { useToast } from '@/hooks/use-toast';
 import { DatePicker } from '@/components/ui/date-picker';
-import { Checkbox } from '@/components/ui/checkbox';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -23,13 +21,18 @@ interface ProfessionalHistoryProps {
 export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHistoryProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   
+  // Section Edit Modes
+  const [isManagingExp, setIsManagingExp] = useState(false);
+  const [isManagingEdu, setIsManagingEdu] = useState(false);
+  
+  // Form Addition States
   const [isAddingExp, setIsAddingExp] = useState(false);
   const [isAddingEdu, setIsAddingEdu] = useState(false);
   
-  const [editingExp, setEditingExp] = useState<ExperienceEntry | null>(null);
-  const [editingEdu, setEditingEdu] = useState<EducationEntry | null>(null);
+  // Entry Editing States (Tracking ID of entry being edited inline)
+  const [editingExpId, setEditingExpId] = useState<string | null>(null);
+  const [editingEduId, setEditingEduId] = useState<string | null>(null);
 
   const [eduForm, setEduForm] = useState<Partial<EducationEntry>>({
     school: '', degree: '', fieldOfStudy: '', startYear: '', endDate: '', isCurrent: false, description: ''
@@ -83,15 +86,13 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
     }
   };
 
-  const handleUpdateExp = async () => {
-    if (!editingExp) return;
+  const handleUpdateExp = async (updatedEntry: ExperienceEntry) => {
     setLoading(true);
     try {
-      // For simple array management, we remove the old and add the new
-      const oldVersion = profile.experience.find(e => e.id === editingExp.id);
+      const oldVersion = profile.experience.find(e => e.id === updatedEntry.id);
       if (oldVersion) await removeExperience(profile.uid, oldVersion);
-      await addExperience(profile.uid, editingExp);
-      setEditingExp(null);
+      await addExperience(profile.uid, updatedEntry);
+      setEditingExpId(null);
       toast({ title: "Experience updated" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to update" });
@@ -100,14 +101,13 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
     }
   };
 
-  const handleUpdateEdu = async () => {
-    if (!editingEdu) return;
+  const handleUpdateEdu = async (updatedEntry: EducationEntry) => {
     setLoading(true);
     try {
-      const oldVersion = profile.education.find(e => e.id === editingEdu.id);
+      const oldVersion = profile.education.find(e => e.id === updatedEntry.id);
       if (oldVersion) await removeEducation(profile.uid, oldVersion);
-      await addEducation(profile.uid, editingEdu);
-      setEditingEdu(null);
+      await addEducation(profile.uid, updatedEntry);
+      setEditingEduId(null);
       toast({ title: "Education updated" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to update" });
@@ -117,22 +117,28 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
   };
 
   const handleRemoveExp = async (entry: ExperienceEntry) => {
+    setLoading(true);
     try {
       await removeExperience(profile.uid, entry);
-      setEditingExp(null);
+      setEditingExpId(null);
       toast({ title: "Experience removed" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to remove" });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRemoveEdu = async (entry: EducationEntry) => {
+    setLoading(true);
     try {
       await removeEducation(profile.uid, entry);
-      setEditingEdu(null);
+      setEditingEduId(null);
       toast({ title: "Education removed" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to remove" });
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -144,7 +150,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
     } else {
       formSetter((prev: any) => ({...prev, [field]: ''}));
     }
-  }
+  };
 
   return (
     <Card className="rounded-[1.5rem] md:rounded-[2.5rem] border-none shadow-xl bg-card p-6 md:p-8">
@@ -155,16 +161,6 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
           </div>
           Professional History
         </h3>
-        {isOwnProfile && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsEditMode(!isEditMode)}
-            className={cn("h-8 w-8 rounded-full transition-colors", isEditMode ? "text-primary bg-primary/10" : "text-muted-foreground")}
-          >
-            <Edit2 className="w-4 h-4" />
-          </Button>
-        )}
       </div>
 
       <div className="space-y-8 md:space-y-10">
@@ -172,78 +168,87 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
         <div className="space-y-4 md:space-y-6">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Experience</p>
-            {isOwnProfile && !isAddingExp && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setIsAddingExp(true)}
-                className="h-6 w-6 rounded-full hover:bg-primary/5 text-primary"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+            {isOwnProfile && (
+              <div className="flex items-center gap-1">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsAddingExp(true)}
+                  className="h-6 w-6 rounded-full hover:bg-primary/5 text-primary"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsManagingExp(!isManagingExp)}
+                  className={cn("h-6 w-6 rounded-full transition-colors", isManagingExp ? "text-primary bg-primary/10" : "text-muted-foreground")}
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             )}
           </div>
 
           {isAddingExp && (
             <div className="p-4 rounded-2xl bg-muted/20 border border-primary/20 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="space-y-3">
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Company</Label>
-                  <Input value={expForm.company} onChange={e => setExpForm({...expForm, company: e.target.value})} className="h-9 rounded-lg text-sm" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Role</Label>
-                  <Input value={expForm.role} onChange={e => setExpForm({...expForm, role: e.target.value})} className="h-9 rounded-lg text-sm" />
-                </div>
+                <div className="space-y-1"><Label className="text-[10px] uppercase">Company</Label><Input value={expForm.company} onChange={e => setExpForm({...expForm, company: e.target.value})} className="h-9 rounded-lg text-sm" /></div>
+                <div className="space-y-1"><Label className="text-[10px] uppercase">Role</Label><Input value={expForm.role} onChange={e => setExpForm({...expForm, role: e.target.value})} className="h-9 rounded-lg text-sm" /></div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <Label className="text-[10px] uppercase">Start</Label>
-                    <DatePicker value={expForm.startDate} onChange={handleDateChange('startDate', setExpForm)} className="h-9" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-[10px] uppercase">End</Label>
-                    <DatePicker value={expForm.endDate} onChange={handleDateChange('endDate', setExpForm)} showPresentButton className="h-9" />
-                  </div>
+                  <div className="space-y-1"><Label className="text-[10px] uppercase">Start</Label><DatePicker value={expForm.startDate} onChange={handleDateChange('startDate', setExpForm)} className="h-9" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] uppercase">End</Label><DatePicker value={expForm.endDate} onChange={handleDateChange('endDate', setExpForm)} showPresentButton className="h-9" /></div>
                 </div>
               </div>
               <div className="flex gap-2 pt-2">
-                <Button onClick={handleAddExp} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">
-                  {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-1" /> Save</>}
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => setIsAddingExp(false)} className="rounded-full h-9 px-4">
-                  <X className="w-3 h-3" />
-                </Button>
+                <Button onClick={handleAddExp} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">{loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-1" /> Save</>}</Button>
+                <Button variant="ghost" size="sm" onClick={() => setIsAddingExp(false)} className="rounded-full h-9 px-4"><X className="w-3 h-3" /></Button>
               </div>
             </div>
           )}
 
           <div className="space-y-4">
             {profile.experience && profile.experience.length > 0 ? profile.experience.map(exp => (
-              <div key={exp.id} className="flex gap-4 group relative">
-                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
-                  <Briefcase className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-bold text-sm leading-tight truncate">{exp.role}</p>
-                    {isEditMode && isOwnProfile && (
-                      <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-primary hover:bg-primary/5" onClick={() => setEditingExp(exp)}>
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </Button>
-                    )}
+              <div key={exp.id}>
+                {editingExpId === exp.id ? (
+                  <div className="p-4 rounded-2xl bg-muted/20 border border-primary/20 space-y-4">
+                    <div className="space-y-3">
+                      <div className="space-y-1"><Label className="text-[10px] uppercase">Company</Label><Input defaultValue={exp.company} onChange={e => exp.company = e.target.value} className="h-9 rounded-lg text-sm" /></div>
+                      <div className="space-y-1"><Label className="text-[10px] uppercase">Role</Label><Input defaultValue={exp.role} onChange={e => exp.role = e.target.value} className="h-9 rounded-lg text-sm" /></div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1"><Label className="text-[10px] uppercase">Start</Label><DatePicker value={exp.startDate} onChange={(date) => { if(date === 'Present') { exp.startDate = 'Present'; exp.isCurrent = true; } else if(date) { exp.startDate = format(date, 'MM/yyyy'); } }} className="h-9" /></div>
+                        <div className="space-y-1"><Label className="text-[10px] uppercase">End</Label><DatePicker value={exp.endDate} onChange={(date) => { if(date === 'Present') { exp.endDate = 'Present'; exp.isCurrent = true; } else if(date) { exp.endDate = format(date, 'MM/yyyy'); } }} showPresentButton className="h-9" /></div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button onClick={() => handleUpdateExp(exp)} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">Save</Button>
+                      <Button onClick={() => handleRemoveExp(exp)} disabled={loading} variant="destructive" size="sm" className="rounded-full h-9"><Trash2 className="w-3 h-3" /></Button>
+                      <Button variant="ghost" size="sm" onClick={() => setEditingExpId(null)} className="rounded-full h-9 px-4"><X className="w-3 h-3" /></Button>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-muted-foreground font-bold">
-                    {exp.company} • {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
-                  </p>
-                </div>
+                ) : (
+                  <div className="flex gap-4 group relative">
+                    <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
+                      <Briefcase className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-bold text-sm leading-tight truncate">{exp.role}</p>
+                        {isManagingExp && (
+                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-primary hover:bg-primary/5" onClick={() => setEditingExpId(exp.id)}>
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground font-bold">{exp.company} • {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )) : !isAddingExp && (
               <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
                 <p className="text-[10px] text-muted-foreground italic font-medium">
-                  {isOwnProfile 
-                    ? "Add your work history to show what you're capable of." 
-                    : "No experience listed."
-                  }
+                  {isOwnProfile ? "Show the builders your potential to get jobs/tasks easily." : "No experience listed."}
                 </p>
               </div>
             )}
@@ -254,129 +259,93 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
         <div className="space-y-4 md:space-y-6">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Education</p>
-            {isOwnProfile && !isAddingEdu && (
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setIsAddingEdu(true)}
-                className="h-6 w-6 rounded-full hover:bg-primary/5 text-primary"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+            {isOwnProfile && (
+              <div className="flex items-center gap-1">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsAddingEdu(true)}
+                  className="h-6 w-6 rounded-full hover:bg-primary/5 text-primary"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsManagingEdu(!isManagingEdu)}
+                  className={cn("h-6 w-6 rounded-full transition-colors", isManagingEdu ? "text-primary bg-primary/10" : "text-muted-foreground")}
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             )}
           </div>
 
           {isAddingEdu && (
             <div className="p-4 rounded-2xl bg-muted/20 border border-primary/20 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="space-y-3">
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">School</Label>
-                  <Input value={eduForm.school} onChange={e => setEduForm({...eduForm, school: e.target.value})} className="h-9 rounded-lg text-sm" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-[10px] uppercase">Degree</Label>
-                  <Input value={eduForm.degree} onChange={e => setEduForm({...eduForm, degree: e.target.value})} className="h-9 rounded-lg text-sm" />
-                </div>
+                <div className="space-y-1"><Label className="text-[10px] uppercase">School</Label><Input value={eduForm.school} onChange={e => setEduForm({...eduForm, school: e.target.value})} className="h-9 rounded-lg text-sm" /></div>
+                <div className="space-y-1"><Label className="text-[10px] uppercase">Degree</Label><Input value={eduForm.degree} onChange={e => setEduForm({...eduForm, degree: e.target.value})} className="h-9 rounded-lg text-sm" /></div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <Label className="text-[10px] uppercase">Start</Label>
-                    <DatePicker value={eduForm.startYear} onChange={handleDateChange('startYear', setEduForm)} className="h-9" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-[10px] uppercase">End</Label>
-                    <DatePicker value={eduForm.endDate} onChange={handleDateChange('endDate', setEduForm)} showPresentButton className="h-9" />
-                  </div>
+                  <div className="space-y-1"><Label className="text-[10px] uppercase">Start</Label><DatePicker value={eduForm.startYear} onChange={handleDateChange('startYear', setEduForm)} className="h-9" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] uppercase">End</Label><DatePicker value={eduForm.endDate} onChange={handleDateChange('endDate', setEduForm)} showPresentButton className="h-9" /></div>
                 </div>
               </div>
               <div className="flex gap-2 pt-2">
-                <Button onClick={handleAddEdu} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">
-                  {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-1" /> Save</>}
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => setIsAddingEdu(false)} className="rounded-full h-9 px-4">
-                  <X className="w-3 h-3" />
-                </Button>
+                <Button onClick={handleAddEdu} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">{loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Check className="w-3 h-3 mr-1" /> Save</>}</Button>
+                <Button variant="ghost" size="sm" onClick={() => setIsAddingEdu(false)} className="rounded-full h-9 px-4"><X className="w-3 h-3" /></Button>
               </div>
             </div>
           )}
 
           <div className="space-y-4">
             {profile.education && profile.education.length > 0 ? profile.education.map(edu => (
-              <div key={edu.id} className="flex gap-4 group relative">
-                <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0">
-                  <GraduationCap className="w-5 h-5 text-secondary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-bold text-sm leading-tight truncate">{edu.degree}</p>
-                    {isEditMode && isOwnProfile && (
-                      <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-secondary hover:bg-secondary/5" onClick={() => setEditingEdu(edu)}>
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </Button>
-                    )}
+              <div key={edu.id}>
+                {editingEduId === edu.id ? (
+                  <div className="p-4 rounded-2xl bg-muted/20 border border-primary/20 space-y-4">
+                    <div className="space-y-3">
+                      <div className="space-y-1"><Label className="text-[10px] uppercase">School</Label><Input defaultValue={edu.school} onChange={e => edu.school = e.target.value} className="h-9 rounded-lg text-sm" /></div>
+                      <div className="space-y-1"><Label className="text-[10px] uppercase">Degree</Label><Input defaultValue={edu.degree} onChange={e => edu.degree = e.target.value} className="h-9 rounded-lg text-sm" /></div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1"><Label className="text-[10px] uppercase">Start</Label><DatePicker value={edu.startYear} onChange={(date) => { if(date === 'Present') { edu.startYear = 'Present'; edu.isCurrent = true; } else if(date) { edu.startYear = format(date, 'MM/yyyy'); } }} className="h-9" /></div>
+                        <div className="space-y-1"><Label className="text-[10px] uppercase">End</Label><DatePicker value={edu.endDate} onChange={(date) => { if(date === 'Present') { edu.endDate = 'Present'; edu.isCurrent = true; } else if(date) { edu.endDate = format(date, 'MM/yyyy'); } }} showPresentButton className="h-9" /></div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button onClick={() => handleUpdateEdu(edu)} disabled={loading} size="sm" className="flex-1 rounded-full font-bold h-9">Save</Button>
+                      <Button onClick={() => handleRemoveEdu(edu)} disabled={loading} variant="destructive" size="sm" className="rounded-full h-9"><Trash2 className="w-3 h-3" /></Button>
+                      <Button variant="ghost" size="sm" onClick={() => setEditingEduId(null)} className="rounded-full h-9 px-4"><X className="w-3 h-3" /></Button>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-muted-foreground font-bold">
-                    {edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}
-                  </p>
-                </div>
+                ) : (
+                  <div className="flex gap-4 group relative">
+                    <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0">
+                      <GraduationCap className="w-5 h-5 text-secondary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-bold text-sm leading-tight truncate">{edu.degree}</p>
+                        {isManagingEdu && (
+                          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-secondary hover:bg-secondary/5" onClick={() => setEditingEduId(edu.id)}>
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground font-bold">{edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             )) : !isAddingEdu && (
               <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
                 <p className="text-[10px] text-muted-foreground italic font-medium">
-                  {isOwnProfile 
-                    ? "Add your school to complete your builder profile." 
-                    : "No education listed."
-                  }
+                  {isOwnProfile ? "Show the builders your potential to get jobs/tasks easily." : "No education listed."}
                 </p>
               </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* Edit Dialogs */}
-      <Dialog open={!!editingExp} onOpenChange={(open) => !open && setEditingExp(null)}>
-        <DialogContent className="rounded-[2rem]">
-          <DialogHeader><DialogTitle>Edit Experience</DialogTitle></DialogHeader>
-          {editingExp && (
-            <div className="space-y-4 py-4">
-              <div className="space-y-2"><Label>Company</Label><Input value={editingExp.company} onChange={e => setEditingExp({...editingExp, company: e.target.value})} /></div>
-              <div className="space-y-2"><Label>Role</Label><Input value={editingExp.role} onChange={e => setEditingExp({...editingExp, role: e.target.value})} /></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Start</Label><DatePicker value={editingExp.startDate} onChange={handleDateChange('startDate', (val) => setEditingExp(prev => ({...prev!, ...val})))} /></div>
-                <div className="space-y-2"><Label>End</Label><DatePicker value={editingExp.endDate} onChange={handleDateChange('endDate', (val) => setEditingExp(prev => ({...prev!, ...val})))} showPresentButton /></div>
-              </div>
-            </div>
-          )}
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="destructive" className="rounded-full" onClick={() => editingExp && handleRemoveExp(editingExp)}><Trash2 className="w-4 h-4 mr-2" /> Delete</Button>
-            <div className="flex-1" />
-            <Button variant="ghost" onClick={() => setEditingExp(null)} className="rounded-full">Cancel</Button>
-            <Button onClick={handleUpdateExp} disabled={loading} className="rounded-full px-8">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save"}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={!!editingEdu} onOpenChange={(open) => !open && setEditingEdu(null)}>
-        <DialogContent className="rounded-[2rem]">
-          <DialogHeader><DialogTitle>Edit Education</DialogTitle></DialogHeader>
-          {editingEdu && (
-            <div className="space-y-4 py-4">
-              <div className="space-y-2"><Label>School</Label><Input value={editingEdu.school} onChange={e => setEditingEdu({...editingEdu, school: e.target.value})} /></div>
-              <div className="space-y-2"><Label>Degree</Label><Input value={editingEdu.degree} onChange={e => setEditingEdu({...editingEdu, degree: e.target.value})} /></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Start</Label><DatePicker value={editingEdu.startYear} onChange={handleDateChange('startYear', (val) => setEditingEdu(prev => ({...prev!, ...val})))} /></div>
-                <div className="space-y-2"><Label>End</Label><DatePicker value={editingEdu.endDate} onChange={handleDateChange('endDate', (val) => setEditingEdu(prev => ({...prev!, ...val})))} showPresentButton /></div>
-              </div>
-            </div>
-          )}
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="destructive" className="rounded-full" onClick={() => editingEdu && handleRemoveEdu(editingEdu)}><Trash2 className="w-4 h-4 mr-2" /> Delete</Button>
-            <div className="flex-1" />
-            <Button variant="ghost" onClick={() => setEditingEdu(null)} className="rounded-full">Cancel</Button>
-            <Button onClick={handleUpdateEdu} disabled={loading} className="rounded-full px-8">{loading ? <Loader2 className="animate-spin w-4 h-4" /> : "Save"}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Card>
   );
 }
