@@ -12,12 +12,11 @@ import Link from 'next/link';
 
 export function MyProjectsContent() {
   const { user } = useAuth();
-  // In a real app, filter by currentUser.id
   const myProjects = mockProjects;
 
   return (
     <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-      {/* Quick Action Hub - LinkedIn Style */}
+      {/* LinkedIn-Style Quick Action Hub */}
       <Card className="rounded-2xl border-none shadow-sm bg-white overflow-hidden p-4">
         <div className="flex items-center gap-4 mb-4">
           <Avatar className="w-12 h-12 border">
@@ -46,7 +45,7 @@ export function MyProjectsContent() {
           <Link href="/problems/create">
             <Button variant="ghost" className="rounded-xl gap-2 font-bold text-muted-foreground hover:text-yellow-600 hover:bg-yellow-500/5">
               <Lightbulb className="w-5 h-5 text-yellow-600" />
-              <span className="text-xs sm:text-sm">Share Problem</span>
+              <span className="text-xs sm:text-sm">Share Challenge</span>
             </Button>
           </Link>
         </div>

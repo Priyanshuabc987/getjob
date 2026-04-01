@@ -2,21 +2,30 @@
 "use client";
 
 import { events } from '@/features/events/data';
-import { Calendar, MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, Sparkles, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function EventsPage() {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 pt-4">
       <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="mb-12 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-sm font-bold mb-4">
-            <Sparkles className="w-4 h-4 fill-current" /> Action-Driven Events
+        <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-2xl text-center md:text-left">
+            <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-sm font-bold mb-4">
+              <Sparkles className="w-4 h-4 fill-current" /> Action-Driven Events
+            </div>
+            <h1 className="text-4xl font-headline font-bold mb-4">Turn Events into Effort</h1>
+            <p className="text-lg text-muted-foreground">Don't just attend. Join hackathons, build working prototypes, and keep the momentum going.</p>
           </div>
-          <h1 className="text-4xl font-headline font-bold mb-4">Turn Events into Effort</h1>
-          <p className="text-lg text-muted-foreground">Don't just attend. Join hackathons, build working prototypes, and keep the momentum going.</p>
+          
+          <Link href="/events/create">
+            <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
+              <Plus className="w-5 h-5 mr-2" /> Host Event
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-10">

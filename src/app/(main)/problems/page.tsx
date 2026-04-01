@@ -2,21 +2,30 @@
 "use client";
 
 import { challenges } from '@/features/problems/data';
-import { Lightbulb, ArrowRight, Target, ShieldCheck } from 'lucide-react';
+import { Lightbulb, ArrowRight, Target, ShieldCheck, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function ProblemsPage() {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 pt-4">
       <main className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 bg-yellow-500/10 text-yellow-600 px-4 py-1.5 rounded-full text-xs font-bold mb-4">
-            <Lightbulb className="w-4 h-4" /> Active Challenges
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 bg-yellow-500/10 text-yellow-600 px-4 py-1.5 rounded-full text-xs font-bold mb-4">
+              <Lightbulb className="w-4 h-4" /> Active Challenges
+            </div>
+            <h1 className="text-4xl font-headline font-bold mb-4">Turn Problems into Projects</h1>
+            <p className="text-lg text-muted-foreground">Real-world friction points posted by companies and communities. Solve them to build your credibility.</p>
           </div>
-          <h1 className="text-4xl font-headline font-bold mb-4">Turn Problems into Projects</h1>
-          <p className="text-lg text-muted-foreground">Real-world friction points posted by companies and communities. Solve them to build your credibility.</p>
+          
+          <Link href="/problems/create">
+            <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
+              <Plus className="w-5 h-5 mr-2" /> Share Challenge
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
