@@ -1,9 +1,17 @@
-
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getSession } from '@/features/auth/actions';
 import { Button } from '@/components/ui/button';
 import { Zap, ShieldCheck, TrendingUp, ArrowRight, Rocket } from 'lucide-react';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await getSession();
+
+  // If user is already logged in, skip landing page
+  if (session) {
+    redirect('/feed');
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}

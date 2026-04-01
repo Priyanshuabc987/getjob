@@ -34,12 +34,12 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
 
   const dateValue = typeof value === 'string' ? toDate(value) : value instanceof Date ? value : undefined;
 
-  // ✅ Initialize from dateValue, not hardcoded new Date()
+  // Initialize from dateValue, not hardcoded new Date()
   const [viewMonth, setViewMonth] = React.useState<Date>(
     dateValue ?? new Date()
   );
 
-  // ✅ Sync viewMonth when value prop changes externally
+  // Sync viewMonth when value prop changes externally
   React.useEffect(() => {
     const newDate = typeof value === 'string' ? toDate(value) : value instanceof Date ? value : undefined;
     if (newDate) {
@@ -54,7 +54,7 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 71 }, (_, i) => currentYear - 50 + i).reverse();
 
-  // ✅ Dropdown changes now update the single viewMonth state
+  // Dropdown changes now update the single viewMonth state
   const handleMonthSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setViewMonth(prev => new Date(prev.getFullYear(), parseInt(e.target.value), 1));
   };
@@ -96,7 +96,11 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
           }
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent 
+        className="w-auto p-0" 
+        align="start"
+        onMouseDown={(e) => e.stopPropagation()} // Prevent closing on click interaction
+      >
         <div className="flex justify-between items-center gap-2 px-4 pt-4 mb-2">
           <select
             className="border rounded-md px-2 py-1 text-sm bg-background"
@@ -120,8 +124,8 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
         <Calendar
           mode="single"
           selected={dateValue}
-          month={viewMonth}                      // ✅ single source of truth
-          onMonthChange={setViewMonth}           // ✅ prev/next nav also updates viewMonth
+          month={viewMonth}                      
+          onMonthChange={setViewMonth}           
           onSelect={handleSelect}
           initialFocus
           classNames={{
