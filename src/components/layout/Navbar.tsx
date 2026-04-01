@@ -25,8 +25,8 @@ import { APP_NAME } from '@/lib/constants';
 
 const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
-  { icon: PlusSquare, label: 'Explore Projects', href: '/projects' },
-  { icon: Briefcase, label: 'Micro-Jobs', href: '/jobs' },
+  { icon: Briefcase, label: 'Jobs', href: '/jobs' },
+  { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Challenges', href: '/problems' },
@@ -126,7 +126,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
 
             <Separator className="my-6" />
 
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">My Workspace</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4"> Workspace</p>
             <div className="space-y-1">
               {workspaceNavItems.map((item) => {
                 const isActive = pathname === item.href;

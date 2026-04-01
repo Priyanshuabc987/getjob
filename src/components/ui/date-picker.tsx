@@ -127,6 +127,8 @@ export function DatePicker({ value, onChange, placeholder, className, showPresen
           month={viewMonth}                      
           onMonthChange={setViewMonth}           
           onSelect={handleSelect}
+          fixedWeeks
+          showOutsideDays
           initialFocus
           classNames={{
             caption_label: 'hidden',
