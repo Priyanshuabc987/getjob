@@ -35,7 +35,7 @@ export default async function PublicProfilePage({
   const userProjects = projectWorkspaces.filter(p => p.ownerId === id);
 
   return (
-    <div className="min-h-screen bg-[#F4F3F8]">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="md:pl-64 pt-16">
         <main className="w-full">

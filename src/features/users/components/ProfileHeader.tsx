@@ -54,10 +54,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const buildingDuration = formatBuildingDuration(profile.createdAt);
 
   return (
-    <div className="relative pt-6 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+    <div className="relative pt-4 md:pt-6 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
       {/* Banner Container */}
       <div className={cn(
-        "h-48 md:h-64 w-full rounded-[2.5rem] relative overflow-hidden shadow-lg",
+        "h-40 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-lg",
         !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
       )}>
         {profile.bannerUrl && (
@@ -65,42 +65,42 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         )}
         
         {/* Credibility Score - Top Right */}
-        <div className="absolute top-6 right-6 md:top-8 md:right-8 bg-white/20 backdrop-blur-xl border border-white/30 px-5 py-2.5 rounded-[1.5rem] flex flex-col items-center shadow-2xl z-20">
-          <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest mb-0.5">Credibility</span>
-          <span className="text-2xl md:text-3xl font-headline font-bold text-white">{profile.credibilityScore}</span>
+        <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-white/20 backdrop-blur-xl border border-white/30 px-4 py-2 md:px-5 md:py-2.5 rounded-[1.2rem] md:rounded-[1.5rem] flex flex-col items-center shadow-2xl z-20">
+          <span className="text-[8px] md:text-[10px] font-bold text-white uppercase tracking-widest mb-0.5">Credibility</span>
+          <span className="text-xl md:text-3xl font-headline font-bold text-white">{profile.credibilityScore}</span>
         </div>
       </div>
 
       {/* User Info & Avatar Overlap */}
-      <div className="px-6 md:px-12 relative z-10 -mt-16 md:-mt-24">
-        <div className="flex flex-col md:flex-row md:items-end gap-6">
+      <div className="px-4 md:px-12 relative z-10 -mt-12 md:-mt-24">
+        <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
           {/* Avatar - Partially Overlapping */}
-          <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2.5rem] p-1.5 bg-white dark:bg-card shadow-2xl shrink-0">
+          <div className="w-24 h-24 md:w-48 md:h-48 rounded-[1.5rem] md:rounded-[2.5rem] p-1 md:p-1.5 bg-card shadow-2xl shrink-0">
             <img 
               src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
               alt={profile.displayName} 
-              className="w-full h-full object-cover rounded-[2rem]" 
+              className="w-full h-full object-cover rounded-[1.2rem] md:rounded-[2rem]" 
             />
           </div>
 
           {/* User Details */}
-          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-4">
+          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-4">
             <div className="space-y-1.5 md:space-y-3">
-              <h1 className="text-3xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-3">
+              <h1 className="text-2xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2 md:gap-3">
                 {profile.displayName}
-                {profile.credibilityScore > 80 && <ShieldCheck className="w-6 h-6 md:w-8 md:h-8 text-primary fill-current text-white" />}
+                {profile.credibilityScore > 80 && <ShieldCheck className="w-5 h-5 md:w-8 md:h-8 text-primary fill-current text-white" />}
               </h1>
               <div className="flex flex-wrap items-center gap-2 md:gap-4">
-                 <p className="text-primary font-bold text-sm md:text-base">@{profile.role || 'builder'}</p>
+                 <p className="text-primary font-bold text-xs md:text-base">@{profile.role || 'builder'}</p>
                  {profile.collegeName && (
-                   <span className="text-muted-foreground font-bold text-xs md:text-sm">• {profile.collegeName}</span>
+                   <span className="text-muted-foreground font-bold text-[10px] md:text-sm">• {profile.collegeName}</span>
                  )}
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground font-bold text-[11px] md:text-xs mt-2">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-card rounded-full shadow-sm border border-muted/50">
+              <div className="flex flex-wrap items-center gap-2 md:gap-4 text-muted-foreground font-bold text-[10px] md:text-xs mt-1 md:mt-2">
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-card rounded-full shadow-sm border border-muted/50">
                   <MapPin className="w-3.5 h-3.5 text-primary" /> {profile.location?.city || 'Earth'}, {profile.location?.country || 'Core'}
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-card rounded-full shadow-sm border border-muted/50">
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-card rounded-full shadow-sm border border-muted/50">
                   <Clock className="w-3.5 h-3.5 text-primary" /> Building for {buildingDuration}
                 </div>
               </div>
@@ -109,11 +109,11 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
             {isOwnProfile && (
               <Dialog open={isEditing} onOpenChange={setIsEditing}>
                 <DialogTrigger asChild>
-                  <Button className="rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow mb-2">
+                  <Button className="rounded-full gap-2 px-8 h-12 bg-primary text-white hover:bg-primary/90 font-bold shadow-xl action-button-glow mb-2 w-full sm:w-auto">
                     <Edit2 className="w-4 h-4" /> Edit Profile
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-[2rem] sm:max-w-md">
+                <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-w-md">
                   <DialogHeader><DialogTitle className="text-xl font-headline">Update Profile</DialogTitle></DialogHeader>
                   <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
                     <div className="space-y-2"><Label>Display Name</Label><Input value={formData.displayName} onChange={e => setFormData({...formData, displayName: e.target.value})} className="rounded-xl" /></div>

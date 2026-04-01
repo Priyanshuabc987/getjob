@@ -103,17 +103,17 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
   }
 
   return (
-    <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-card p-8">
-      <h3 className="font-headline text-lg font-bold flex items-center gap-3 mb-8 text-foreground">
+    <Card className="rounded-[1.5rem] md:rounded-[2.5rem] border-none shadow-xl bg-card p-6 md:p-8">
+      <h3 className="font-headline text-lg font-bold flex items-center gap-3 mb-6 md:mb-8 text-foreground">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
           <Briefcase className="w-4 h-4 text-primary" />
         </div>
         Professional History
       </h3>
 
-      <div className="space-y-10">
+      <div className="space-y-8 md:space-y-10">
         {/* Experience Section */}
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Experience</p>
             {isOwnProfile && (
@@ -123,7 +123,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <Plus className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-[2rem] max-h-[90vh] overflow-y-auto">
+                <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Add Experience</DialogTitle></DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-1"><Label>Company</Label><Input value={expForm.company} onChange={e => setExpForm({...expForm, company: e.target.value})} className="rounded-xl" /></div>
@@ -159,7 +159,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               </Dialog>
             )}
           </div>
-          {profile.experience?.length > 0 ? profile.experience.map(exp => (
+          {profile.experience && profile.experience.length > 0 ? profile.experience.map(exp => (
             <div key={exp.id} className="flex gap-4 group">
               <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0">
                 <Briefcase className="w-5 h-5 text-primary" />
@@ -167,7 +167,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-bold text-sm leading-tight truncate">{exp.role}</p>
-                  {isOwnProfile && <button onClick={() => handleRemoveExp(exp)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
+                  {isOwnProfile && <button onClick={() => handleRemoveExp(exp)} className="md:opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
                 </div>
                 <p className="text-[10px] text-muted-foreground font-bold">
                   {exp.company} • {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
@@ -177,13 +177,13 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
             </div>
           )) : (
             <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
-              <p className="text-[10px] text-muted-foreground italic font-medium">Your work history tells a story of effort. Add your experiences to stand out to recruiters.</p>
+              <p className="text-[10px] text-muted-foreground italic font-medium">Your work history tells a story of effort. Add your experiences.</p>
             </div>
           )}
         </div>
 
         {/* Education Section */}
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Education</p>
             {isOwnProfile && (
@@ -193,7 +193,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
                     <Plus className="w-4 h-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="rounded-[2rem] max-h-[90vh] overflow-y-auto">
+                <DialogContent className="rounded-[2rem] w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto">
                   <DialogHeader><DialogTitle>Add Education</DialogTitle></DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-1"><Label>School</Label><Input value={eduForm.school} onChange={e => setEduForm({...eduForm, school: e.target.value})} className="rounded-xl" /></div>
@@ -230,7 +230,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               </Dialog>
             )}
           </div>
-          {profile.education?.length > 0 ? profile.education.map(edu => (
+          {profile.education && profile.education.length > 0 ? profile.education.map(edu => (
             <div key={edu.id} className="flex gap-4 group">
               <div className="w-10 h-10 rounded-xl bg-secondary/5 flex items-center justify-center shrink-0">
                 <GraduationCap className="w-5 h-5 text-secondary" />
@@ -238,7 +238,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-bold text-sm leading-tight truncate">{edu.degree}</p>
-                  {isOwnProfile && <button onClick={() => handleRemoveEdu(edu)} className="opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
+                  {isOwnProfile && <button onClick={() => handleRemoveEdu(edu)} className="md:opacity-0 group-hover:opacity-100 text-destructive hover:scale-110 transition-all shrink-0"><Trash2 className="w-3.5 h-3.5" /></button>}
                 </div>
                 <p className="text-[10px] text-muted-foreground font-bold">
                   {edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}
@@ -249,7 +249,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: ProfessionalHisto
             </div>
           )) : (
             <div className="p-4 rounded-2xl bg-muted/20 border border-dashed text-center">
-              <p className="text-[10px] text-muted-foreground italic font-medium">Academic roots help connect you with your community and alumni network. Add your school or university.</p>
+              <p className="text-[10px] text-muted-foreground italic font-medium">Academic roots help connect you with your community. Add your school.</p>
             </div>
           )}
         </div>
