@@ -1,10 +1,11 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'PrepLinc - Build Your Future',
-  description: 'A student-focused platform for real experience, earnings, and networking.',
+  title: `${APP_NAME} - Build Your Future`,
+  description: APP_DESCRIPTION,
 };
 
 export default function RootLayout({

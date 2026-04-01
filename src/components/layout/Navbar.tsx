@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/features/auth/hooks';
 import { useState, useEffect } from 'react';
+import { APP_NAME } from '@/lib/constants';
 
 const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
@@ -64,7 +65,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
               <Zap className="text-white w-5 h-5 fill-current" />
             </div>
-            <span className="font-headline font-bold text-xl tracking-tight text-primary hidden sm:block">PrepLinc</span>
+            <span className="font-headline font-bold text-xl tracking-tight text-primary hidden sm:block">{APP_NAME}</span>
           </Link>
 
           <div className="flex items-center gap-4">
@@ -125,7 +126,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
 
             <Separator className="my-6" />
 
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">Your Workspace</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">My Workspace</p>
             <div className="space-y-1">
               {workspaceNavItems.map((item) => {
                 const isActive = pathname === item.href;

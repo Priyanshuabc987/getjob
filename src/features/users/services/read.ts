@@ -1,4 +1,3 @@
-
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -6,8 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { UserProfileData, UserPrivateData } from '../types';
 import { cache as reactCache } from 'react';
 import { unstable_cache as nextCache } from 'next/cache';
-
-const CACHE_DURATION = 3600; // 1 hour
+import { PROFILE_REVALIDATE_TIME } from '../constants';
 
 /**
  * Internal un-cached fetch for public profile.
@@ -38,7 +36,7 @@ export const getCachedUserProfile = reactCache(
       () => _uncachedGetUserProfile(uid),
       ['user-profile', uid],
       {
-        revalidate: CACHE_DURATION,
+        revalidate: PROFILE_REVALIDATE_TIME,
         tags: [`user:${uid}:profile`],
       }
     )();
@@ -54,7 +52,7 @@ export const getCachedUserPrivateData = reactCache(
       () => _uncachedGetUserPrivateData(uid),
       ['user-private', uid],
       {
-        revalidate: CACHE_DURATION,
+        revalidate: PROFILE_REVALIDATE_TIME,
         tags: [`user:${uid}:private`],
       }
     )();

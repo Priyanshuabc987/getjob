@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { Zap, Twitter, Github, Linkedin, Mail } from 'lucide-react';
+import { APP_NAME } from '@/lib/constants';
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t mt-auto">
+    <footer className="bg-white dark:bg-card border-t mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-12 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand */}
@@ -14,7 +15,7 @@ export function Footer() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
                 <Zap className="text-white w-5 h-5 fill-current" />
               </div>
-              <span className="font-headline font-bold text-xl tracking-tight text-primary">PrepLinc</span>
+              <span className="font-headline font-bold text-xl tracking-tight text-primary">{APP_NAME}</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               The first proof-of-work ecosystem for builders. Turn your coding habits into a verified professional portfolio.
@@ -60,7 +61,7 @@ export function Footer() {
               <input 
                 type="email" 
                 placeholder="builder@email.com" 
-                className="flex-1 px-4 py-2 bg-muted rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                className="flex-1 px-4 py-2 bg-muted dark:bg-muted/50 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-primary"
               />
               <button className="px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl shadow-lg shadow-primary/20">
                 Join
@@ -71,7 +72,7 @@ export function Footer() {
 
         <div className="border-t mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-muted-foreground font-medium">
-            © 2024 PrepLinc Engine. Built for the next generation of builders.
+            © 2024 {APP_NAME} Engine. Built for the next generation of builders.
           </p>
           <div className="flex items-center gap-6">
             <Link href="#" className="text-[10px] font-bold text-muted-foreground hover:text-primary uppercase tracking-widest">Privacy Policy</Link>

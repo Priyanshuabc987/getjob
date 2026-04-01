@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/features/auth/actions';
 import { Button } from '@/components/ui/button';
 import { Zap, ShieldCheck, TrendingUp, ArrowRight, Rocket } from 'lucide-react';
+import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
 
 export default async function LandingPage() {
   const session = await getSession();
@@ -15,13 +16,13 @@ export default async function LandingPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b bg-white/80 backdrop-blur-lg">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b bg-white/80 dark:bg-card/80 backdrop-blur-lg">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
               <Zap className="text-white w-5 h-5 fill-current" />
             </div>
-            <span className="font-headline font-bold text-xl tracking-tight text-primary">PrepLinc</span>
+            <span className="font-headline font-bold text-xl tracking-tight text-primary">{APP_NAME}</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login">
@@ -45,7 +46,7 @@ export default async function LandingPage() {
             <span className="text-primary">Start proving.</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            The student-first workspace where real work becomes your verified portfolio. No resumes, just proof.
+            {APP_DESCRIPTION}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
             <Link href="/jobs">
@@ -81,7 +82,7 @@ export default async function LandingPage() {
 
       <footer className="border-t py-12 bg-muted/30">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-sm text-muted-foreground font-medium">© 2024 PrepLinc Engine. Built for the next generation of builders.</p>
+          <p className="text-sm text-muted-foreground font-medium">© 2024 {APP_NAME} Engine. Built for the next generation of builders.</p>
         </div>
       </footer>
     </div>
