@@ -1,96 +1,86 @@
-"use client";
+'use client';
 
-import { jobs } from '@/lib/mock-data';
-import { Search, Filter, Clock, CreditCard, ChevronRight, Zap, Building2, Target, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import { useState } from 'react';
+import { Job } from '@/features/jobs/types';
+import { JobCard } from '@/features/jobs/components/JobCard';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Briefcase, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { jobs } from '@/features/jobs/data';
+import { sectors } from '@/features/startups/sector_data';
 
 export function JobsPageContent() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({ type: 'all', sector: 'all' });
+
+  const filteredJobs = jobs
+    .filter(job => job.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(job => filters.type === 'all' || job.type === filters.type)
+    .filter(job => filters.sector === 'all' || job.sector === filters.sector);
+
   return (
-    <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-1.5 rounded-full text-xs font-bold mb-4">
-            <Target className="w-4 h-4" /> Micro-Jobs Marketplace
+    <div className="min-h-screen bg-background">
+      <header className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 py-3 md:py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div className="md:w-2/3">
+                <div className="inline-flex items-center gap-2 mb-4">
+                    <span className="p-2 bg-primary/10 rounded-full">
+                         <Briefcase className="w-6 h-6 text-primary" />
+                    </span>
+                     <p className="font-semibold text-primary">Action-Driven Opportunities</p>
+                </div>
+                <h1 className="text-4xl md:text-5xl font-bold font-headline text-gray-900 dark:text-white mb-4">Find Your Next Role</h1>
+                <p className="text-lg text-gray-600 dark:text-gray-300">Don't just look for a job. Find a mission. Join a startup and make a real impact.</p>
+            </div>
+            <div className="flex-1 md:text-right">
+                <Button asChild size="lg" className="rounded-full h-14 text-lg font-bold w-full sm:w-auto">
+                  <Link href="/jobs/create"><Plus className="mr-2 h-5 w-5"/> Post a Job</Link>
+                </Button>
+            </div>
           </div>
-          <h1 className="text-4xl font-headline font-bold mb-4">Earn While You Build</h1>
-          <p className="text-lg text-muted-foreground">Short-term, 3-14 day high-impact jobs from real startups. Prove your skills and get paid.</p>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:-mt-16">
+        <div className="bg-background dark:bg-card p-6 rounded-2xl shadow-lg border border-border/50 mb-8">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Input 
+                  placeholder="Search by title..." 
+                  className="md:col-span-1 rounded-full h-12 px-6" 
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Select value={filters.type} onValueChange={(value) => setFilters(f => ({...f, type: value}))}>
+                  <SelectTrigger className="rounded-full h-12 px-6"><SelectValue placeholder="All Job Types" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Job Types</SelectItem>
+                    <SelectItem value="full-time">Full-time</SelectItem>
+                    <SelectItem value="part-time">Part-time</SelectItem>
+                    <SelectItem value="internship">Internship</SelectItem>
+                    <SelectItem value="task/project based">Task/Project Based</SelectItem>
+                  </SelectContent>
+                </Select>
+                 <Select value={filters.sector} onValueChange={(value) => setFilters(f => ({...f, sector: value}))}>
+                  <SelectTrigger className="rounded-full h-12 px-6"><SelectValue placeholder="All Sectors" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Sectors</SelectItem>
+                    {sectors.map(sector => (
+                      <SelectItem key={sector} value={sector}>{sector}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+            </div>
         </div>
         
-        <Link href="/jobs/create">
-          <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
-            <Plus className="w-5 h-5 mr-2" /> Post a Job
-          </Button>
-        </Link>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-4 mb-10">
-        <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input 
-            placeholder="Search by skill (e.g. React, UI Design)..." 
-            className="pl-12 rounded-2xl bg-white border-none shadow-sm h-14 text-sm"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredJobs.map(job => (
+            <JobCard key={job.id} job={job} />
+          ))}
         </div>
-        <Button variant="outline" className="h-14 px-6 rounded-2xl bg-white border-none shadow-sm gap-2">
-          <Filter className="w-4 h-4" /> Categories
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
-          <Card key={job.id} className="glass-card flex flex-col group hover:shadow-2xl transition-all duration-500 border-none bg-white">
-            <CardHeader className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-primary/5 shadow-sm flex items-center justify-center border border-muted group-hover:scale-110 transition-transform">
-                  <Building2 className="w-7 h-7 text-primary" />
-                </div>
-                <Badge className="bg-primary/10 text-primary border-none text-[10px] font-bold px-3">
-                  {job.status.toUpperCase()}
-                </Badge>
-              </div>
-              <h3 className="text-xl font-headline font-bold mb-2 group-hover:text-primary transition-colors">{job.title}</h3>
-              <p className="text-sm font-bold text-muted-foreground mb-4">{job.startupName}</p>
-              <div className="flex flex-wrap gap-2">
-                {job.skills.map(skill => (
-                  <Badge key={skill} variant="secondary" className="rounded-md font-medium text-[10px] bg-secondary/5 text-secondary border-none">
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
-            </CardHeader>
-            <CardContent className="p-6 pt-0 flex-1">
-              <p className="text-sm text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
-                {job.description}
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-muted/30 p-3 rounded-xl space-y-1">
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Stipend</p>
-                  <div className="flex items-center gap-1.5">
-                    <CreditCard className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-sm font-bold">{job.stipend}</span>
-                  </div>
-                </div>
-                <div className="bg-muted/30 p-3 rounded-xl space-y-1">
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Duration</p>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-secondary" />
-                    <span className="text-sm font-bold">{job.duration}</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="p-6 pt-0">
-              <Button className="w-full rounded-full h-12 gap-2 group action-button-glow font-bold">
-                Apply with Proof <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
