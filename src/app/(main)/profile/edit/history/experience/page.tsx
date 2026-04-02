@@ -12,8 +12,6 @@ import { getCachedUserProfile } from '@/features/users/services/read';
 import { addExperience, removeExperience } from '@/features/users/services/write';
 import { UserProfileData, ExperienceEntry } from '@/features/users/types';
 import { useToast } from '@/hooks/use-toast';
-import { DatePicker } from '@/components/ui/date-picker';
-import { format } from 'date-fns';
 import Link from 'next/link';
 
 export default function ManageExperiencePage() {
@@ -125,11 +123,11 @@ export default function ManageExperiencePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-[10px] uppercase font-bold text-muted-foreground">Start Date <span className="text-destructive">*</span></Label>
-                    <DatePicker value={form.startDate} onChange={d => setForm({...form, startDate: d === 'Present' ? 'Present' : d ? format(d, 'MM/yyyy') : ''})} className="h-12" />
+                    <Input type="date" onChange={e => setForm({...form, startDate: e.target.value})} className="rounded-xl h-12" required />
                   </div>
                   <div className="space-y-2">
                     <Label className="text-[10px] uppercase font-bold text-muted-foreground">End Date</Label>
-                    <DatePicker value={form.endDate} onChange={d => setForm({...form, endDate: d === 'Present' ? 'Present' : d ? format(d, 'MM/yyyy') : '', isCurrent: d === 'Present'})} showPresentButton className="h-12" />
+                    <Input type="date" onChange={e => setForm({...form, endDate: e.target.value})} className="rounded-xl h-12" />
                   </div>
                 </div>
                 <div className="flex gap-3 pt-4">

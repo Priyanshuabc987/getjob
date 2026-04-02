@@ -29,7 +29,7 @@ const mainNavItems = [
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
-  { icon: Lightbulb, label: 'Challenges', href: '/problems' },
+  { icon: Lightbulb, label: 'Problems', href: '/problems' },
 ];
 
 export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
@@ -158,6 +158,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
             { icon: Home, label: 'Feed', href: '/feed' },
             { icon: Briefcase, label: 'Jobs', href: '/jobs' },
             { icon: PlusSquare, label: 'Projects', href: '/projects' },
+            { icon: Lightbulb, label: 'Problems', href: '/problems' },
             { icon: User, label: 'Profile', href: user ? `/profile/${user.uid}` : '/profile' },
           ].map((item) => {
             const isActive = pathname === item.href;

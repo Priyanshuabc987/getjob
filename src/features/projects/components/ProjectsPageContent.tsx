@@ -43,9 +43,11 @@ export function ProjectsPageContent() {
                <MessageSquare className="w-4 h-4" /> Discussion
              </Link>
            </Button>
-           <Button size="icon" className="rounded-full action-button-glow h-11 w-11 shadow-primary/20 shadow-lg">
-             <Plus className="w-6 h-6" />
-           </Button>
+           <Link href="/projects/create">
+            <Button size="icon" className="rounded-full action-button-glow h-11 w-11 shadow-primary/20 shadow-lg">
+              <Plus className="w-6 h-6" />
+            </Button>
+           </Link>
         </div>
       </div>
 

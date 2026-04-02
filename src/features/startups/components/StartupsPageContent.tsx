@@ -13,12 +13,6 @@ export function StartupsPageContent() {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-64 pt-20">
       <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 relative">
-        {/* Coming Soon Overlay */}
-        <div className="absolute inset-0 z-50 backdrop-blur-[4px] bg-background/40 flex items-start justify-center pt-40 pointer-events-none">
-           <div className="bg-primary text-white px-8 py-4 rounded-full font-bold shadow-2xl animate-pulse pointer-events-auto border-4 border-white">
-             🚀 STARTUP HUB COMING SOON
-           </div>
-        </div>
 
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="max-w-2xl">
@@ -29,12 +23,14 @@ export function StartupsPageContent() {
             <p className="text-lg text-muted-foreground">Find student-led startups, explore their journeys, and join as a collaborator.</p>
           </div>
           
-          <Button disabled className="rounded-full px-8 h-14 font-bold text-lg">
-            <Plus className="w-5 h-5 mr-2" /> Register Startup
-          </Button>
+          <Link href="/startups/create">
+            <Button className="rounded-full px-8 h-14 font-bold text-lg">
+              <Plus className="w-5 h-5 mr-2" /> Register Startup
+            </Button>
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 opacity-40 grayscale select-none pointer-events-none">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            <div className="lg:col-span-2 space-y-6">
               {startups.map((startup) => (
                 <Card key={startup.id} className="glass-card group overflow-hidden border-none shadow-xl bg-white">

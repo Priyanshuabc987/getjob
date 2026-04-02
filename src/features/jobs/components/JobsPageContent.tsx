@@ -6,25 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 export function JobsPageContent() {
-  const { toast } = useToast();
-  const [isPosting, setIsPosting] = useState(false);
-
-  const handlePostJob = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsPosting(false);
-    toast({
-      title: "Job Posted!",
-      description: "Builders will be notified about this micro-internship.",
-    });
-  };
-
   return (
     <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -36,51 +20,11 @@ export function JobsPageContent() {
           <p className="text-lg text-muted-foreground">Short-term, 3-14 day high-impact jobs from real startups. Prove your skills and get paid.</p>
         </div>
         
-        <Dialog open={isPosting} onOpenChange={setIsPosting}>
-          <DialogTrigger asChild>
-            <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
-              <Plus className="w-5 h-5 mr-2" /> Post a Job
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[550px] rounded-[2rem]">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-headline">Post a Micro-Job</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handlePostJob} className="space-y-6 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Job Title</Label>
-                  <Input placeholder="e.g. Frontend Component Lead" className="rounded-xl" required />
-                </div>
-                <div className="space-y-2">
-                  <Label>Startup Name</Label>
-                  <Input placeholder="Your Startup" className="rounded-xl" required />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <Textarea placeholder="Describe the task and expectations..." className="rounded-xl min-h-[100px]" required />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Stipend (₹)</Label>
-                  <Input placeholder="e.g. 5000" type="number" className="rounded-xl" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Duration</Label>
-                  <Input placeholder="e.g. 7 Days" className="rounded-xl" required />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Required Skills</Label>
-                <Input placeholder="React, Tailwind, Figma" className="rounded-xl" />
-              </div>
-              <DialogFooter>
-                <Button type="submit" className="w-full rounded-full h-12 action-button-glow font-bold">Launch Job</Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <Link href="/jobs/create">
+          <Button className="rounded-full px-8 h-14 font-bold text-lg action-button-glow">
+            <Plus className="w-5 h-5 mr-2" /> Post a Job
+          </Button>
+        </Link>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-10">

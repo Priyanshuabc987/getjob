@@ -148,7 +148,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                  <h4 className="text-xl font-headline font-bold mb-2">Builder Badges</h4>
                  <p className="text-muted-foreground font-medium max-w-xs mx-auto">
                    {isOwnProfile 
-                    ? "Complete challenges to earn verified badges." 
+                    ? "Complete Problems to earn verified badges." 
                     : "No verified badges earned yet."}
                  </p>
                </div>
