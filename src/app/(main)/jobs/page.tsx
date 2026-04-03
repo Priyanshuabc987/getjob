@@ -1,4 +1,3 @@
-import { mockJobs } from '@/features/jobs/data';
 import { JobsPageContent } from '@/features/jobs/components/JobsPageContent';
 import { APP_NAME } from '@/lib/constants';
 
