@@ -25,7 +25,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mt-8">
         {/* Left Sidebar - Bio & History */}
-        <aside className="space-y-6 md:space-y-8 order-2 lg:order-1">
+        <aside className="space-y-6 md:space-y-8">
           {/* Bio Section */}
           <Card className="rounded-[1.5rem] md:rounded-[2.5rem] border-none shadow-sm bg-card p-6 md:p-8 group relative">
             <div className="flex items-center justify-between mb-4">
@@ -69,7 +69,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
         </aside>
 
         {/* Main Content - Portfolio */}
-        <div className="lg:col-span-2 order-1 lg:order-2">
+        <div className="lg:col-span-2">
           <Tabs defaultValue="portfolio" className="w-full">
             <TabsList className="bg-card p-1.5 md:p-2 rounded-2xl md:rounded-[2rem] w-full h-auto mb-6 md:mb-10 shadow-sm flex border border-muted/20">
               <TabsTrigger value="portfolio" className="flex-1 rounded-xl md:rounded-[1.5rem] py-3 md:py-4 gap-2 md:gap-3 font-bold text-xs md:text-sm data-[state=active]:bg-primary/5 data-[state=active]:text-primary transition-all duration-300">
@@ -118,8 +118,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   <p className="text-sm text-muted-foreground mb-8 max-w-sm mx-auto font-medium leading-relaxed">
                     {isOwnProfile 
                       ? "Proof-of-work speaks louder than words. Start a project today." 
-                      : "This builder has not shared any projects in their portfolio yet."
-                    }
+                      : "This builder has not shared any projects in their portfolio yet."}
                   </p>
                   {isOwnProfile && (
                     <Button asChild className="rounded-full px-10 h-14 action-button-glow font-bold text-lg w-full sm:w-auto">

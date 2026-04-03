@@ -22,7 +22,7 @@ export function JobsPageContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 py-3 md:py-6">
+      <header className="bg-gradient-to-r 0  py-3 md:py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div className="md:w-2/3">
@@ -32,8 +32,8 @@ export function JobsPageContent() {
                     </span>
                      <p className="font-semibold text-primary">Action-Driven Opportunities</p>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold font-headline text-gray-900 dark:text-white mb-4">Find Your Next Role</h1>
-                <p className="text-lg text-gray-600 dark:text-gray-300">Don't just look for a job. Find a mission. Join a startup and make a real impact.</p>
+                <h1 className="text-2xl md:text-4xl font-bold font-headline text-gray-900 dark:text-white mb-4">Find Your Next Role</h1>
+                <p className="text-lg text-gray-600 dark:text-gray-300 pb-4">Don't just look for a job. Find a mission. Join a startup and make a real impact.</p>
             </div>
             <div className="flex-1 md:text-right">
                 <Button asChild size="lg" className="rounded-full h-14 text-lg font-bold w-full sm:w-auto">

@@ -21,21 +21,21 @@ export function StartupsPageContent() {
             <p className="text-lg text-muted-foreground">Find student-led startups, explore their journeys, and join as a collaborator.</p>
           </div>
           
-          <Link href="/startups/create">
-            <Button className="rounded-full px-8 h-14 font-bold text-lg">
+          <Link href="/startups/create" className="w-full md:w-auto">
+            <Button className="rounded-full px-8 h-14 font-bold text-lg w-full">
               <Plus className="w-5 h-5 mr-2" /> Register Startup
             </Button>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8">
-        <div className="md:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
             {startups.map((startup) => (
               <StartupCard key={startup.id} startup={startup} />
             ))}
           </div>
 
-          <aside className="md:col-span-1 space-y-8">
+          <aside className="space-y-8">
             <Card className="glass-card bg-primary text-white border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
               <CardContent className="p-8 space-y-6">
                 <h3 className="font-headline text-2xl font-bold">Start a Squad</h3>

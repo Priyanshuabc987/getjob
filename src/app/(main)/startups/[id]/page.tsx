@@ -4,8 +4,9 @@ import { StartupDetailsPageClient } from '@/features/startups/details/StartupDet
 import { notFound } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 
-export default function StartupDetailsPage({ params }: { params: { id: string } }) {
-  const startup = startups.find(s => s.id === params.id);
+export default async function StartupDetailsPage({ params }: { params: { id: string } }) {
+  const resolvedparams = await params ;
+  const startup = startups.find(s => s.id === resolvedparams.id);
 
   if (!startup) {
     notFound();

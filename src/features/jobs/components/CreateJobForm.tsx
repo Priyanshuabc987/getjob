@@ -73,9 +73,6 @@ export function CreateJobForm() {
   return (
     <form onSubmit={handleSubmit}>
         <Card className="bg-white dark:bg-card shadow-lg rounded-xl border">
-            <CardHeader>
-                <CardTitle>Create a New Job Post</CardTitle>
-            </CardHeader>
             <CardContent className="space-y-8 pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -165,7 +162,7 @@ export function CreateJobForm() {
                 </div>
 
             </CardContent>
-            <CardFooter className="flex justify-end p-6">
+            <CardFooter className="flex justify-center p-6">
                 <Button type="submit" disabled={loading} size="lg">
                     {loading ? 'Posting...' : 'Post Job'}
                 </Button>

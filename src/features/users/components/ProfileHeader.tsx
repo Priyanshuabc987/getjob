@@ -37,10 +37,10 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
       </div>
 
       {/* User Info & Avatar Overlap */}
-      <div className="px-4 md:px-12 relative z-10 -mt-24 md:-mt-32">
+      <div className="px-4 md:px-12 relative z-10 -mt-24 md:-mt-12">
         <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-8">
           {/* Avatar - Circular and Overlapping */}
-          <div className="w-40 h-40 md:w-64 md:h-64 rounded-full p-2 md:p-3 bg-card shadow-2xl shrink-0">
+          <div className="w-40 h-40 md:w-40 md:h-40 rounded-full p-2 md:p-3 bg-card shadow-2xl shrink-0">
             <img 
               src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
               alt={profile.displayName} 
@@ -49,8 +49,8 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
           </div>
 
           {/* User Details */}
-          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-8">
-            <div className="space-y-1.5 md:space-y-4">
+          <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-0">
+            <div className="space-y-1.5 md:space-y-2">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2 md:gap-3">
                   {profile.displayName}
