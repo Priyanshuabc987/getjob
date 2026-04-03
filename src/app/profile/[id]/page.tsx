@@ -3,7 +3,7 @@ import { projectWorkspaces } from '@/lib/mock-data';
 import { getCachedUserProfile } from '@/features/users/services/read';
 import { ProfileView } from '@/features/users/components/ProfileView';
 import { notFound } from 'next/navigation';
-import { getSession } from '@/features/auth/actions';
+import { getSession } from '@/features/auth/services/read';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

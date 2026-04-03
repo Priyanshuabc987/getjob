@@ -6,12 +6,12 @@
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { authService } from './services';
+import { authService } from './auth.client';
 import { createInitialUser, recordLogin } from '@/features/users/services/write';
 import { getCachedUserProfile } from '@/features/users/services/read';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { createSession, removeSession } from './actions';
+import { createSession, removeSession } from './services/write';
 
 export function useAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);

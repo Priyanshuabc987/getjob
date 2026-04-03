@@ -1,5 +1,5 @@
 import { OnboardingFlow } from '@/features/auth/components/OnboardingFlow';
-import { getSession } from '@/features/auth/actions';
+import { getSession } from '@/features/auth/services/read';
 import { redirect } from 'next/navigation';
 import { getCachedUserProfile } from '@/features/users/services/read';
 

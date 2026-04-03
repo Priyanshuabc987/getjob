@@ -1,4 +1,4 @@
-import { getSession } from '@/features/auth/actions';
+import { getSession } from '@/features/auth/services/read';
 import { redirect } from 'next/navigation';
 
 export default async function ProfileRedirectPage() {

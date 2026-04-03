@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { getSession } from '@/features/auth/actions';
+import { getSession } from '@/features/auth/services/read';
 import { Button } from '@/components/ui/button';
 import { Zap, ShieldCheck, TrendingUp, ArrowRight, Rocket } from 'lucide-react';
 import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';

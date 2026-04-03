@@ -1,9 +1,4 @@
 
-/**
- * @fileOverview Auth Service
- * Handles Google Authentication popup.
- */
-
 import { auth, googleProvider } from '@/lib/firebase';
 import { signInWithPopup, signOut, User as FirebaseUser } from 'firebase/auth';
 

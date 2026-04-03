@@ -22,11 +22,3 @@ export async function removeSession() {
   const cookieStore = await cookies();
   cookieStore.delete('session');
 }
-
-/**
- * Gets the current session UID.
- */
-export async function getSession() {
-  const cookieStore = await cookies();
-  return cookieStore.get('session')?.value;
-}

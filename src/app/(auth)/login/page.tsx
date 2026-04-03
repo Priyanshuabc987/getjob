@@ -1,5 +1,5 @@
 import { LoginPageComponent } from '@/features/auth/components/LoginPageComponent';
-import { getSession } from '@/features/auth/actions';
+import { getSession } from '@/features/auth/services/read';
 import { redirect } from 'next/navigation';
 
 export default async function LoginPage() {

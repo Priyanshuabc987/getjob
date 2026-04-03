@@ -1,5 +1,5 @@
 import { MyProjectsContent } from '@/features/projects/components/MyProjectsContent';
-import { getSession } from '@/features/auth/actions';
+import { getSession } from '@/features/auth/services/read';
 import { redirect } from 'next/navigation';
 
 export const metadata = {
