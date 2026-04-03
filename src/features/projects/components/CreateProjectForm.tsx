@@ -34,8 +34,8 @@ export default function CreateProjectForm() {
     }
     setAiLoading(true);
     try {
-      const result = await aiProjectCreationAssistant({ 
-        projectIdea: `${formData.title}: ${formData.description}` 
+      const result = await aiProjectCreationAssistant({
+        projectIdea: `${formData.title}: ${formData.description}`
       });
       setFormData(prev => ({
         ...prev,
@@ -62,96 +62,99 @@ export default function CreateProjectForm() {
 
   return (
     <div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-center md:text-left mb-8">
-            <p className="text-muted-foreground">Refine your project details with AI assistance.</p>
-            <Button 
-            variant="outline" 
+      <div className="py-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-center md:text-left ">
+        <h1 className="text-4xl font-headline font-bold mb-2">Launch New Project</h1>
+          <Button
+            variant="outline"
             onClick={handleAIExpand}
             disabled={aiLoading}
             className="rounded-full gap-2 border-primary/20 text-primary hover:bg-primary/5 font-bold h-12 shadow-sm"
-            >
+          >
             {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             Refine with AI
-            </Button>
+          </Button>
         </div>
-        <form onSubmit={handleSubmit}>
-            <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden">
-            <CardContent className="p-8 md:p-12 space-y-8">
-                <div className="space-y-6 text-left">
-                <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Project Title <span className="text-destructive">*</span></Label>
-                    <Input 
-                    placeholder="e.g. PrepLinc Engine" 
-                    className="rounded-xl h-12 text-lg font-bold"
-                    value={formData.title}
-                    onChange={e => setFormData({...formData, title: e.target.value})}
-                    required
-                    />
-                </div>
+          <p className="text-muted-foreground">Refine your project details with AI assistance.</p>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden">
+          <CardContent className="p-8 md:p-12 space-y-8">
+            <div className="space-y-6 text-left">
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Project Title <span className="text-destructive">*</span></Label>
+                <Input
+                  placeholder="e.g. PrepLinc Engine"
+                  className="rounded-xl h-12 text-lg font-bold"
+                  value={formData.title}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
+                  required
+                />
+              </div>
 
-                <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tagline (One sentence impact) <span className="text-destructive">*</span></Label>
-                    <Input 
-                    placeholder="The proof-of-work layer for hiring..." 
-                    className="rounded-xl h-12 italic"
-                    value={formData.tagline}
-                    onChange={e => setFormData({...formData, tagline: e.target.value})}
-                    required
-                    />
-                </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tagline (One sentence impact) <span className="text-destructive">*</span></Label>
+                <Input
+                  placeholder="The proof-of-work layer for hiring..."
+                  className="rounded-xl h-12 italic"
+                  value={formData.tagline}
+                  onChange={e => setFormData({ ...formData, tagline: e.target.value })}
+                  required
+                />
+              </div>
 
-                <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Description & Roadmap <span className="text-destructive">*</span></Label>
-                    <Textarea 
-                    placeholder="What are you building? Why does it matter?" 
-                    className="rounded-2xl min-h-[200px] leading-relaxed"
-                    value={formData.description}
-                    onChange={e => setFormData({...formData, description: e.target.value})}
-                    required
-                    />
-                </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Description & Roadmap <span className="text-destructive">*</span></Label>
+                <Textarea
+                  placeholder="What are you building? Why does it matter?"
+                  className="rounded-2xl min-h-[200px] leading-relaxed"
+                  value={formData.description}
+                  onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  required
+                />
+              </div>
 
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Stack / Tags (Comma separated)</Label>
+                <Input
+                  placeholder="React, Firebase, Genkit"
+                  className="rounded-xl h-12"
+                  value={formData.tags}
+                  onChange={e => setFormData({ ...formData, tags: e.target.value })}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Stack / Tags (Comma separated)</Label>
-                    <Input 
-                    placeholder="React, Firebase, Genkit" 
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Github Repository URL</Label>
+                  <Input
+                    placeholder="https://github.com/..."
                     className="rounded-xl h-12"
-                    value={formData.tags}
-                    onChange={e => setFormData({...formData, tags: e.target.value})}
-                    />
+                    value={formData.githubUrl}
+                    onChange={e => setFormData({ ...formData, githubUrl: e.target.value })}
+                  />
                 </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live Demo URL</Label>
+                  <Input
+                    placeholder="https://myproject.com"
+                    className="rounded-xl h-12"
+                    value={formData.demoUrl}
+                    onChange={e => setFormData({ ...formData, demoUrl: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Github Repository URL</Label>
-                    <Input 
-                        placeholder="https://github.com/..." 
-                        className="rounded-xl h-12"
-                        value={formData.githubUrl}
-                        onChange={e => setFormData({...formData, githubUrl: e.target.value})}
-                    />
-                    </div>
-                    <div className="space-y-2">
-                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live Demo URL</Label>
-                    <Input 
-                        placeholder="https://myproject.com" 
-                        className="rounded-xl h-12"
-                        value={formData.demoUrl}
-                        onChange={e => setFormData({...formData, demoUrl: e.target.value})}
-                    />
-                    </div>
-                </div>
-                </div>
-
-                <div className="pt-6">
-                <Button type="submit" disabled={loading} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Rocket className="w-5 h-5 mr-2" />}
-                    Launch Project
-                </Button>
-                </div>
-            </CardContent>
-            </Card>
-        </form>
+            <div className="pt-6">
+              <Button type="submit" disabled={loading} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
+                {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Rocket className="w-5 h-5 mr-2" />}
+                Launch Project
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </form>
     </div>
   );
 }

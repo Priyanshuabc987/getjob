@@ -39,7 +39,7 @@ export function ProjectsPageContent() {
         </div>
         <div className="flex gap-2">
            <Button variant="outline" asChild className="rounded-xl font-bold bg-white shadow-sm h-11">
-             <Link href="/projects/discussion" className="flex items-center gap-2">
+             <Link href="/discussion" className="flex items-center gap-2">
                <MessageSquare className="w-4 h-4" /> Discussion
              </Link>
            </Button>

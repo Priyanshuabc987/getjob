@@ -63,14 +63,6 @@ export function ProjectCard({ project, showStats = true }: ProjectCardProps) {
 
       {showStats && (
         <CardContent className="p-5 pt-0 space-y-4">
-          <div className="space-y-2">
-            <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-muted-foreground">
-              <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3 text-primary" /> Momentum</span>
-              <span className="text-primary">{project.stats.momentum}%</span>
-            </div>
-            <Progress value={project.stats.momentum} className="h-1.5" />
-          </div>
-          
           <div className="flex items-center justify-between pt-1">
             <div className="flex -space-x-1.5">
               {project.team.slice(0, 3).map((member, i) => (

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { 
   Home, 
   BriefcaseBusiness, 
+  MessageSquare,
   PlusSquare, 
   Users, 
   User, 
@@ -30,6 +31,7 @@ const mainNavItems = [
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
+  { icon: MessageSquare, label: 'Discussion', href: '/discussion' },
 ];
 
 export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
