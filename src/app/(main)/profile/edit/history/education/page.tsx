@@ -1,11 +1,10 @@
+
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, GraduationCap, Plus, Trash2, Loader2, Check, X, Edit2 } from 'lucide-react';
+import { ArrowLeft, GraduationCap, Plus, Loader2, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/features/auth/hooks';
 import { getCachedUserProfile } from '@/features/users/services/read';
@@ -13,6 +12,59 @@ import { addEducation, removeEducation } from '@/features/users/services/write';
 import { UserProfileData, EducationEntry } from '@/features/users/types';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import EducationForm from '@/features/users/components/EducationForm';
+import { formatProfessionalDate, calculateDuration } from '@/lib/utils';
+
+const ExpandableText = ({ text }: { text: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isClamped, setIsClamped] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    const checkClamping = () => {
+      if (textRef.current) {
+        setIsClamped(textRef.current.scrollHeight > textRef.current.clientHeight);
+      }
+    };
+    
+    checkClamping();
+    window.addEventListener('resize', checkClamping);
+    return () => window.removeEventListener('resize', checkClamping);
+  }, [text]);
+
+  return (
+    <div className="pt-2">
+      <div className="relative">
+        <p
+          ref={textRef}
+          className={`text-sm text-muted-foreground whitespace-pre-line ${
+            !isExpanded ? 'line-clamp-2' : ''
+          }`}
+        >
+          {text}
+        </p>
+        {isClamped && !isExpanded && (
+          <div className="absolute bottom-0 right-0 w-full flex justify-end bg-gradient-to-l pointer-events-none">
+             <span
+              className="bg-white text-primary font-medium pl-3 pointer-events-auto cursor-pointer"
+              onClick={() => setIsExpanded(true)}
+            >
+              ...see more
+            </span>
+          </div>
+        )}
+      </div>
+      {isClamped && isExpanded && (
+        <button
+          className="text-primary font-medium cursor-pointer text-sm"
+          onClick={() => setIsExpanded(false)}
+        >
+          see less
+        </button>
+      )}
+    </div>
+  );
+};
 
 export default function ManageEducationPage() {
   const { user } = useAuth();
@@ -20,13 +72,10 @@ export default function ManageEducationPage() {
   const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  const [form, setForm] = useState<Partial<EducationEntry>>({
-    school: '', degree: '', fieldOfStudy: '', startYear: '', endDate: '', isCurrent: false, description: ''
-  });
 
   useEffect(() => {
     if (user) {
@@ -37,7 +86,7 @@ export default function ManageEducationPage() {
     }
   }, [user]);
 
-  const handleSave = async (isNew: boolean = true, entryId?: string) => {
+  const handleSave = async (form: Partial<EducationEntry>) => {
     if (!form.school || !form.degree) {
       toast({ variant: "destructive", title: "Missing fields", description: "School and Degree are required." });
       return;
@@ -45,13 +94,14 @@ export default function ManageEducationPage() {
     if (!profile) return;
     setLoading(true);
     try {
-      if (!isNew && entryId) {
-        const old = profile.education.find(e => e.id === entryId);
+      const isNew = !editingId;
+      if (!isNew && editingId) {
+        const old = profile.education.find(e => e.id === editingId);
         if (old) await removeEducation(profile.uid, old);
       }
       const entry: EducationEntry = {
         ...form as EducationEntry,
-        id: isNew ? Math.random().toString(36).substr(2, 9) : entryId!
+        id: isNew ? Math.random().toString(36).substr(2, 9) : editingId!
       };
       await addEducation(profile.uid, entry);
       
@@ -60,7 +110,6 @@ export default function ManageEducationPage() {
       
       setIsAdding(false);
       setEditingId(null);
-      setForm({ school: '', degree: '', fieldOfStudy: '', startYear: '', endDate: '', isCurrent: false, description: '' });
       toast({ title: isNew ? "Education added!" : "Education updated!" });
     } catch (e) {
       toast({ variant: "destructive", title: "Failed to save" });
@@ -71,14 +120,14 @@ export default function ManageEducationPage() {
 
   const handleDelete = async (edu: EducationEntry) => {
     if (!profile) return;
-    setLoading(true);
+    setDeletingId(edu.id);
     try {
       await removeEducation(profile.uid, edu);
       const updatedProfile = await getCachedUserProfile(profile.uid);
       setProfile(updatedProfile);
       toast({ title: "Education removed" });
     } finally {
-      setLoading(false);
+      setDeletingId(null);
     }
   };
 
@@ -104,38 +153,17 @@ export default function ManageEducationPage() {
           </div>
 
           {isAdding && (
-            <Card className="rounded-3xl border-2 border-secondary/20 shadow-xl bg-white dark:bg-card overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+             <Card className="rounded-3xl border-2 border-secondary/20 shadow-xl bg-white dark:bg-card overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
               <CardHeader className="p-6 border-b bg-secondary/5">
                 <CardTitle className="text-lg">New Education</CardTitle>
               </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">School / University <span className="text-destructive">*</span></Label>
-                    <Input value={form.school} onChange={e => setForm({...form, school: e.target.value})} className="h-12 rounded-xl" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Degree <span className="text-destructive">*</span></Label>
-                    <Input value={form.degree} onChange={e => setForm({...form, degree: e.target.value})} className="h-12 rounded-xl" />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Start Date <span className="text-destructive">*</span></Label>
-                    <Input type="date" onChange={e => setForm({...form, startYear: e.target.value})} className="rounded-xl h-12" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">End Date</Label>
-                    <Input type="date" onChange={e => setForm({...form, endDate: e.target.value})} className="rounded-xl h-12" />
-                  </div>
-                </div>
-                <div className="flex gap-3 pt-4">
-                  <Button onClick={() => handleSave(true)} disabled={loading} className="flex-1 h-14 rounded-full font-bold text-lg action-button-glow bg-secondary hover:bg-secondary/90">
-                    {loading ? <Loader2 className="animate-spin mr-2" /> : <><Check className="w-5 h-5 mr-2" /> Save Education</>}
-                  </Button>
-                  <Button variant="ghost" onClick={() => setIsAdding(false)} className="h-14 px-8 rounded-full font-bold">Cancel</Button>
-                </div>
-              </CardContent>
+              <EducationForm
+                entry={{}}
+                onSave={handleSave}
+                onCancel={() => setIsAdding(false)}
+                loading={loading}
+                deleting={false}
+              />
             </Card>
           )}
 
@@ -143,35 +171,36 @@ export default function ManageEducationPage() {
             {profile.education.map(edu => (
               <div key={edu.id}>
                 {editingId === edu.id ? (
-                  <Card className="rounded-3xl border-2 border-secondary/20 shadow-xl bg-white dark:bg-card p-6 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label className="text-[10px] uppercase font-bold">School <span className="text-destructive">*</span></Label>
-                        <Input defaultValue={edu.school} onChange={e => setForm({...form, school: e.target.value})} className="h-12 rounded-xl" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-[10px] uppercase font-bold">Degree <span className="text-destructive">*</span></Label>
-                        <Input defaultValue={edu.degree} onChange={e => setForm({...form, degree: e.target.value})} className="h-12 rounded-xl" />
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <Button onClick={() => handleSave(false, edu.id)} disabled={loading} className="flex-1 h-12 rounded-full font-bold bg-secondary hover:bg-secondary/90">Update</Button>
-                      <Button onClick={() => handleDelete(edu)} disabled={loading} variant="destructive" className="h-12 rounded-full px-6"><Trash2 className="w-5 h-5" /></Button>
-                      <Button variant="ghost" onClick={() => setEditingId(null)} className="h-12 rounded-full px-6">Cancel</Button>
-                    </div>
+                  <Card className="rounded-3xl border-2 border-secondary/20 shadow-xl bg-white dark:bg-card overflow-hidden">
+                     <CardHeader className="p-6 border-b bg-secondary/5">
+                        <CardTitle className="text-lg">Edit Education</CardTitle>
+                     </CardHeader>
+                    <EducationForm
+                      entry={edu}
+                      onSave={handleSave}
+                      onDelete={() => handleDelete(edu)}
+                      onCancel={() => setEditingId(null)}
+                      loading={loading}
+                      deleting={deletingId === edu.id}
+                    />
                   </Card>
                 ) : (
-                  <Card className="rounded-2xl border-none shadow-md bg-white dark:bg-card p-6 flex items-center justify-between group hover:shadow-lg transition-all">
-                    <div className="flex items-center gap-4">
+                  <Card className="rounded-2xl border-none shadow-md bg-white dark:bg-card p-6 flex items-start justify-between group hover:shadow-lg transition-all">
+                    <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-secondary/5 flex items-center justify-center">
                         <GraduationCap className="w-6 h-6 text-secondary" />
                       </div>
-                      <div>
+                      <div className="flex-1 min-w-0 space-y-0.5">
                         <h4 className="font-bold text-lg">{edu.degree}</h4>
-                        <p className="text-sm text-muted-foreground font-medium">{edu.school} • {edu.startYear} - {edu.isCurrent ? 'Present' : edu.endDate}</p>
+                        <p className="text-sm text-muted-foreground font-medium">{edu.school}</p>
+                        <p className="text-xs text-muted-foreground font-medium">
+                          {formatProfessionalDate(edu.startYear)} - {edu.isCurrent ? 'Present' : formatProfessionalDate(edu.endDate || '')}
+                          <span className="ml-2">({calculateDuration(new Date(edu.startYear), edu.isCurrent ? new Date() : new Date(edu.endDate || ''))})</span>
+                        </p>
+                        {edu.description && <ExpandableText text={edu.description} />}
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => { setEditingId(edu.id); setForm(edu); }} className="rounded-full text-muted-foreground hover:text-secondary">
+                    <Button variant="ghost" size="icon" onClick={() => setEditingId(edu.id)} className="rounded-full text-muted-foreground hover:text-secondary">
                       <Edit2 className="w-4 h-4" />
                     </Button>
                   </Card>

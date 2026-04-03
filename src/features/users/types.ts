@@ -53,6 +53,6 @@ export interface UserPrivateData {
   uid: string;
   email: string;
   phoneNumber?: string;
-  lastLogin: string;
+  // lastLogin: string;
   accountStatus: 'active' | 'suspended';
 }

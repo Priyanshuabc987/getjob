@@ -71,7 +71,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
         {/* Main Content - Portfolio */}
         <div className="lg:col-span-2">
           <Tabs defaultValue="portfolio" className="w-full">
-            <TabsList className="bg-card p-1.5 md:p-2 rounded-2xl md:rounded-[2rem] w-full h-auto mb-6 md:mb-10 shadow-sm flex border border-muted/20">
+            <TabsList className="bg-card p-1.5 md:p-2 rounded-2xl md:rounded-[2rem] w-full h-auto mb-3 md:mb-6 shadow-sm flex border border-muted/20">
               <TabsTrigger value="portfolio" className="flex-1 rounded-xl md:rounded-[1.5rem] py-3 md:py-4 gap-2 md:gap-3 font-bold text-xs md:text-sm data-[state=active]:bg-primary/5 data-[state=active]:text-primary transition-all duration-300">
                 <Eye className="w-4 h-4" /> Portfolio
               </TabsTrigger>
@@ -108,7 +108,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                   </div>
                 </Card>
               )) : (
-                <div className="text-center py-20 md:py-32 bg-card rounded-2xl md:rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm p-6">
+                <div className="text-center py-6 md:py-6 bg-card rounded-2xl md:rounded-[2.5rem] border-4 border-dashed border-muted shadow-sm p-6">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-muted/50 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <LayoutGrid className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground" />
                   </div>
@@ -129,8 +129,8 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               )}
             </TabsContent>
             
-            <TabsContent value="jobs" className="outline-none py-10">
-               <div className="text-center py-20 bg-card rounded-2xl border-none shadow-sm p-6">
+            <TabsContent value="jobs" className="outline-none ">
+               <div className="text-center py-6 bg-card rounded-2xl border-none shadow-sm p-6">
                  <Zap className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
                  <h4 className="text-xl font-headline font-bold mb-2">Work History</h4>
                  <p className="text-muted-foreground font-medium max-w-xs mx-auto">
@@ -141,8 +141,8 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                </div>
             </TabsContent>
 
-            <TabsContent value="badges" className="outline-none py-10">
-               <div className="text-center py-20 bg-card rounded-2xl border-none shadow-sm p-6">
+            <TabsContent value="badges" className="outline-none ">
+               <div className="text-center py-6 bg-card rounded-2xl border-none shadow-sm p-6">
                  <Trophy className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
                  <h4 className="text-xl font-headline font-bold mb-2">Builder Badges</h4>
                  <p className="text-muted-foreground font-medium max-w-xs mx-auto">

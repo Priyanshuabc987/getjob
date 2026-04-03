@@ -50,7 +50,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
 
           {/* User Details */}
           <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-0">
-            <div className="space-y-1.5 md:space-y-2">
+            <div className="space-y-1 md:space-y-1">
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl md:text-4xl font-headline font-bold text-foreground flex items-center gap-2 md:gap-3">
                   {profile.displayName}
@@ -70,11 +70,11 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                    <span className="text-muted-foreground font-bold text-[10px] md:text-sm">• {profile.collegeName}</span>
                  )}
               </div>
-              <div className="flex flex-wrap items-center gap-2 md:gap-4 text-muted-foreground font-bold text-[10px] md:text-xs mt-1 md:mt-2">
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-card rounded-full shadow-sm border border-muted/50">
+              <div className="flex flex-wrap items-center gap-1 md:gap-1 text-muted-foreground font-bold text-[10px] md:text-xs mt-1 md:mt-2">
+                {/* <div className="flex items-center gap-1.5 "> */}
                   <MapPin className="w-3.5 h-3.5 text-primary" /> {profile.location?.city || 'Earth'}, {profile.location?.country || 'Core'}
-                </div>
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-card rounded-full shadow-sm border border-muted/50">
+                {/* </div> */}
+                <div className="flex items-center gap-1.5 px-3 ml-3 md:ml-3 py-1 bg-card rounded-full shadow-sm border border-muted/50">
                   <Clock className="w-3.5 h-3.5 text-primary" /> Building for {buildingDuration}
                 </div>
               </div>

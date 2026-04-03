@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   Home, 
-  Briefcase, 
+  BriefcaseBusiness, 
   PlusSquare, 
   Users, 
   User, 
@@ -25,7 +25,7 @@ import { APP_NAME } from '@/lib/constants';
 
 const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
-  { icon: Briefcase, label: 'Jobs', href: '/jobs' },
+  { icon: BriefcaseBusiness, label: 'Jobs', href: '/jobs' },
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
@@ -156,7 +156,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
         <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-lg border-t flex md:hidden items-center justify-around z-50 px-2 pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
           {[
             { icon: Home, label: 'Feed', href: '/feed' },
-            { icon: Briefcase, label: 'Jobs', href: '/jobs' },
+            { icon: BriefcaseBusiness, label: 'Jobs', href: '/jobs' },
             { icon: PlusSquare, label: 'Projects', href: '/projects' },
             { icon: Lightbulb, label: 'Problems', href: '/problems' },
             { icon: User, label: 'Profile', href: user ? `/profile/${user.uid}` : '/profile' },

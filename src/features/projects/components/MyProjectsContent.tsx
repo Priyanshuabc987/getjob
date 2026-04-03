@@ -1,7 +1,7 @@
 "use client";
 
 import { mockProjects } from '../data';
-import { Plus, LayoutGrid, PlusCircle, Briefcase, Lightbulb } from 'lucide-react';
+import { Plus, LayoutGrid, PlusCircle, BriefcaseBusiness, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ProjectCard } from '../shared/components/ProjectCard';
@@ -24,7 +24,7 @@ export function MyProjectsContent() {
           </Avatar>
           <Link href="/projects/create" className="flex-1">
             <button className="w-full text-left px-5 h-12 rounded-full bg-muted/50 hover:bg-muted text-muted-foreground font-medium text-sm border border-transparent hover:border-muted transition-all">
-              What's on your build list, {user?.displayName?.split(' ')[0] || 'Builder'}?
+              What's on your build list, {user?.displayName?.split(' ')[0] || 'Builder'} ?
             </button>
           </Link>
         </div>
@@ -37,7 +37,7 @@ export function MyProjectsContent() {
           </Link>
           <Link href="/jobs/create">
             <Button variant="ghost" className="rounded-xl gap-2 font-bold text-muted-foreground hover:text-secondary hover:bg-secondary/5">
-              <Briefcase className="w-5 h-5 text-secondary" />
+              <BriefcaseBusiness className="w-5 h-5 text-secondary" />
               <span className="text-xs sm:text-sm">Post Job</span>
             </Button>
           </Link>
