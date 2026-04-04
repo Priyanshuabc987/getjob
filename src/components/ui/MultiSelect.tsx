@@ -43,7 +43,7 @@ export function MultiSelect({ options, selected, onChange, placeholder, classNam
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <div className={`${className} group rounded-xl border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}>
+                <div className={`${className} group rounded-xl border border-input p-3 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2`}>
                     <div className="flex flex-wrap gap-2">
                         {selected.map(item => (
                             <Badge key={item} variant="secondary" className="rounded-lg px-3 py-1 font-bold text-sm bg-primary/10 text-primary border-none">

@@ -4,9 +4,11 @@ export type StartupProfile = {
   name: string;
   logo: string;
   websiteUrl?: string;
+  linkedinurl?: string;
   tagline: string;
   description: string;
-  location: string;
+  city: string; // Changed from location
+  country: string; // Added
   stage: 'Idea' | 'MVP' | 'Early Traction' | 'Growth';
   fundingStage: 'Bootstrapped' | 'Pre-Seed' | 'Seed' | 'Series A' | 'Series B' | 'Series C+';
   sector: string[];
@@ -15,4 +17,11 @@ export type StartupProfile = {
   openRolesCount: number;
   projectsCount: number;
   createdAt: string;
+  score: number;
+
+  // Fields for normalized query support
+  name_normalized?: string;
+  city_normalized?: string; // Changed from location_normalized
+  country_normalized?: string; // Added
+  sector_normalized?: string[];
 };

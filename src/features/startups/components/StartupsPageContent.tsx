@@ -1,14 +1,62 @@
 
 "use client";
 
-import { startups } from '@/lib/mock-data';
-import { Rocket, Plus } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Rocket, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { StartupCard } from './StartupCard';
+import { StartupProfile } from '../types';
+import { getNextStartups } from '../actions/read';
+import { StartupCardSkeleton } from './StartupCardSkeleton';
 
-export function StartupsPageContent() {
+interface StartupsPageContentProps {
+  initialStartups: StartupProfile[];
+  initialNextCursor: string | null;
+}
+
+export function StartupsPageContent({ initialStartups, initialNextCursor }: StartupsPageContentProps) {
+  const [startups, setStartups] = useState<StartupProfile[]>(initialStartups);
+  const [nextCursor, setNextCursor] = useState<string | null>(initialNextCursor);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(!!initialNextCursor);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const loadMoreStartups = useCallback(async () => {
+    if (!nextCursor || loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const result = await getNextStartups(nextCursor);
+      if (result.startups.length > 0) {
+        setStartups(prev => [...prev, ...result.startups as StartupProfile[]]);
+      } 
+      if (result.nextCursor) {
+        setNextCursor(result.nextCursor);
+      } else {
+        setHasMore(false);
+        setNextCursor(null);
+      }
+    } catch (error) {
+      console.error("Failed to load more startups:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [nextCursor, loading, hasMore]);
+
+  const lastStartupElementRef = useCallback((node: HTMLElement | null) => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        loadMoreStartups();
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore, loadMoreStartups]);
+
+
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 relative">
 
@@ -30,9 +78,22 @@ export function StartupsPageContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {startups.map((startup) => (
-              <StartupCard key={startup.id} startup={startup} />
-            ))}
+            {startups.map((startup, index) => {
+              if (startups.length === index + 1) {
+                return <div ref={lastStartupElementRef} key={startup.id}><StartupCard startup={startup} /></div>
+              } else {
+                return <StartupCard key={startup.id} startup={startup} />
+              }
+            })}
+             {loading && (
+                <>
+                  <StartupCardSkeleton />
+                  <StartupCardSkeleton />
+                </>
+             )}
+             {!hasMore && startups.length > 0 && (
+                <div className="text-center text-muted-foreground py-8">No more startups to load.</div>
+             )}
           </div>
 
           <aside className="space-y-8">

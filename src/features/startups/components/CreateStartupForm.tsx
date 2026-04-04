@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Building2, Loader2, Globe, Users, MapPin } from 'lucide-react';
+import { Building2, Loader2, Globe, Users, MapPin, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MultiSelect } from '@/components/ui/MultiSelect';
+import { createStartup } from '../actions/create';
 
 const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
   <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -25,15 +26,25 @@ export function CreateStartupForm({ sectors }: { sectors: string[] }) {
   const [loading, setLoading] = useState(false);
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: Implement actual form submission logic
-    setTimeout(() => {
-      setLoading(false);
+
+    const formData = new FormData(e.currentTarget);
+    selectedSectors.forEach(sector => {
+      formData.append('sectors', sector);
+    });
+
+    const result = await createStartup(formData);
+
+    setLoading(false);
+
+    if (result.success) {
       toast({ title: "Startup Registered!", description: "Welcome to the PrepLinc Builder Ecosystem." });
       router.push('/startups');
-    }, 1500);
+    } else {
+      toast({ title: "Error", description: result.message, variant: "destructive" });
+    }
   };
 
   return (
@@ -41,38 +52,55 @@ export function CreateStartupForm({ sectors }: { sectors: string[] }) {
       <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden">
         <CardContent className="p-8 md:p-12 space-y-8">
           <div className="space-y-6">
-            <div className="space-y-2">
-              <RequiredLabel>Startup Name</RequiredLabel>
-              <Input placeholder="e.g. ZettaCloud" className="rounded-xl h-12 font-bold" required />
-            </div>
-
-            <div className="space-y-2">
-              <RequiredLabel>Tagline</RequiredLabel>
-              <Input placeholder="Hyper-scale compute for teams..." className="rounded-xl h-12 italic" required />
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
+                    <RequiredLabel>Startup Name</RequiredLabel>
+                    <Input name="name" placeholder="e.g. ZettaCloud" className="rounded-xl h-12 font-bold" required />
+                </div>
+                <div className="space-y-2">
                     <RequiredLabel>Team Size</RequiredLabel>
-                    <Select required>
+                    <Select name="teamSize" required>
                         <SelectTrigger className="rounded-xl h-12">
                         <SelectValue placeholder="Select team size" />
                         </SelectTrigger>
                         <SelectContent>
-                        <SelectItem value="1">1</SelectItem>
-                        <SelectItem value="2-4">2-4</SelectItem>
-                        <SelectItem value="5-10">5-10</SelectItem>
-                        <SelectItem value="10-49">10-49</SelectItem>
-                        <SelectItem value="50-100">50-100</SelectItem>
-                        <SelectItem value="100+">100+</SelectItem>
+                          <SelectItem value="1">1</SelectItem>
+                          <SelectItem value="2">2-4</SelectItem>
+                          <SelectItem value="5">5-10</SelectItem>
+                          <SelectItem value="10">10-49</SelectItem>
+                          <SelectItem value="50">50-100</SelectItem>
+                          <SelectItem value="100">100+</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
+            </div>
+
+            <div className="space-y-2">
+              <RequiredLabel>Tagline</RequiredLabel>
+              <Input name="tagline" placeholder="Hyper-scale compute for teams..." className="rounded-xl h-12 italic" required />
+            </div>
+
+             <div className="space-y-2">
+                <RequiredLabel>Logo URL</RequiredLabel>
+                <div className="relative">
+                    <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input name="logo" placeholder="https://your-logo-url.com/logo.png" className="rounded-xl h-12 pl-12" required />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <RequiredLabel>Location</RequiredLabel>
+                    <RequiredLabel>City</RequiredLabel>
                     <div className="relative">
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input placeholder="e.g. Banglore, India" className="rounded-xl h-12 pl-12" required/>
+                        <Input name="city" placeholder="e.g. Bangalore" className="rounded-xl h-12 pl-12" required/>
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <RequiredLabel>Country</RequiredLabel>
+                    <div className="relative">
+                        <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input name="country" placeholder="e.g. India" className="rounded-xl h-12 pl-12" required/>
                     </div>
                 </div>
             </div>
@@ -80,7 +108,7 @@ export function CreateStartupForm({ sectors }: { sectors: string[] }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <RequiredLabel>Stage</RequiredLabel>
-                <Select required>
+                <Select name="stage" required>
                   <SelectTrigger className="rounded-xl h-12">
                     <SelectValue placeholder="Select stage" />
                   </SelectTrigger>
@@ -94,7 +122,7 @@ export function CreateStartupForm({ sectors }: { sectors: string[] }) {
               </div>
               <div className="space-y-2">
                 <RequiredLabel>Funding Stage</RequiredLabel>
-                <Select required>
+                <Select name="fundingStage" required>
                   <SelectTrigger className="rounded-xl h-12">
                     <SelectValue placeholder="Select funding stage" />
                   </SelectTrigger>
@@ -112,14 +140,23 @@ export function CreateStartupForm({ sectors }: { sectors: string[] }) {
 
             <div className="space-y-2">
               <RequiredLabel>Description</RequiredLabel>
-              <Textarea placeholder="What are you building and why now?" className="rounded-2xl min-h-[150px]" required />
+              <Textarea name="description" placeholder="What are you building and why now?" className="rounded-2xl min-h-[150px]" required />
             </div>
 
-            <div className="space-y-2">
-                <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Website URL</Label>
-                <div className="relative">
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input placeholder="https://..." className="rounded-xl h-12 pl-12" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Website URL</Label>
+                    <div className="relative">
+                        <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input name="websiteUrl" placeholder="https://..." className="rounded-xl h-12 pl-12" />
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">LinkedIn URL</Label>
+                    <div className="relative">
+                        <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input name="linkedinurl" placeholder="https://linkedin.com/company/..." className="rounded-xl h-12 pl-12" />
+                    </div>
                 </div>
             </div>
             
