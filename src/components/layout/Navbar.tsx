@@ -15,7 +15,9 @@ import {
   LogIn,
   LayoutGrid,
   Sun,
-  Moon
+  Moon,
+  ChevronRight,
+  Building
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -23,6 +25,9 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/features/auth/hooks';
 import { useState, useEffect } from 'react';
 import { APP_NAME } from '@/lib/constants';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { getStartupsForUser } from '@/features/mystartups/actions/read';
+import { Startup } from '@/features/startups/types';
 
 const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
@@ -31,18 +36,34 @@ const mainNavItems = [
   { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
-  { icon: MessageSquare, label: 'Discussion', href: '/discussion' },
+  // { icon: MessageSquare, label: 'Discussion', href: '/discussion' },
 ];
 
 export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
   const pathname = usePathname();
   const { user } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [userStartups, setUserStartups] = useState<Startup[]>([]);
+  const [isStartupsOpen, setIsStartupsOpen] = useState(false);
+
+  console.log("startup",userStartups);
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
   }, []);
+
+  useEffect(() => {
+    async function fetchStartups() {
+      if (user) {
+        const startups = await getStartupsForUser(user.uid);
+        setUserStartups(startups);
+        console.log("startup",userStartups);
+
+      }
+    }
+    fetchStartups();
+  }, [user]);
 
   const toggleDarkMode = () => {
     const newMode = !isDarkMode;
@@ -148,6 +169,37 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                   </Link>
                 );
               })}
+
+              {user && userStartups.length > 0 && (
+                <Collapsible open={isStartupsOpen} onOpenChange={setIsStartupsOpen}>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="flex items-center justify-between w-full px-4 py-3 rounded-xl font-medium text-muted-foreground hover:bg-muted/50 hover:text-primary">
+                      <div className="flex items-center gap-3">
+                        <Building className="w-5 h-5" />
+                        <span className="text-sm font-bold">My Startups</span>
+                      </div>
+                      <ChevronRight className={cn("w-4 h-4 transition-transform", isStartupsOpen && "rotate-90")} />
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-1 pt-1">
+                    {userStartups.map(startup => (
+                      <Link key={startup.id} href={`/startups/${startup.id}`} className='flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-muted-foreground hover:bg-muted/50 hover:text-primary'>
+                         <span className="text-sm font-bold ml-8">{startup.name}</span>
+                      </Link>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
+               <Link 
+                href={'/startups/create'}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 text-muted-foreground hover:bg-muted/50 hover:text-primary"
+                )}
+              >
+                <PlusSquare className="w-5 h-5" />
+                <span className="text-sm font-bold">Create a Startup</span>
+              </Link>
             </div>
           </div>
         </aside>

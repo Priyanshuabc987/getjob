@@ -18,6 +18,16 @@ export function normalizeStringForQuery(input: string): string {
 }
 
 /**
+ * Extracts the Firebase document ID from the end of a URL slug.
+ * E.g., "my-startup-name-XV4fG2Asr4d2h2dJd21k" -> "XV4fG2Asr4d2h2dJd21k"
+ */
+export function getIdFromSlug(slug: string): string {
+    if (!slug) return '';
+    const parts = slug.split('-');
+    return parts[parts.length - 1];
+}
+
+/**
  * Returns a formatted duration string for a project build time.
  * E.g., "15d", "3m+", "1y+"
  */

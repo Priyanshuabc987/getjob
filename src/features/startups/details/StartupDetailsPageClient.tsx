@@ -19,11 +19,23 @@ import Link from 'next/link';
 import { StartupProjects } from '@/features/startups/details/components/StartupProjects';
 import { ContactCard } from '@/features/startups/details/components/ContactCard';
 
+const formatTeamSize = (min: number, max: number) => {
+  if (min === 1 && max === 1) return '1';
+  if (max >= 999999) return `${min}+`;
+  if (min === max) return `${min}`;
+  return `${min}-${max}`;
+};
+
 export function StartupDetailsPageClient({ startup }: { startup: StartupProfile }) {
 
   // This is a temporary solution for the mock data.
   // In a real app, this would be a proper query.
   const startupProjects = projectWorkspaces.slice(0, startup.projectsCount);
+  
+  // Client-side safeguard for the logo
+  const logoUrl = startup.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(startup.name)}&background=random`;
+  const location = [startup.city, startup.country].filter(Boolean).join(', ');
+  const teamSizeDisplay = formatTeamSize(startup.teamSizeMin, startup.teamSizeMax);
 
   return (
     <main className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -39,7 +51,7 @@ export function StartupDetailsPageClient({ startup }: { startup: StartupProfile 
             <div className="h-48 w-full rounded-[2.5rem] bg-gradient-to-r from-primary to-secondary opacity-10 absolute -top-4 -left-4 -right-4" />
             <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
               <div className="w-32 h-32 rounded-[2rem] bg-white shadow-2xl p-2 border">
-                 <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover rounded-[1.5rem]" />
+                 <img src={logoUrl} alt={startup.name} className="w-full h-full object-cover rounded-[1.5rem]" />
               </div>
               <div className="flex-1 space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
@@ -48,8 +60,8 @@ export function StartupDetailsPageClient({ startup }: { startup: StartupProfile 
                 </div>
                 <p className="text-xl font-bold text-primary">{startup.tagline}</p>
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground font-medium">
-                   <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {startup.location}</span>
-                   <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> {startup.teamSize} Builders</span>
+                   {location && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {location}</span>}
+                   <span className="flex items-center gap-1.5"><Users className="w-4 h-4" /> {teamSizeDisplay} Builders</span>
                 </div>
               </div>
             </div>

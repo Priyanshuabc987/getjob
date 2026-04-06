@@ -1,3 +1,4 @@
+
 // src/features/startups/services/read.ts
 import 'server-only';
 import { cache as reactCache } from 'react';
@@ -9,6 +10,8 @@ import {
   limit,
   startAfter,
   getDocs,
+  doc,
+  getDoc,
   QueryDocumentSnapshot,
   DocumentSnapshot,
 } from 'firebase/firestore';
@@ -18,32 +21,69 @@ import { STARTUPS_PER_PAGE, STARTUP_REVALIDATE_TIME } from '../constants';
 
 /**
  * Converts a Firestore document into a serializable StartupProfile object.
- * Handles the conversion of Firestore Timestamps to ISO strings.
+ * Handles the conversion of Firestore Timestamps to ISO strings and provides default values.
  */
-const startupFromDoc = (doc: QueryDocumentSnapshot): StartupProfile => {
+const startupFromDoc = (doc: DocumentSnapshot): StartupProfile => {
   const data = doc.data();
-  // Convert Firestore Timestamp to a serializable format (ISO string)
-  const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString();
+  const createdAt = data?.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString();
+  const name = data?.name ?? 'Startup'; // Default to 'Startup' if name is missing
+
+  // Generate a dynamic avatar if no logo is provided
+  const logo = data?.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
 
   return {
     id: doc.id,
-    name: data.name,
-    logo: data.logo,
-    tagline: data.tagline,
-    description: data.description,
-    city: data.city, 
-    country: data.country,
-    stage: data.stage,
-    fundingStage: data.fundingStage,
-    sector: data.sector,
-    teamSize: data.teamSize,
-    founderId: data.founderId,
-    openRolesCount: data.openRolesCount,
-    projectsCount: data.projectsCount,
-    score: data.score,
+    slug: data?.slug ?? doc.id, // Use slug, or fallback to ID
+    name: name,
+    logo: logo,
+    tagline: data?.tagline ?? '',
+    description: data?.description ?? '',
+    city: data?.city ?? '',
+    country: data?.country ?? '',
+    stage: data?.stage ?? 'Idea',
+    fundingStage: data?.fundingStage ?? 'Bootstrapped',
+    sector: data?.sector ?? [],
+    teamSizeMin: data?.teamSizeMin ?? 1,
+    teamSizeMax: data?.teamSizeMax ?? 1,
+    founderId: data?.founderId ?? '',
+    openRolesCount: data?.openRolesCount ?? 0,
+    projectsCount: data?.projectsCount ?? 0,
+    score: data?.score ?? 0,
     createdAt: createdAt,
   } as StartupProfile;
 };
+
+/**
+ * [UNCACHED WORKER] Fetches a single startup by its ID from Firestore.
+ */
+const _getStartupById = async (id: string) => {
+  const startupDocRef = doc(db, 'startups', id);
+  const startupDoc = await getDoc(startupDocRef);
+
+  if (!startupDoc.exists()) {
+    return null;
+  }
+
+  return startupFromDoc(startupDoc);
+};
+
+/**
+ * [PUBLIC] Cached: Fetches a single startup by its ID.
+ * Caches the result for a specific startup ID.
+ * Revalidates when the startup data changes.
+ */
+export const getStartupById = reactCache(
+  (id: string) => {
+    return nextCache(
+      () => _getStartupById(id),
+      [`startup:${id}`],
+      {
+        revalidate: STARTUP_REVALIDATE_TIME,
+        tags: [`startup:${id}`],
+      }
+    )();
+  }
+);
 
 /**
  * [UNCACHED WORKER] Fetches a list of startups from Firestore.

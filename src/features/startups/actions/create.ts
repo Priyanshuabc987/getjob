@@ -1,67 +1,91 @@
-// src/features/startups/actions/create.ts
+
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { createStartup as createStartupService } from '../services/write';
-import { StartupProfile } from '../types';
+import { z } from 'zod';
+import { getSession } from '@/features/auth/services/read';
+import { db } from '@/lib/firebase';
 import { normalizeStringForQuery } from '@/lib/utils';
+import { collection, doc, setDoc } from 'firebase/firestore';
 
-/**
- * Server action to create a new startup.
- * This function is called from the client-side form.
- * 
- * @param formData - The raw form data from the client.
- * @returns An object indicating success or failure.
- */
+const CreateStartupSchema = z.object({
+  name: z.string().min(1, 'Startup name is required.'),
+  teamSize: z.string().min(1, 'Team size is required.'), // Expecting a string like "1-1" or "101-999999"
+  city: z.string().min(1, 'City is required.'),
+  country: z.string().min(1, 'Country is required.'),
+  stage: z.string().min(1, 'Stage is required.'),
+  fundingStage: z.string().min(1, 'Funding stage is required.'),
+  sectors: z.array(z.string()).min(1, 'At least one sector is required.'),
+});
+
 export async function createStartup(formData: FormData) {
-  const name = formData.get('name') as string;
-  const tagline = formData.get('tagline') as string;
-  const description = formData.get('description') as string;
-  const websiteUrl = formData.get('websiteUrl') as string;
-  const city = formData.get('city') as string;
-  const country = formData.get('country') as string;
-  const teamSize = Number(formData.get('teamSize'));
-  const stage = formData.get('stage') as StartupProfile['stage'];
-  const fundingStage = formData.get('fundingStage') as StartupProfile['fundingStage'];
-  const sectors = formData.getAll('sectors') as string[];
-  const logo = formData.get('logo') as string;
+  const session = await getSession();
 
-  // Basic validation
-  if (!name || !tagline || !description || !city || !country || !teamSize || !stage || !fundingStage || !sectors || !logo) {
-    return { success: false, message: 'Missing required fields.' };
+  if (!session) {
+    return { success: false, message: 'You must be logged in to create a startup.' };
   }
 
-  // Normalization for querying
-  const name_normalized = normalizeStringForQuery(name);
-  const city_normalized = normalizeStringForQuery(city);
-  const country_normalized = normalizeStringForQuery(country);
-  const sector_normalized = sectors.map(normalizeStringForQuery);
+  const parsed = CreateStartupSchema.safeParse({
+    name: formData.get('name'),
+    teamSize: formData.get('teamSize'),
+    city: formData.get('city'),
+    country: formData.get('country'),
+    stage: formData.get('stage'),
+    fundingStage: formData.get('fundingStage'),
+    sectors: formData.getAll('sectors'),
+  });
 
-  const startupData: Omit<StartupProfile, 'id' | 'founderId' | 'createdAt' | 'score' | 'openRolesCount' | 'projectsCount'> = {
-    name,
-    tagline,
-    description,
-    websiteUrl,
-    city,
-    country,
-    teamSize,
-    stage,
-    fundingStage,
-    sector: sectors,
-    logo,
-    name_normalized,
-    city_normalized,
-    country_normalized,
-    sector_normalized,
-  };
+  if (!parsed.success) {
+    return { success: false, message: parsed.error.errors.map((e) => e.message).join(', ') };
+  }
+
+  const { name, teamSize, city, country, stage, fundingStage, sectors } = parsed.data;
+
+  // Parse teamSize
+  const [teamSizeMin, teamSizeMax] = teamSize.split('-').map(Number);
+
+  if (isNaN(teamSizeMin) || isNaN(teamSizeMax)) {
+    return { success: false, message: 'Invalid team size format.' };
+  }
 
   try {
-    await createStartupService(startupData);
-    
-    // Revalidate the cache for the startups list
-    revalidateTag('startups-list');
+    const newStartupRef = doc(collection(db, 'startups'));
+    const baseSlug = normalizeStringForQuery(name);
+    const finalSlug = `${baseSlug}-${newStartupRef.id}`;
 
-    return { success: true, message: 'Startup created successfully!' };
+    const newStartupData = {
+        id: newStartupRef.id,
+        slug: finalSlug,
+        name,
+        teamSizeMin,
+        teamSizeMax,
+        city,
+        country,
+        stage,
+        fundingStage,
+        sector: sectors,
+        founderId: session, 
+        createdAt: new Date().toISOString(), // Add the creation timestamp
+        name_normalized: normalizeStringForQuery(name),
+        city_normalized: normalizeStringForQuery(city),
+        country_normalized: normalizeStringForQuery(country),
+        sector_normalized: sectors.map(normalizeStringForQuery),
+        logo: '',
+        tagline: '',
+        description: '',
+        websiteUrl: '',
+        linkedinUrl: '',
+        score: 0,
+        openRolesCount: 0,
+        projectsCount: 0,
+      };
+
+    await setDoc(newStartupRef, newStartupData);
+
+    revalidateTag(`user-startups:${session}`)
+   
+    return { success: true, message: 'Startup created successfully!', startupSlug: finalSlug };
+
   } catch (error) {
     console.error("Error creating startup:", error);
     return { success: false, message: (error as Error).message };
