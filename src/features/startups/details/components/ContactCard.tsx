@@ -1,8 +1,8 @@
 
 import { StartupProfile } from '@/features/startups/types';
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Users, ExternalLink, Pencil } from 'lucide-react';
+import { Globe, Users, ExternalLink, Pencil, Mail, Edit3 } from 'lucide-react';
 import Link from 'next/link';
 
 // A helper component for individual link buttons to keep the main component clean
@@ -43,30 +43,33 @@ export function ContactCard({ startup, isFounder }: { startup: StartupProfile, i
   const linksToDisplay = isFounder ? allLinks : allLinks.filter(link => !!link.href);
 
   return (
-    <Card>
-        <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-                <span>Contact & Links</span>
-                {isFounder && (
-                    <Link href={`/startups/${startup.slug}/edit/links`}>
-                        <Button variant="outline" size="icon">
-                            <Pencil className="w-4 h-4" />
-                        </Button>
-                    </Link>
-                )}
-            </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-        {linksToDisplay.map(link => (
-            <LinkButton 
-                key={link.label}
-                href={link.href}
-                label={link.label}
-                icon={link.icon}
-                disabled={!link.href}
-            />
-        ))}
-        </CardContent>
+    <Card className="rounded-[1.5rem] md:rounded-[2.5rem] border-none shadow-sm bg-card p-6 md:p-8 group relative">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-headline text-lg font-bold flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center">
+            <Mail className="w-4 h-4 text-secondary" />
+          </div>
+          Contact & Links
+        </h3>
+        {isFounder && (
+          <Link href={`/startups/${startup.slug}/edit/links`}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+              <Edit3 className="w-4 h-4 text-muted-foreground hover:text-primary" />
+            </Button>
+          </Link>
+        )}
+      </div>
+      <div className="space-y-4">
+      {linksToDisplay.map(link => (
+          <LinkButton 
+              key={link.label}
+              href={link.href}
+              label={link.label}
+              icon={link.icon}
+              disabled={!link.href}
+          />
+      ))}
+      </div>
     </Card>
   )
 }

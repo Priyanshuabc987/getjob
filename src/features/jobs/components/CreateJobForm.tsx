@@ -40,7 +40,6 @@ export function CreateJobForm() {
     delete (finalForm as any).durationValue;
     delete (finalForm as any).durationUnit;
 
-    console.log('Form submitted', finalForm);
     await new Promise(resolve => setTimeout(resolve, 1000));
     toast({ title: 'Job posted successfully!' });
     router.push('/jobs');

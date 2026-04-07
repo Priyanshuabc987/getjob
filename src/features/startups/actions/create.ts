@@ -71,6 +71,7 @@ export async function createStartup(formData: FormData) {
         country_normalized: normalizeStringForQuery(country),
         sector_normalized: sectors.map(normalizeStringForQuery),
         logo: '',
+        coverImage: '',
         tagline: '',
         description: '',
         websiteUrl: '',

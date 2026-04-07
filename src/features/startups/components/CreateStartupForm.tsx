@@ -25,7 +25,21 @@ export function CreateStartupForm({ startup, sectors, isEditMode = false }: { st
   const router = useRouter();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const [isDirty, setIsDirty] = useState(false);
   const [selectedSectors, setSelectedSectors] = useState<string[]>(startup?.sector || []);
+
+  const handleChange = () => {
+    if (isEditMode && !isDirty) {
+      setIsDirty(true);
+    }
+  };
+
+  const handleSectorChange = (newSectors: string[]) => {
+    if (isEditMode && !isDirty) {
+      setIsDirty(true);
+    }
+    setSelectedSectors(newSectors);
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +62,7 @@ export function CreateStartupForm({ startup, sectors, isEditMode = false }: { st
   };
   
   const formContent = (
-    <div className="space-y-6">
+    <div className="space-y-6" onChange={handleChange}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
                 <RequiredLabel>Startup Name</RequiredLabel>
@@ -126,7 +140,7 @@ export function CreateStartupForm({ startup, sectors, isEditMode = false }: { st
             <MultiSelect 
                 options={sectors}
                 selected={selectedSectors}
-                onChange={setSelectedSectors}
+                onChange={handleSectorChange}
                 placeholder="Select or add sectors..."
             />
         </div>
@@ -146,7 +160,7 @@ export function CreateStartupForm({ startup, sectors, isEditMode = false }: { st
         )}
 
       <div className="pt-6">
-        <Button type="submit" disabled={isPending} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
+        <Button type="submit" disabled={isPending || (isEditMode && !isDirty)} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
           {isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Building2 className="w-5 h-5 mr-2" />}
           {startup ? 'Update Startup' : 'Register Startup'}
         </Button>

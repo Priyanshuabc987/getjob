@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -17,7 +18,7 @@ export function ProjectCard({ project, showStats = true }: ProjectCardProps) {
   const owner = project.team.find(m => m.userId === project.ownerId);
 
   return (
-    <Card className="glass-card overflow-hidden group border-none shadow-md hover:shadow-2xl transition-all duration-500 bg-white w-full h-full flex flex-col">
+    <Card className="overflow-hidden group border-none shadow-md hover:shadow-2xl transition-all duration-500 bg-white w-full h-full flex flex-col">
       {/* Author Header */}
       <div className="p-3 flex items-center justify-between border-b border-muted/50 bg-muted/10">
         <div className="flex items-center gap-3">

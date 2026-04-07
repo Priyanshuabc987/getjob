@@ -7,7 +7,8 @@ import { StartupEditCard } from "@/features/startups/edit/components/startup-edi
 import { CreateStartupForm } from "@/features/startups/components/CreateStartupForm";
 
 export default async function StartupEditBasicsPage({ params }: { params: { slug: string } }) {
-  const startupId = getIdFromSlug(params.slug);
+  const resolvedparams = await params ;
+  const startupId = getIdFromSlug(resolvedparams.slug);
   if (!startupId) {
     notFound();
   }

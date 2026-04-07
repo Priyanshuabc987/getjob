@@ -2,6 +2,7 @@
 export type Startup = {
     id: string;
     name: string;
+    slug: string;
   }
   
   export type StartupProfile = {

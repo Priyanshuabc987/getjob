@@ -12,6 +12,7 @@ interface StartupCardProps {
 }
 
 export function StartupCard({ startup }: StartupCardProps) {
+
   const teamSizeDisplay = formatTeamSize(startup.teamSizeMin, startup.teamSizeMax);
 
   return (

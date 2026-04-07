@@ -30,6 +30,10 @@ const UpdateLinksSchema = z.object({
     linkedinUrl: z.string().url().optional().or(z.literal('')),
 });
 
+const UpdateCoverImageSchema = z.object({
+    coverImage: z.string().url().optional().or(z.literal('')),
+});
+
 // --- Helper for Security & Data Fetching ---
 async function getAuthorizedStartup(startupId: string) {
     const session = await getSession();
@@ -91,6 +95,9 @@ export async function updateStartupBasics(startupId: string, prevState: any, for
     });
 
     revalidateTag(`startup:${startupId}`);
+    if (name !== startup.name) {
+      revalidateTag(`user-startups:${startup.founderId}`);
+    }
     
     return { success: true, startupSlug: startup.slug };
     
@@ -149,6 +156,34 @@ export async function updateStartupLinks(startupId: string, prevState: any, form
         revalidateTag(`startup:${startupId}`);
 
         return { success: true, startupSlug: startup.slug };
+
+    } catch (error: any) {
+        return { success: false, message: error.message || 'An unexpected error occurred.' };
+    }
+}
+
+export async function updateStartupCoverImage(startupId: string, prevState: any, formData: FormData) {
+    try {
+      const startup = await getAuthorizedStartup(startupId);
+
+      const parsed = UpdateCoverImageSchema.safeParse({
+        coverImage: formData.get('coverImage'),
+      });
+
+      if (!parsed.success) {
+        return { success: false, message: parsed.error.errors.map((e) => e.message).join(', ') };
+      }
+
+      const startupRef = doc(db, 'startups', startupId);
+      const { coverImage } = parsed.data;
+
+      await updateDoc(startupRef, {
+        coverImage: coverImage || '',
+      });
+
+      revalidateTag(`startup:${startupId}`);
+
+      return { success: true, startupSlug: startup.slug };
 
     } catch (error: any) {
         return { success: false, message: error.message || 'An unexpected error occurred.' };

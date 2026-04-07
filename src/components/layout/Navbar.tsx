@@ -46,8 +46,6 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
   const [userStartups, setUserStartups] = useState<Startup[]>([]);
   const [isStartupsOpen, setIsStartupsOpen] = useState(false);
 
-  console.log("startup",userStartups);
-
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
     setIsDarkMode(isDark);
@@ -58,8 +56,6 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
       if (user) {
         const startups = await getStartupsForUser(user.uid);
         setUserStartups(startups);
-        console.log("startup",userStartups);
-
       }
     }
     fetchStartups();
@@ -183,7 +179,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1 pt-1">
                     {userStartups.map(startup => (
-                      <Link key={startup.id} href={`/startups/${startup.id}`} className='flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-muted-foreground hover:bg-muted/50 hover:text-primary'>
+                      <Link key={startup.id} href={`/startups/${startup.slug}`} className='flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-muted-foreground hover:bg-muted/50 hover:text-primary'>
                          <span className="text-sm font-bold ml-8">{startup.name}</span>
                       </Link>
                     ))}

@@ -15,7 +15,15 @@ export function EditStartupDescriptionForm({ startup }: { startup: StartupProfil
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const [description, setDescription] = useState(startup.description);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!isDirty) {
+      setIsDirty(true);
+    }
+    setDescription(e.target.value);
+  };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +52,7 @@ export function EditStartupDescriptionForm({ startup }: { startup: StartupProfil
                 id="description"
                 name="description"
                 value={description} 
-                onChange={e => setDescription(e.target.value)} 
+                onChange={handleChange} 
                 placeholder="Tell your startup's story, its mission, and the problem it solves..." 
                 className="min-h-[400px] rounded-2xl leading-relaxed text-lg"
                 required
@@ -53,7 +61,7 @@ export function EditStartupDescriptionForm({ startup }: { startup: StartupProfil
         </div>
 
         <div className="pt-6">
-            <Button type="submit" disabled={loading} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
+            <Button type="submit" disabled={loading || !isDirty} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
                 {loading ? <Loader2 className="animate-spin mr-2" /> : <Check className="w-5 h-5 mr-2" />}
                 Update Description
             </Button>

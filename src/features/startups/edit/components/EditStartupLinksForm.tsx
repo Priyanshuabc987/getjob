@@ -15,12 +15,16 @@ export function EditStartupLinksForm({ startup }: { startup: StartupProfile }) {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const [formData, setFormData] = useState({ 
       websiteUrl: startup.websiteUrl || '', 
       linkedinUrl: startup.linkedinUrl || ''
     });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isDirty) {
+      setIsDirty(true);
+    }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -58,7 +62,7 @@ export function EditStartupLinksForm({ startup }: { startup: StartupProfile }) {
         </div>
 
         <div className="pt-6">
-            <Button type="submit" disabled={loading} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
+            <Button type="submit" disabled={loading || !isDirty} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
                 {loading ? <Loader2 className="animate-spin mr-2" /> : <Check className="w-5 h-5 mr-2" />}
                 Update Links
             </Button>
