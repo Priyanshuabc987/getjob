@@ -38,6 +38,8 @@ const startupFromDoc = (doc: DocumentSnapshot): StartupProfile => {
     logo: logo,
     tagline: data?.tagline ?? '',
     description: data?.description ?? '',
+    websiteUrl: data?.websiteUrl ?? '',
+    linkedinUrl: data?.linkedinUrl ?? '',
     city: data?.city ?? '',
     country: data?.country ?? '',
     stage: data?.stage ?? 'Idea',

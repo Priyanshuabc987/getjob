@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { UserProfileData, UserPrivateData } from '../types';
+import { UserProfileData, UserPrivateData, FounderProfile } from '../types';
 import { cache as reactCache } from 'react';
 import { unstable_cache as nextCache } from 'next/cache';
 import { PROFILE_REVALIDATE_TIME } from '../constants';
@@ -58,3 +58,22 @@ export const getCachedUserPrivateData = reactCache(
     )();
   }
 );
+
+/**
+ * Fetches a user's public profile and returns a lightweight founder object.
+ * This is built on top of the cached getCachedUserProfile function.
+ * @param uid - The user ID of the founder.
+ * @returns A promise that resolves to a FounderProfile object or null.
+ */
+export const getCachedFounderProfile = async (uid: string): Promise<FounderProfile | null> => {
+    const userProfile = await getCachedUserProfile(uid);
+    if (!userProfile) {
+        return null;
+    }
+
+    return {
+        uid: userProfile.uid,
+        displayName: userProfile.displayName,
+        photoURL: userProfile.photoURL,
+    };
+};

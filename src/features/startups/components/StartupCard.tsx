@@ -5,14 +5,17 @@ import { Badge } from '@/components/ui/badge';
 import { Users, Zap, UserPlus } from 'lucide-react';
 import { StartupProfile } from '../types';
 import { Button } from '@/components/ui/button';
+import { formatTeamSize } from '../utils';
 
 interface StartupCardProps {
   startup: StartupProfile;
 }
 
 export function StartupCard({ startup }: StartupCardProps) {
+  const teamSizeDisplay = formatTeamSize(startup.teamSizeMin, startup.teamSizeMax);
+
   return (
-    <Link href={`/startups/${startup.id}`} key={startup.id} className="block group">
+    <Link href={`/startups/${startup.slug}`} key={startup.id} className="block group">
       <Card className="glass-card overflow-hidden border-none shadow-xl bg-white h-full transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
         <CardHeader className="p-8 pb-4">
           <div className="flex items-start justify-between">
@@ -42,7 +45,7 @@ export function StartupCard({ startup }: StartupCardProps) {
           <div className="flex flex-wrap gap-6 items-center">
             <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs font-bold text-muted-foreground">{startup.teamSize} Builders</span>
+                <span className="text-xs font-bold text-muted-foreground">{teamSizeDisplay} Builders</span>
             </div>
             {startup.openRolesCount > 0 && (
               <div className="flex items-center gap-2">

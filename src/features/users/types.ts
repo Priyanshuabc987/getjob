@@ -56,3 +56,9 @@ export interface UserPrivateData {
   // lastLogin: string;
   accountStatus: 'active' | 'suspended';
 }
+
+export type FounderProfile = {
+    uid: string;
+    displayName: string;
+    photoURL?: string;
+  };
