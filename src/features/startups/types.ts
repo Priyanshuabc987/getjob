@@ -8,6 +8,7 @@ export type Startup = {
     id: string;
     name:string;
     slug: string; // URL-friendly identifier
+    coverImage:string;
     logo: string;
     websiteUrl?: string;
     linkedinUrl?: string;
