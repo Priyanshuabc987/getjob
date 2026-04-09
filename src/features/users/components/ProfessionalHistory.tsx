@@ -85,7 +85,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: {
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Experience</p>
             {isOwnProfile && (
               <div className="flex items-center gap-1">
-                <Link href="/profile/edit/history/experience">
+                <Link href={`/profile/${profile.uid}/edit/experience`}>
                   <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-muted-foreground hover:text-primary">
                     <Edit2 className="w-3.5 h-3.5" />
                   </Button>
@@ -126,7 +126,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: {
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Education</p>
             {isOwnProfile && (
               <div className="flex items-center gap-1">
-                <Link href="/profile/edit/history/education">
+                <Link href={`/profile/${profile.uid}/edit/education`}>
                   <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full text-muted-foreground hover:text-primary">
                     <Edit2 className="w-3.5 h-3.5" />
                   </Button>

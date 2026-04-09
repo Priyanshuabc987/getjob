@@ -57,7 +57,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
                   {profile.credibilityScore > 80 && <ShieldCheck className="w-5 h-5 md:w-8 md:h-8 text-primary fill-current text-white" />}
                 </h1>
                 {isOwnProfile && (
-                  <Link href="/profile/edit/basics">
+                  <Link href={`/profile/${profile.uid}/edit/basics`}>
                     <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5">
                       <Edit2 className="w-4 h-4" />
                     </Button>
