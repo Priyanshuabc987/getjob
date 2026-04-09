@@ -8,13 +8,15 @@ import { EditAboutForm } from "@/features/users/edit/EditAboutForm";
 
 export default async function EditAboutPage({ params }: { params: { id: string } }) {
   const session = await getSession();
+  const resolvedparams = await params ;
+  console.log("cehck ",session, resolvedparams.id);
 
   // Security Check: Ensure the logged-in user is the owner of this profile
-  if (!session || session !== params.id) {
+  if (!session || session !== resolvedparams.id) {
     notFound();
   }
 
-  const profile = await getCachedUserProfile(params.id);
+  const profile = await getCachedUserProfile(resolvedparams.id);
   if (!profile) {
     notFound();
   }

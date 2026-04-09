@@ -17,7 +17,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
   const buildingDuration = formatBuildingDuration(profile.createdAt);
 
   return (
-    <div className="relative pt-4 md:pt-6 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+    <div className="relative pt-4 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
       {/* Banner Container */}
       <div className={cn(
         "h-48 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-sm",

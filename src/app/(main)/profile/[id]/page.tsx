@@ -37,7 +37,7 @@ export default async function PublicProfilePage({
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="md:pl-64 pt-16">
+      <div className="md:pl-auto">
         <main className="w-full">
           <ProfileView 
             profile={profileData} 

@@ -47,8 +47,8 @@ export async function createInitialUser(
     }, { merge: true })
   ]);
   
-  revalidateTag(`user:${uid}:profile`);
-  revalidateTag(`user:${uid}:private`);
+  // revalidateTag(`user:${uid}:profile`);
+  // revalidateTag(`user:${uid}:private`);
 }
 
 /**

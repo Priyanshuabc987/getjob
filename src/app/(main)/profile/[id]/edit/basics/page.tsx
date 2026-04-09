@@ -8,13 +8,13 @@ import { EditBasicsForm } from "@/features/users/edit/EditBasicsForm";
 
 export default async function EditBasicsPage({ params }: { params: { id: string } }) {
   const session = await getSession();
-
+  const resolvedparams = await params;
   // Security Check: Ensure the logged-in user is the owner of this profile
-  if (!session || session !== params.id) {
+  if (!session || session !== resolvedparams.id) {
     notFound();
   }
 
-  const profile = await getCachedUserProfile(params.id);
+  const profile = await getCachedUserProfile(resolvedparams.id);
   if (!profile) {
     notFound();
   }

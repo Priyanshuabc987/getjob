@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  Home, 
-  BriefcaseBusiness, 
+import {
+  Home,
+  BriefcaseBusiness,
   MessageSquare,
-  PlusSquare, 
-  Users, 
-  User, 
-  Zap, 
-  Lightbulb, 
+  PlusSquare,
+  Users,
+  User,
+  Zap,
+  Lightbulb,
   Calendar,
   LogIn,
   LayoutGrid,
@@ -33,8 +33,8 @@ const mainNavItems = [
   { icon: Home, label: 'Feed', href: '/feed' },
   { icon: BriefcaseBusiness, label: 'Jobs', href: '/jobs' },
   { icon: PlusSquare, label: 'Projects', href: '/projects' },
-  { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Calendar, label: 'Events', href: '/events' },
+  { icon: Users, label: 'Startups', href: '/startups' },
   { icon: Lightbulb, label: 'Problems', href: '/problems' },
   // { icon: MessageSquare, label: 'Discussion', href: '/discussion' },
 ];
@@ -88,10 +88,10 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
           </Link>
 
           <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={toggleDarkMode} 
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleDarkMode}
               className="rounded-full text-muted-foreground hover:text-primary transition-colors"
             >
               {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -126,13 +126,13 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
               {mainNavItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                  <Link 
-                    key={item.href} 
+                  <Link
+                    key={item.href}
                     href={item.href}
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300",
-                      isActive 
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                         : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
                     )}
                   >
@@ -150,13 +150,13 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
               {workspaceNavItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                  <Link 
-                    key={item.href} 
+                  <Link
+                    key={item.href}
                     href={item.href}
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300",
-                      isActive 
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" 
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                         : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
                     )}
                   >
@@ -180,14 +180,14 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                   <CollapsibleContent className="space-y-1 pt-1">
                     {userStartups.map(startup => (
                       <Link key={startup.id} href={`/startups/${startup.slug}`} className='flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-muted-foreground hover:bg-muted/50 hover:text-primary'>
-                         <span className="text-sm font-bold ml-8">{startup.name}</span>
+                        <span className="text-sm font-bold ml-8">{startup.name}</span>
                       </Link>
                     ))}
                   </CollapsibleContent>
                 </Collapsible>
               )}
 
-               <Link 
+              <Link
                 href={'/startups/create'}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 text-muted-foreground hover:bg-muted/50 hover:text-primary"
@@ -213,8 +213,8 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
           ].map((item) => {
             const isActive = pathname === item.href;
             return (
-              <Link 
-                key={item.href} 
+              <Link
+                key={item.href}
                 href={item.href}
                 className={cn(
                   "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all duration-300",
