@@ -4,12 +4,19 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { EditEducationForm } from "@/features/users/edit/EditEducationForm";
+import { getCachedUserProfile } from "@/features/users/services/read";
 
 export default async function AddEducationPage({ params }: { params: { id: string } }) {
   const session = await getSession();
 
   // Security Check: Ensure the logged-in user is the owner of this profile
   if (!session || session !== params.id) {
+    notFound();
+  }
+
+  const userProfile = await getCachedUserProfile(params.id);
+
+  if (!userProfile) {
     notFound();
   }
 
@@ -23,7 +30,7 @@ export default async function AddEducationPage({ params }: { params: { id: strin
 
         <div className="space-y-8">
           <h1 className="text-4xl font-headline font-bold">Add Education</h1>
-          <EditEducationForm userId={params.id} />
+          <EditEducationForm userId={params.id} education={userProfile.education} />
         </div>
       </main>
     </div>

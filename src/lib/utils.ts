@@ -48,10 +48,12 @@ export function formatBuildingDuration(createdAt: string): string {
     return `${years}y+`;
 }
 
-export function calculateDuration(startDate: Date, endDate: Date): string {
-    let diffInMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12;
-    diffInMonths -= startDate.getMonth();
-    diffInMonths += endDate.getMonth();
+export function calculateDuration(startDate: string, endDate: string): string {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let diffInMonths = (end.getFullYear() - start.getFullYear()) * 12;
+    diffInMonths -= start.getMonth();
+    diffInMonths += end.getMonth();
     const duration = diffInMonths <= 0 ? 0 : diffInMonths;
 
     const years = Math.floor(duration / 12);

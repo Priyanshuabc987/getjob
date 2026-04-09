@@ -1,87 +1,190 @@
 
 "use client";
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Check, Briefcase } from 'lucide-react';
+import { Briefcase, Plus, Loader2, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { addExperience } from '@/features/users/services/write';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { addExperience, removeExperience } from '@/features/users/services/write';
+import { ExperienceEntry } from '@/features/users/types';
 import { useToast } from '@/hooks/use-toast';
+import ExperienceForm from '@/features/users/components/ExperienceForm';
+import { formatProfessionalDate, calculateDuration } from '@/lib/utils';
 import { v4 as uuidv4 } from 'uuid';
 
 interface EditExperienceFormProps {
   userId: string;
+  experience: ExperienceEntry[];
 }
 
-export function EditExperienceForm({ userId }: EditExperienceFormProps) {
+const ExpandableText = ({ text }: { text: string }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const isLongText = text.length > 100;
+
+    if (!isLongText) {
+        return <p className="text-sm text-muted-foreground whitespace-pre-line pt-2">{text}</p>;
+    }
+
+    return (
+        <div className="pt-2">
+            <p className={`text-sm text-muted-foreground whitespace-pre-line ${!isExpanded ? 'line-clamp-2' : ''}`}>
+                {text}
+            </p>
+            <span
+                className="text-primary font-medium pl-3 cursor-pointer text-sm"
+                onClick={() => setIsExpanded(!isExpanded)}
+            >
+                {isExpanded ? 'see less' : '...see more'}
+            </span>
+        </div>
+    );
+};
+
+export function EditExperienceForm({ userId, experience: initialExperience }: EditExperienceFormProps) {
   const router = useRouter();
   const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
-  
-  const [role, setRole] = useState('');
-  const [company, setCompany] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [isCurrent, setIsCurrent] = useState(false);
+  const [experience, setExperience] = useState<ExperienceEntry[]>(initialExperience || []);
+  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    startTransition(async () => {
-      try {
-        const newExperience = { id: uuidv4(), role, company, startDate, endDate: isCurrent ? '' : endDate, isCurrent };
-        await addExperience(userId, newExperience);
-        toast({ title: "Experience Added", description: "Your professional path grows!" });
-        router.push(`/profile/${userId}`);
-      } catch (error) {
-        toast({ variant: "destructive", title: "Failed to add experience" });
+  const handleSave = async (form: Partial<ExperienceEntry>) => {
+    if (!form.role || !form.company || !form.startDate) {
+      toast({ variant: "destructive", title: "Missing fields", description: "Role, Company, and Start Date are required." });
+      return;
+    }
+    setLoading(true);
+    try {
+      const isNew = !editingId;
+      let updatedExperienceList = [...experience];
+
+      if (isNew) {
+        const newEntry: ExperienceEntry = {
+            id: uuidv4(),
+            role: form.role,
+            company: form.company,
+            startDate: form.startDate!,
+            endDate: form.endDate || undefined,
+            isCurrent: form.isCurrent || false,
+            description: form.description || undefined,
+        };
+        await addExperience(userId, newEntry);
+        updatedExperienceList.push(newEntry);
+        toast({ title: "Experience added!" });
+      } else {
+        const oldEntry = experience.find(e => e.id === editingId);
+        if (!oldEntry) throw new Error("Original entry not found");
+
+        const newEntry: ExperienceEntry = { ...oldEntry, ...form };
+
+        await removeExperience(userId, oldEntry);
+        await addExperience(userId, newEntry);
+        
+        updatedExperienceList = experience.map(e => e.id === editingId ? newEntry : e);
+        toast({ title: "Experience updated!" });
       }
-    });
+
+      setExperience(updatedExperienceList);
+      setIsAdding(false);
+      setEditingId(null);
+      router.refresh();
+    } catch (e) {
+      toast({ variant: "destructive", title: "Failed to save experience" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (exp: ExperienceEntry) => {
+    if (!exp.id) return;
+    setDeletingId(exp.id);
+    try {
+      await removeExperience(userId, exp);
+      setExperience(prev => prev.filter(e => e.id !== exp.id));
+      toast({ title: "Experience removed" });
+      setEditingId(null);
+      router.refresh();
+    } catch(e) {
+        toast({ variant: "destructive", title: "Failed to remove experience" });
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white overflow-hidden">
-        <CardHeader className="p-8 border-b bg-muted/20">
-          <CardTitle className="flex items-center gap-3 text-xl"><Briefcase className="w-6 h-6 text-primary" /> Add New Experience</CardTitle>
-        </CardHeader>
-        <CardContent className="p-8 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label className="text-[10px] uppercase font-bold text-muted-foreground">Role / Title <span className="text-destructive">*</span></Label>
-              <Input value={role} onChange={e => setRole(e.target.value)} className="h-12 rounded-xl" required />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] uppercase font-bold text-muted-foreground">Company / Organization <span className="text-destructive">*</span></Label>
-              <Input value={company} onChange={e => setCompany(e.target.value)} className="h-12 rounded-xl" required />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-            <div className="space-y-2">
-              <Label className="text-[10px] uppercase font-bold text-muted-foreground">Start Date <span className="text-destructive">*</span></Label>
-              <Input type="text" value={startDate} onChange={e => setStartDate(e.target.value)} placeholder="e.g., Jan 2022" className="h-12 rounded-xl" required />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] uppercase font-bold text-muted-foreground">End Date</Label>
-              <Input type="text" value={endDate} onChange={e => setEndDate(e.target.value)} placeholder="e.g., Dec 2023" disabled={isCurrent} className="h-12 rounded-xl" />
-            </div>
-          </div>
-          <div className="flex items-center space-x-2 pt-2">
-            <Checkbox id="isCurrent" checked={isCurrent} onCheckedChange={() => setIsCurrent(!isCurrent)} />
-            <Label htmlFor="isCurrent" className="font-bold">I currently work here</Label>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="pt-4 sticky bottom-4">
-        <Button type="submit" disabled={isPending} className="w-full h-14 rounded-full font-bold text-lg action-button-glow">
-          {isPending ? <Loader2 className="animate-spin mr-2" /> : <Check className="w-5 h-5 mr-2" />}
-          Add to Path
-        </Button>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-4xl font-headline font-bold">Experience History</h1>
+        {!isAdding && !editingId && (
+          <Button onClick={() => setIsAdding(true)} className="rounded-full gap-2 px-6 action-button-glow font-bold">
+            <Plus className="w-4 h-4" /> Add Experience
+          </Button>
+        )}
       </div>
-    </form>
+
+      {isAdding && (
+         <Card className="rounded-3xl border-2 border-primary/20 shadow-xl bg-white dark:bg-card overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+          <CardHeader className="p-6 border-b bg-primary/5">
+            <CardTitle className="text-lg">New Experience</CardTitle>
+          </CardHeader>
+          <ExperienceForm
+            entry={{ role: '', company: '', startDate: '' }}
+            onSave={handleSave}
+            onCancel={() => setIsAdding(false)}
+            loading={loading}
+            deleting={false}
+          />
+        </Card>
+      )}
+
+      <div className="space-y-4">
+        {experience.map(exp => (
+          <div key={exp.id}>
+            {editingId === exp.id ? (
+              <Card className="rounded-3xl border-2 border-primary/20 shadow-xl bg-white dark:bg-card overflow-hidden">
+                 <CardHeader className="p-6 border-b bg-primary/5">
+                    <CardTitle className="text-lg">Edit Experience</CardTitle>
+                 </CardHeader>
+                <ExperienceForm
+                  entry={exp}
+                  onSave={handleSave}
+                  onDelete={() => handleDelete(exp)}
+                  onCancel={() => setEditingId(null)}
+                  loading={loading}
+                  deleting={deletingId === exp.id}
+                />
+              </Card>
+            ) : (
+              <Card className="rounded-2xl border-none shadow-md bg-white dark:bg-card p-6 flex items-start justify-between group hover:shadow-lg transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/5 flex items-center justify-center shrink-0">
+                    <Briefcase className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <h4 className="font-bold text-lg">{exp.role}</h4>
+                    <p className="text-sm text-muted-foreground font-medium">{exp.company}</p>
+                    <p className="text-xs text-muted-foreground font-medium">
+                      {formatProfessionalDate(exp.startDate)} - {exp.isCurrent ? 'Present' : formatProfessionalDate(exp.endDate || '')}
+                      {exp.startDate && <span className="ml-2">({calculateDuration(exp.startDate, exp.isCurrent ? new Date().getFullYear().toString() : (exp.endDate || ''))})</span>}
+                    </p>
+                    {exp.description && <ExpandableText text={exp.description} />}
+                  </div>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setEditingId(exp.id)} className="rounded-full text-muted-foreground hover:text-primary shrink-0">
+                  <Edit2 className="w-4 h-4" />
+                </Button>
+              </Card>
+            )}
+          </div>
+        ))}
+        {experience.length === 0 && !isAdding && (
+          <div className="text-center py-20 bg-muted/20 rounded-[2.5rem] border-4 border-dashed">
+            <p className="text-muted-foreground italic font-medium">No experience entries yet. Build your professional story.</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

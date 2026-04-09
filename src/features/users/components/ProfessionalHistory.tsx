@@ -105,7 +105,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: {
                   <p className="text-sm text-muted-foreground font-medium">{exp.company}</p>
                   <p className="text-xs text-muted-foreground font-medium">
                     {formatProfessionalDate(exp.startDate)} - {exp.isCurrent ? 'Present' : formatProfessionalDate(exp.endDate || '')}
-                    <span className="ml-2">({calculateDuration(new Date(exp.startDate), exp.isCurrent ? new Date() : new Date(exp.endDate || ''))})</span>
+                    <span className="ml-2">({calculateDuration(exp.startDate, exp.isCurrent ? new Date().toISOString() : (exp.endDate || ''))})</span>
                   </p>
                   {exp.description && <ExpandableText text={exp.description} />}
                 </div>
@@ -146,7 +146,7 @@ export function ProfessionalHistory({ profile, isOwnProfile }: {
                   <p className="text-sm text-muted-foreground font-medium">{edu.school}</p>
                   <p className="text-xs text-muted-foreground font-medium">
                     {formatProfessionalDate(edu.startYear)} - {edu.isCurrent ? 'Present' : formatProfessionalDate(edu.endDate || '')}
-                     <span className="ml-2">({calculateDuration(new Date(edu.startYear), edu.isCurrent ? new Date() : new Date(edu.endDate || ''))})</span>
+                     <span className="ml-2">({calculateDuration(edu.startYear, edu.isCurrent ? new Date().toISOString() : (edu.endDate || ''))})</span>
                   </p>
                   {edu.description && <ExpandableText text={edu.description} />}
                 </div>
