@@ -71,8 +71,8 @@ export function CreateJobForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-        <Card className="bg-white dark:bg-card shadow-lg rounded-xl border">
-            <CardContent className="space-y-8 pt-4">
+        <Card className="bg-white dark:bg-card shadow-lg rounded-[2.5rem] border">
+            <CardContent className="space-y-8 p-8 md:p-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <Label htmlFor="title">Job Title <span className="text-destructive">*</span></Label>
