@@ -59,7 +59,6 @@ export function useAuth() {
         description: `Successfully signed in as ${fbUser.displayName}`,
       });
     } catch (error: any) {
-      console.error(error);
       toast({
         title: "Authentication Failed",
         description: error.message || "Something went wrong during sign-in.",

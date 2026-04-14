@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { getSession } from '@/features/auth/services/read';
 import { getCachedFounderProfile } from '@/features/users/services/read';
 
-export default async function StartupPage({ params }: { params: { slug: string } }) {
+export default async function StartupPage({ params }: { params: Promise<{ slug: string }>; }) {
   const resolvedparams = await params ;
   const startupId = getIdFromSlug(resolvedparams.slug);
 

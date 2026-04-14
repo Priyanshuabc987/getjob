@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Job } from '@/features/jobs/types';
 import { JobCard } from '@/features/jobs/components/JobCard';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,7 +32,7 @@ export function JobsPageContent() {
                      <p className="font-semibold text-primary">Action-Driven Opportunities</p>
                 </div>
                 <h1 className="text-2xl md:text-4xl font-bold font-headline text-gray-900 dark:text-white mb-4">Find Your Next Role</h1>
-                <p className="text-lg text-gray-600 dark:text-gray-300 pb-4">Don't just look for a job. Find a mission. Join a startup and make a real impact.</p>
+                <p className="text-lg text-gray-600 dark:text-gray-300 pb-4">Don&apos;t just look for a job. Find a mission. Join a startup and make a real impact.</p>
             </div>
             <div className="flex-1 md:text-right">
                 <Button asChild size="lg" className="rounded-full h-14 text-lg font-bold w-full sm:w-auto">

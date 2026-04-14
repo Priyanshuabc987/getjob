@@ -26,7 +26,7 @@ export default function GlobalError({
         <div className="space-y-2">
           <h1 className="text-3xl font-headline font-bold">Something went wrong</h1>
           <p className="text-muted-foreground">
-            We encountered an unexpected error. Don't worry, your work is safe.
+            We encountered an unexpected error. Don&apos;t worry, your work is safe.
           </p>
         </div>
         <div className="flex flex-col gap-3">

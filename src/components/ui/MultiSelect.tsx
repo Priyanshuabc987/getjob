@@ -5,7 +5,6 @@ import { X } from 'lucide-react';
 import { Command, CommandGroup, CommandItem, CommandList, CommandInput } from '@/components/ui/command';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 
 interface MultiSelectProps {
   options: string[];
@@ -89,7 +88,7 @@ export function MultiSelect({ options, selected, onChange, placeholder, classNam
                                 <CommandItem
                                     onSelect={() => handleSelect(inputValue)}
                                 >
-                                    Add "{inputValue}"
+                                    Add &quot;{inputValue}&quot;
                                 </CommandItem>
                             </CommandGroup>
                         )}

@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Briefcase, Plus, Loader2, Edit2 } from 'lucide-react';
+import { Briefcase, Plus, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { addExperience, removeExperience } from '@/features/users/services/write';
@@ -90,7 +90,7 @@ export function EditExperienceForm({ userId, experience: initialExperience }: Ed
       setIsAdding(false);
       setEditingId(null);
       router.refresh();
-    } catch (e) {
+    } catch  {
       toast({ variant: "destructive", title: "Failed to save experience" });
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ export function EditExperienceForm({ userId, experience: initialExperience }: Ed
       toast({ title: "Experience removed" });
       setEditingId(null);
       router.refresh();
-    } catch(e) {
+    } catch {
         toast({ variant: "destructive", title: "Failed to remove experience" });
     } finally {
       setDeletingId(null);

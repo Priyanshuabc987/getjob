@@ -29,7 +29,7 @@ export function EditBasicsForm({ userProfile }: { userProfile: UserProfileData }
         toast({ title: "Identity Updated!", description: "Basic details have been refreshed." });
         setIsDirty(false);
         router.refresh();
-      } catch (e) {
+      } catch  {
         toast({ variant: "destructive", title: "Update Failed", description: "Could not save changes." });
       }
     });

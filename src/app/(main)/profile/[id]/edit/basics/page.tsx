@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { EditBasicsForm } from "@/features/users/edit/EditBasicsForm";
 
-export default async function EditBasicsPage({ params }: { params: { id: string } }) {
+export default async function EditBasicsPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   const resolvedparams = await params;
   // Security Check: Ensure the logged-in user is the owner of this profile

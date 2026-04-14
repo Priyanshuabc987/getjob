@@ -6,10 +6,9 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { EditAboutForm } from "@/features/users/edit/EditAboutForm";
 
-export default async function EditAboutPage({ params }: { params: { id: string } }) {
+export default async function EditAboutPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   const resolvedparams = await params ;
-  console.log("cehck ",session, resolvedparams.id);
 
   // Security Check: Ensure the logged-in user is the owner of this profile
   if (!session || session !== resolvedparams.id) {

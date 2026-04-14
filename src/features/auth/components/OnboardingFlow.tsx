@@ -19,7 +19,6 @@ import {
   Target,
   ChevronRight,
   UserCircle,
-  Briefcase
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -82,7 +81,7 @@ export function OnboardingFlow() {
       await completeOnboarding(user.uid, formData);
       toast({ title: "Profile Ready!", description: "Welcome to the builder community." });
       router.push('/feed');
-    } catch (error) {
+    } catch {
       toast({ title: "Error saving profile", variant: "destructive" });
     } finally {
       setLoading(false);
@@ -95,7 +94,7 @@ export function OnboardingFlow() {
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold mb-4">
           <Sparkles className="w-4 h-4" /> Personal Brand Matters
         </div>
-        <h1 className="text-4xl font-headline font-bold">Let's build your showcase</h1>
+        <h1 className="text-4xl font-headline font-bold">Let&apos;s build your showcase</h1>
         <p className="text-muted-foreground text-sm max-w-sm mx-auto">
           This helps recruiters know about your potential so you can get internships easily.
         </p>

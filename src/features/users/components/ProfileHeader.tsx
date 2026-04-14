@@ -7,6 +7,7 @@ import { UserProfileData } from '../types';
 import { formatBuildingDuration } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface ProfileHeaderProps {
   profile: UserProfileData;
@@ -23,9 +24,11 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         "h-48 md:h-64 w-full rounded-2xl md:rounded-[2.5rem] relative overflow-hidden shadow-sm",
         !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
       )}>
-        <img 
+        <Image 
           src={profile.bannerUrl || "https://picsum.photos/seed/preplinc-hero/1200/600"} 
           alt="Banner" 
+          layout="fill" 
+          objectFit="cover" 
           className="w-full h-full object-cover" 
         />
         
@@ -41,9 +44,11 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-8">
           {/* Avatar - Circular and Overlapping */}
           <div className="w-40 h-40 md:w-40 md:h-40 rounded-full p-2 md:p-3 bg-card shadow-2xl shrink-0">
-            <img 
+            <Image 
               src={profile.photoURL || `https://picsum.photos/seed/${profile.uid}/400/400`} 
               alt={profile.displayName} 
+              width={160} 
+              height={160} 
               className="w-full h-full object-cover rounded-full" 
             />
           </div>

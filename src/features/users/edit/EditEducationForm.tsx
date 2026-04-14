@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { GraduationCap, Plus, Loader2, Edit2 } from 'lucide-react';
+import { GraduationCap, Plus, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { addEducation, removeEducation } from '@/features/users/services/write';
@@ -95,7 +95,7 @@ export function EditEducationForm({ userId, education: initialEducation }: EditE
       setIsAdding(false);
       setEditingId(null);
       router.refresh(); // Refresh server components
-    } catch (e) {
+    } catch  {
       toast({ variant: "destructive", title: "Failed to save education" });
     } finally {
       setLoading(false);
@@ -111,7 +111,7 @@ export function EditEducationForm({ userId, education: initialEducation }: EditE
       toast({ title: "Education removed" });
       setEditingId(null); // Close the form after deletion
       router.refresh();
-    } catch(e) {
+    } catch {
         toast({ variant: "destructive", title: "Failed to remove education" });
     } finally {
       setDeletingId(null);

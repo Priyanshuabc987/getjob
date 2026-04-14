@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserProfileData } from '../types';
 import { ProjectWorkspace } from '@/features/projects/types';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ProfileHeader } from './ProfileHeader';
 import { ProfessionalHistory } from './ProfessionalHistory';
 
@@ -87,7 +88,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
               {projects && projects.length > 0 ? projects.map(project => (
                 <Card key={project.id} className="rounded-2xl md:rounded-[2.5rem] overflow-hidden border-none shadow-sm group hover:shadow-lg transition-all duration-500 bg-card">
                   <div className="h-48 sm:h-64 md:h-72 relative">
-                    <img src={project.coverImageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={project.title} />
+                    <Image src={project.coverImageUrl || `https://picsum.photos/seed/${project.id}/800/400`} layout="fill" objectFit="cover" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={project.title} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute bottom-6 md:bottom-8 left-6 md:left-8 right-6 md:right-8">
                       <h3 className="text-2xl md:text-3xl font-headline font-bold text-white mb-2">{project.title}</h3>
@@ -101,7 +102,7 @@ export function ProfileView({ profile, projects, isOwnProfile }: ProfileViewProp
                     </div>
                   </div>
                   <div className="p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <p className="text-sm text-muted-foreground line-clamp-2 italic">"{project.tagline}"</p>
+                    <p className="text-sm text-muted-foreground line-clamp-2 italic">&quot;{project.tagline}&quot;</p>
                     <Button variant="ghost" className="text-primary font-bold hover:bg-primary/5 group/btn rounded-full whitespace-nowrap px-6">
                       View Roadmap <ChevronRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                     </Button>

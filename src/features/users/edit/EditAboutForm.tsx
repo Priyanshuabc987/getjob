@@ -29,7 +29,7 @@ export function EditAboutForm({ userProfile }: { userProfile: UserProfileData })
         toast({ title: "Story Saved!", description: "Your bio has been updated." });
         setIsDirty(false);
         router.refresh();
-      } catch (e) {
+      } catch {
         toast({ variant: "destructive", title: "Update Failed", description: "Could not save your story." });
       }
     });

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { EditEducationForm } from "@/features/users/edit/EditEducationForm";
 import { getCachedUserProfile } from "@/features/users/services/read";
 
-export default async function AddEducationPage({ params }: { params: { id: string } }) {
+export default async function AddEducationPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   const resolvedparams = await params;
   // Security Check: Ensure the logged-in user is the owner of this profile

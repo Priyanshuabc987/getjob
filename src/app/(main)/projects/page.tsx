@@ -1,4 +1,3 @@
-import { mockProjects } from '@/features/projects/data';
     import { ProjectsPageContent } from '@/features/projects/components/ProjectsPageContent';
     import { APP_NAME } from '@/lib/constants';
 

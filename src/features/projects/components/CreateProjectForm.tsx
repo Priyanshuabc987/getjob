@@ -43,7 +43,7 @@ export default function CreateProjectForm() {
         tags: result.suggestedSkills.join(', ')
       }));
       toast({ title: "Roadmap Refined!", description: "AI has expanded your project details." });
-    } catch (e) {
+    } catch  {
       toast({ title: "AI Error", description: "Could not reach the builder assistant.", variant: "destructive" });
     } finally {
       setAiLoading(false);

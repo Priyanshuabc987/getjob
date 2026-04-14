@@ -1,7 +1,6 @@
 import CreateProjectForm from '@/features/projects/components/CreateProjectForm';
-import { ArrowLeft, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 
 export default function CreateProjectPage() {
   return (

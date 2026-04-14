@@ -10,7 +10,7 @@ import { ContactCard } from "@/features/startups/details/components/ContactCard"
 import { FounderCard } from "@/features/users/components/FounderCard";
 import { FounderProfile } from "@/features/users/types";
 import { StartupHeader } from "../components/StartupHeader";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 

@@ -32,7 +32,7 @@ export async function updateStartup(startupId: string, data: any) {
     revalidateTag(`user-startups:${uid}`);
 
     return { success: true, message: "Startup updated successfully." };
-  } catch (error) {
+  } catch  {
     return { success: false, message: "An unexpected error occurred." };
   }
 }

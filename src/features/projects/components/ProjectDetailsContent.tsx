@@ -1,46 +1,37 @@
-"use client";
+'use client';
 
 import { useState, useMemo } from 'react';
-import { Navbar } from '@/components/layout/Navbar';
 import { projectWorkspaces, progressUpdates, discussionThreads, currentUser } from '@/lib/mock-data';
 import { 
   ArrowLeft, 
   Users, 
-  ShieldCheck, 
   ExternalLink,
   Code,
   Zap,
   CheckCircle2,
   PlusCircle,
   Clock,
-  Camera,
-  MessageCircle,
   Reply,
   ArrowBigUp,
   ArrowBigDown,
-  Paperclip,
   Terminal,
   CheckSquare,
   Layout
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
 export function ProjectDetailsContent({ projectId }: { projectId: string }) {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("build-log");
-  const [isAddingProof, setIsAddingProof] = useState(false);
-  const [replyTarget, setReplyTarget] = useState<string | null>(null);
 
   const project = useMemo(() => projectWorkspaces.find(p => p.id === projectId), [projectId]);
   const updates = useMemo(() => progressUpdates.filter(u => u.projectId === projectId), [projectId]);
@@ -67,7 +58,7 @@ export function ProjectDetailsContent({ projectId }: { projectId: string }) {
           <div className="lg:col-span-2 space-y-8">
             <Card className="glass-card overflow-hidden border-none shadow-xl bg-white">
               <div className="h-56 bg-muted relative">
-                <img src={project.coverImageUrl} alt={project.title} className="w-full h-full object-cover" />
+                <Image src={project.coverImageUrl || `https://picsum.photos/seed/${project.id}/800/400`} alt={project.title} layout="fill" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
                   <div className="space-y-2 text-white">
@@ -174,7 +165,9 @@ export function ProjectDetailsContent({ projectId }: { projectId: string }) {
                 {project.team.map(member => (
                   <div key={member.userId} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Avatar className="w-10 h-10"><AvatarImage src={member.avatarUrl} /></Avatar>
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={member.avatarUrl || `https://picsum.photos/seed/${member.userId}/100/100`} />
+                      </Avatar>
                       <div>
                         <p className="text-sm font-bold">{member.name}</p>
                         <p className="text-[10px] text-muted-foreground uppercase font-bold">{member.role}</p>
@@ -190,7 +183,7 @@ export function ProjectDetailsContent({ projectId }: { projectId: string }) {
               <h3 className="font-headline font-bold mb-4 flex items-center gap-2"><Layout className="w-5 h-5 text-primary" /> Project Hub</h3>
               <div className="space-y-3">
                 {project.resources.map(res => (
-                  <a key={res.url} href={res.url} target="_blank" className="flex items-center justify-between p-3 rounded-xl bg-muted/30 hover:bg-primary/5 transition-colors">
+                  <a key={res.url} href={res.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3 rounded-xl bg-muted/30 hover:bg-primary/5 transition-colors">
                     <span className="text-sm font-bold">{res.label}</span>
                     <ExternalLink className="w-4 h-4 text-muted-foreground" />
                   </a>

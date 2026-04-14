@@ -44,7 +44,7 @@ export function StartupHeader({
       <div className="px-4 md:px-12 relative z-10 -mt-24 md:-mt-12">
         <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-8">
           <div className="w-40 h-40 md:w-40 md:h-40 rounded-2xl p-2 md:p-3 bg-card shadow-2xl shrink-0 border-4 ">
-          <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover rounded-2xl " />
+          <Image src={startup.logo} alt={startup.name} width={160} height={160} className="w-full h-full object-cover rounded-2xl " />
           </div>
 
           <div className="flex-1 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 pb-2 md:pb-0">

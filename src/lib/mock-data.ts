@@ -2,9 +2,8 @@
 import { currentUser as mockUser } from './users/data';
 import { mockProjects, mockProgressUpdates, mockDiscussions } from '@/features/projects/data';
 // import { mockJobs } from '@/features/jobs/data';
-import { mockStartups } from '@/features/startups/data';
+// import { mockStartups } from '@/features/startups/data';
 import { events as mockEvents } from '@/features/events/data';
-import { problems as mockproblems } from '@/features/problems/data';
 import { feeds as mockFeeds } from '@/features/feed/data';
 
 export const currentUser = mockUser;
@@ -13,7 +12,7 @@ export const progressUpdates = mockProgressUpdates;
 export const discussionThreads = mockDiscussions;
 // export const jobs = mockJobs;
 // export const opportunities = mockJobs;
-export const startups = mockStartups;
+// export const startups = mockStartups;
 export const events = mockEvents;
 // export const challenges = mockproblems;
 export const feeds = mockFeeds;

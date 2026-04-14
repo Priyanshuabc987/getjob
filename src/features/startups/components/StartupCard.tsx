@@ -1,5 +1,6 @@
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, Zap, UserPlus } from 'lucide-react';
@@ -22,7 +23,7 @@ export function StartupCard({ startup }: StartupCardProps) {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-5">
               <div className="w-20 h-20 rounded-3xl bg-muted overflow-hidden border-4 border-white shadow-lg flex-shrink-0">
-                <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover" />
+                <Image src={startup.logo} alt={startup.name} width={80} height={80} className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="text-2xl font-headline font-bold">{startup.name}</h3>

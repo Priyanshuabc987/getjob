@@ -6,7 +6,7 @@ import Link from "next/link";
 import { EditExperienceForm } from "@/features/users/edit/EditExperienceForm";
 import { getCachedUserProfile } from "@/features/users/services/read";
 
-export default async function AddExperiencePage({ params }: { params: { id: string } }) {
+export default async function AddExperiencePage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   const resolvedparams = await params;
   // Security Check: Ensure the logged-in user is the owner of this profile

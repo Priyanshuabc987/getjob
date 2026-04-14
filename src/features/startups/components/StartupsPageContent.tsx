@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Rocket, Plus, Loader2 } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { Rocket, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';

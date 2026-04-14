@@ -13,7 +13,7 @@ export default function NotFound() {
         <div className="space-y-2">
           <h1 className="text-4xl font-headline font-bold">Lost in Space?</h1>
           <p className="text-muted-foreground">
-            The page you're looking for doesn't exist or has been moved to another coordinate.
+            The page you&apos;re looking for doesn&apos;t exist or has been moved to another coordinate.
           </p>
         </div>
         <Button asChild className="rounded-full px-10 h-14 font-bold action-button-glow">

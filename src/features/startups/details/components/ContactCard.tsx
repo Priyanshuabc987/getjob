@@ -1,8 +1,8 @@
 
 import { StartupProfile } from '@/features/startups/types';
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Globe, Users, ExternalLink, Pencil, Mail, Edit3 } from 'lucide-react';
+import { Globe, Users, ExternalLink, Mail, Edit3 } from 'lucide-react';
 import Link from 'next/link';
 
 // A helper component for individual link buttons to keep the main component clean

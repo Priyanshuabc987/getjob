@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   Home,
   BriefcaseBusiness,
-  MessageSquare,
   PlusSquare,
   Users,
   User,
@@ -109,7 +109,7 @@ export function Navbar({ showSidebar = true }: { showSidebar?: boolean }) {
                   {user.displayName?.split(' ')[0]}
                 </span>
                 <div className="w-9 h-9 rounded-full bg-accent dark:bg-muted border-2 border-primary/10 overflow-hidden hover:scale-105 transition-transform duration-300">
-                  <img src={user.photoURL || "https://picsum.photos/seed/user/100/100"} alt="Profile" className="w-full h-full object-cover" />
+                  <Image src={user.photoURL || "https://picsum.photos/seed/user/100/100"} alt="Profile" width={36} height={36} className="w-full h-full object-cover" />
                 </div>
               </Link>
             )}

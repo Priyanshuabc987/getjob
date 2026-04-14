@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Event } from '../types';
 import { Calendar, MapPin, ArrowRight, Sparkles, Plus } from 'lucide-react';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface EventsPageContentProps {
   events: Event[];
@@ -20,7 +21,7 @@ export function EventsPageContent({ events }: EventsPageContentProps) {
             <Sparkles className="w-4 h-4 fill-current" /> Action-Driven Events
           </div>
           <h1 className="text-4xl font-headline font-bold mb-4">Turn Events into Effort</h1>
-          <p className="text-lg text-muted-foreground">Don't just attend. Join hackathons, build working prototypes, and keep the momentum going.</p>
+          <p className="text-lg text-muted-foreground">Don&apos;t just attend. Join hackathons, build working prototypes, and keep the momentum going.</p>
         </div>
         
         <Link href="/events/create">
@@ -35,7 +36,7 @@ export function EventsPageContent({ events }: EventsPageContentProps) {
           <Card key={event.id} className="glass-card group overflow-hidden border-none shadow-xl rounded-[2.5rem] bg-white dark:bg-card">
             <div className="flex flex-col lg:flex-row">
               <div className="lg:w-2/5 h-64 lg:h-auto relative overflow-hidden">
-                <img src={event.bannerUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <Image src={event.bannerUrl || `https://picsum.photos/seed/${event.id}/800/400`} alt={event.title} layout="fill" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-8 left-8">
                    <Badge className="bg-white/20 backdrop-blur-md text-white border-none text-xs font-bold px-4 py-1 rounded-full mb-3">

@@ -6,7 +6,7 @@ import { getSession } from "@/features/auth/services/read";
 import { StartupEditCard } from "@/features/startups/edit/components/startup-edit-card";
 import { CreateStartupForm } from "@/features/startups/components/CreateStartupForm";
 
-export default async function StartupEditBasicsPage({ params }: { params: { slug: string } }) {
+export default async function StartupEditBasicsPage({ params }: { params: Promise<{ slug: string }>; }) {
   const resolvedparams = await params ;
   const startupId = getIdFromSlug(resolvedparams.slug);
   if (!startupId) {

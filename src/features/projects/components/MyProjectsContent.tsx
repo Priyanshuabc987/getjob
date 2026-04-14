@@ -24,7 +24,7 @@ export function MyProjectsContent() {
           </Avatar>
           <Link href="/projects/create" className="flex-1">
             <button className="w-full text-left px-5 h-12 rounded-full bg-muted/50 hover:bg-muted text-muted-foreground font-medium text-sm border border-transparent hover:border-muted transition-all">
-              What's on your build list, {user?.displayName?.split(' ')[0] || 'Builder'} ?
+              What&apos;s on your build list, {user?.displayName?.split(' ')[0] || 'Builder'} ?
             </button>
           </Link>
         </div>

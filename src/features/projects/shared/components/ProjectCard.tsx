@@ -1,11 +1,11 @@
 
-"use client";
+'use client';
 
 import Link from 'next/link';
-import { ShieldCheck, TrendingUp, Users, MessageSquare } from 'lucide-react';
+import Image from 'next/image';
+import { ShieldCheck, Users, MessageSquare } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ProjectWorkspace } from '../../types';
 
@@ -38,9 +38,10 @@ export function ProjectCard({ project, showStats = true }: ProjectCardProps) {
 
       <Link href={`/projects/${project.id}`} className="flex-1 flex flex-col">
         <div className="aspect-video w-full bg-muted relative overflow-hidden">
-          <img 
+          <Image 
             src={project.coverImageUrl || "https://picsum.photos/seed/project/800/450"} 
             alt={project.title} 
+            layout="fill"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
