@@ -2,9 +2,10 @@ import { OnboardingFlow } from '@/features/auth/components/OnboardingFlow';
 import { getSession } from '@/features/auth/services/read';
 import { redirect } from 'next/navigation';
 import { getCachedUserProfile } from '@/features/users/services/read';
+import { APP_NAME } from '@/lib/constants';
 
 export const metadata = {
-  title: 'Setup Your Builder Profile | PrepLinc',
+  title: `Setup Your Builder Profile | ${APP_NAME}`,
   description: 'Add your education and experience to get noticed by top startups.',
 };
 

@@ -6,6 +6,7 @@ import { MessageSquare, Heart, Share2, Zap, Sparkles } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { APP_NAME } from '@/lib/constants';
 
 export default function FeedPage() {
   return (
@@ -20,7 +21,7 @@ export default function FeedPage() {
 
         <div className="mb-10 opacity-60">
           <h1 className="text-3xl font-headline font-bold">Building In Public</h1>
-          <p className="text-muted-foreground">The heartbeat of the PrepLinc builder community.</p>
+          <p className="text-muted-foreground">{`The heartbeat of the ${APP_NAME} builder community.`}</p>
         </div>
 
         <div className="space-y-6 opacity-30 grayscale blur-[2px] select-none pointer-events-none">

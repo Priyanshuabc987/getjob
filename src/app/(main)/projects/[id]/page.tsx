@@ -1,6 +1,7 @@
 import { ProjectDetailsContent } from '@/features/projects/components/ProjectDetailsContent';
 import { projectWorkspaces } from '@/lib/mock-data';
 import { notFound } from 'next/navigation';
+import { APP_NAME } from '@/lib/constants';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -8,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   if (!project) return { title: 'Project Not Found' };
 
   return {
-    title: `${project.title} | PrepLinc Workspace`,
+    title: `${project.title} | ${APP_NAME} Workspace`,
     description: project.tagline,
   };
 }

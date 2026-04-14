@@ -79,7 +79,7 @@ export function Footer() {
             <Link href="#" className="text-[10px] font-bold text-muted-foreground hover:text-primary uppercase tracking-widest">Terms of Work</Link>
             <div className="flex items-center gap-2 text-primary">
               <Mail className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">hello@preplinc.com</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">official@preplinc.com</span>
             </div>
           </div>
         </div>

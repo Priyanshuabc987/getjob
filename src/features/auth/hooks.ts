@@ -12,6 +12,7 @@ import { getCachedUserProfile } from '@/features/users/services/read';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { createSession, removeSession } from './services/write';
+import { APP_NAME } from '@/lib/constants';
 
 export function useAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
@@ -55,7 +56,7 @@ export function useAuth() {
       }
       
       toast({
-        title: "Welcome to PrepLinc!",
+        title: `Welcome to ${APP_NAME}! `,
         description: `Successfully signed in as ${fbUser.displayName}`,
       });
     } catch (error: any) {

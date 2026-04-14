@@ -1,9 +1,10 @@
 import { MyProjectsContent } from '@/features/projects/components/MyProjectsContent';
 import { getSession } from '@/features/auth/services/read';
 import { redirect } from 'next/navigation';
+import { APP_NAME } from '@/lib/constants';
 
 export const metadata = {
-  title: 'My Workspace | PrepLinc',
+  title: `My Workspace | ${APP_NAME}`,
   description: 'Manage your projects, post proof, and build your credibility.',
 };
 

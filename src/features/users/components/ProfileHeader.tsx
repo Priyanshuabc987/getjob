@@ -8,6 +8,7 @@ import { formatBuildingDuration } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
+import { APP_NAME } from '@/lib/constants';
 
 interface ProfileHeaderProps {
   profile: UserProfileData;
@@ -25,7 +26,7 @@ export function ProfileHeader({ profile, isOwnProfile }: ProfileHeaderProps) {
         !profile.bannerUrl && "bg-gradient-to-r from-primary to-secondary"
       )}>
         <Image 
-          src={profile.bannerUrl || "https://picsum.photos/seed/preplinc-hero/1200/600"} 
+          src={profile.bannerUrl || `https://picsum.photos/seed/${APP_NAME}-hero/1200/600`} 
           alt="Banner" 
           layout="fill" 
           objectFit="cover" 

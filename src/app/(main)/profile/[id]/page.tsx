@@ -4,6 +4,7 @@ import { getCachedUserProfile } from '@/features/users/services/read';
 import { ProfileView } from '@/features/users/components/ProfileView';
 import { notFound } from 'next/navigation';
 import { getSession } from '@/features/auth/services/read';
+import { APP_NAME } from '@/lib/constants';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   if (!profile) return { title: 'Builder Not Found' };
 
   return {
-    title: `${profile.displayName} | Builder Profile | PrepLinc`,
+    title: `${profile.displayName} | Builder Profile | ${APP_NAME}`,
     description: `Verified proof-of-work and building history for ${profile.displayName}.`,
   };
 }
